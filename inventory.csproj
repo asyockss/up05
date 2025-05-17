@@ -73,6 +73,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Consumable.cs" />
+    <Compile Include="Models\ConsumableCharacteristic.cs" />
+    <Compile Include="Models\ConsumableCharacteristicValue.cs" />
+    <Compile Include="Models\ConsumableType.cs" />
+    <Compile Include="Models\EquipmentConsumable.cs" />
     <Compile Include="Models\Network.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
