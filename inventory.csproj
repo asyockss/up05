@@ -78,6 +78,7 @@
     <Compile Include="Models\ConsumableCharacteristicValue.cs" />
     <Compile Include="Models\ConsumableType.cs" />
     <Compile Include="Models\EquipmentConsumable.cs" />
+    <Compile Include="Models\EquipmentLocationHistory.cs" />
     <Compile Include="Models\Network.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
