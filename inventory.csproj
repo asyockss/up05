@@ -82,6 +82,7 @@
     <Compile Include="Models\EquipmentLocationHistory.cs" />
     <Compile Include="Models\EquipmentResponsibleHistory.cs" />
     <Compile Include="Models\Network.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
