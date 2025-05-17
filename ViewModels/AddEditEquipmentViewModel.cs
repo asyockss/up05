@@ -7,9 +7,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
-using inventory.Models;
 using inventory.Services;
 using inventory.Commands;
+using inventory.Models;
 using inventory;
 
 namespace inventory.ViewModels
@@ -157,6 +157,7 @@ namespace inventory.ViewModels
         private void AddSoftware()
         {
             // Реализация выбора и добавления ПО
+            // Можно использовать диалоговое окно для выбора из AvailableSoftware
         }
 
         private void RemoveSoftware()
@@ -177,6 +178,7 @@ namespace inventory.ViewModels
         private void AddConsumable()
         {
             // Реализация выбора и добавления расходника
+            // Можно использовать диалоговое окно для выбора из AvailableConsumables
         }
 
         private void RemoveConsumable()
