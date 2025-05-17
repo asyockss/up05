@@ -4,6 +4,87 @@
              xmlns:local="clr-namespace:inventory"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <!-- Цвета -->
+        <SolidColorBrush x:Key="PrimaryColor" Color="#0060AC"/>
+        <SolidColorBrush x:Key="SecondaryColor" Color="#E41613"/>
+        <SolidColorBrush x:Key="LightGray" Color="#F5F5F5"/>
+
+        <!-- Кнопки навигации -->
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#004B8D"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Кнопки инструментов -->
+        <Style x:Key="ToolButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#004B8D"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Поля ввода -->
+        <Style x:Key="InputFieldStyle" TargetType="TextBox">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <!-- Комбобоксы -->
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <!-- Кнопки действий -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="MinWidth" Value="100"/>
+        </Style>
+
+        <!-- Стили для страницы входа -->
+        <Style x:Key="LoginInputStyle" TargetType="TextBox">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="PasswordInputStyle" TargetType="PasswordBox">
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="LoginButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Конвертер для видимости -->
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Application.Resources>
 </Application>

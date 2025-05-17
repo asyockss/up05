@@ -64,4 +64,4 @@ namespace inventory.Models
         public string FullName => $"{LastName} {FirstName} {MiddleName}".Trim();
     }
 }
-}
+
