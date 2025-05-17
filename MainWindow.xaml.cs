@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using inventory.Pages;
+using inventory.ViewModels;
 
 namespace inventory
 {
@@ -23,6 +25,20 @@ namespace inventory
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
+            NavigateToPage(new LoginPage());
+        }
+        public void NavigateToPage(Page page)
+        {
+            MainFrame.Navigate(page);
+        }
+
+        public void NavigateBack()
+        {
+            if (MainFrame.CanGoBack)
+            {
+                MainFrame.GoBack();
+            }
         }
     }
 }

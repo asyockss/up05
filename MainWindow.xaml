@@ -5,8 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:inventory"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Инвентаризация оборудования" 
+        Height="800" Width="1200"
+        WindowStartupLocation="CenterScreen">
+
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Меню -->
+        <Menu Grid.Row="0">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Выход" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Оборудование">
+                <MenuItem Header="Список оборудования" Command="{Binding ShowEquipmentCommand}"/>
+                <MenuItem Header="Добавить оборудование" Command="{Binding AddEquipmentCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Расходники">
+                <MenuItem Header="Список расходников" Command="{Binding ShowConsumablesCommand}"/>
+                <MenuItem Header="Добавить расходник" Command="{Binding AddConsumableCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Администрирование">
+                <MenuItem Header="Пользователи" Command="{Binding ShowUsersCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Основное содержимое -->
+        <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>
