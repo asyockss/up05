@@ -79,6 +79,7 @@
     <Compile Include="Models\Direction.cs" />
     <Compile Include="Models\Equipment.cs" />
     <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\Status.cs" />
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
