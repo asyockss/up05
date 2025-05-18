@@ -75,6 +75,9 @@
     <Compile Include="Elements\EquipmentCard.xaml.cs">
       <DependentUpon>EquipmentCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Elements\InventoryCard.xaml.cs">
+      <DependentUpon>InventoryCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Elements\RoomCard.xaml.cs">
       <DependentUpon>RoomCard.xaml</DependentUpon>
     </Compile>
@@ -105,6 +108,10 @@
     </Compile>
     <Compile Include="ViewModels\AddEditEquipmentViewModel.cs" />
     <Page Include="Elements\EquipmentCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Elements\InventoryCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
