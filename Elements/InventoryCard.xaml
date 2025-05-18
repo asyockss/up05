@@ -3,15 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="120" d:DesignWidth="300">
-    <Border BorderBrush="{DynamicResource MaterialDesignDivider}" 
+    <Border BorderBrush="#DDDDDD" 
             BorderThickness="1" 
             CornerRadius="4" 
             Margin="4"
-            Background="{DynamicResource MaterialDesignPaper}">
-        <Grid Margin="8">
+            Background="White">
+        <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -21,8 +20,10 @@
             </Grid.RowDefinitions>
 
             <!-- Название -->
-            <TextBlock Grid.Row="0" Text="{Binding Name}" 
-                       FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" 
+                       Text="{Binding Name}" 
+                       FontWeight="Bold"
+                       FontSize="16"/>
 
             <!-- Период -->
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,4,0,0">
@@ -32,44 +33,58 @@
             </StackPanel>
 
             <!-- Ответственный -->
-            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,4,0,0">
-                <materialDesign:PackIcon Kind="Account" Width="16" Height="16"
-                                        Foreground="{DynamicResource MaterialDesignBodyLight}"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,6,0,0">
+                <Path Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+                      Width="16" Height="16"
+                      Fill="#666666" Stretch="Fill"/>
                 <TextBlock Text="{Binding User.FullName}" 
-                           Margin="4,0,0,0"
+                           Margin="6,0,0,0"
+                           FontSize="13"
                            TextTrimming="CharacterEllipsis"/>
             </StackPanel>
 
             <!-- Статистика -->
             <TextBlock Grid.Row="3" 
                        Text="{Binding Checks.Count, StringFormat='Проверок: {0}'}" 
-                       Margin="0,4,0,0"
+                       Margin="0,6,0,0"
                        FontSize="12"
-                       Foreground="{DynamicResource MaterialDesignBodyLight}"/>
+                       Foreground="#666666"/>
 
             <!-- Кнопки действий -->
-            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
-                <Button Style="{StaticResource MaterialDesignToolButton}"
-                        Command="{Binding DataContext.PerformCheckCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+            <StackPanel Grid.Row="4" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="0,12,0,0">
+                <Button Command="{Binding DataContext.PerformCheckCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                         CommandParameter="{Binding}"
+                        Width="30" Height="30"
+                        Background="Transparent"
+                        BorderThickness="0"
                         ToolTip="Провести проверку">
-                    <materialDesign:PackIcon Kind="Check" Width="16" Height="16"/>
+                    <Path Data="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"
+                          Fill="#0060AC"/>
                 </Button>
 
-                <Button Style="{StaticResource MaterialDesignToolButton}"
-                        Command="{Binding DataContext.GenerateReportCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                <Button Command="{Binding DataContext.GenerateReportCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                         CommandParameter="{Binding}"
-                        Margin="4,0,0,0"
+                        Width="30" Height="30"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Margin="6,0,0,0"
                         ToolTip="Создать отчет">
-                    <materialDesign:PackIcon Kind="FileDocument" Width="16" Height="16"/>
+                    <Path Data="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+                          Fill="#0060AC"/>
                 </Button>
 
-                <Button Style="{StaticResource MaterialDesignToolButton}"
-                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                <Button Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                         CommandParameter="{Binding}"
-                        Margin="4,0,0,0"
+                        Width="30" Height="30"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Margin="6,0,0,0"
                         ToolTip="Удалить">
-                    <materialDesign:PackIcon Kind="Delete" Width="16" Height="16"/>
+                    <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                          Fill="#E41613"/>
                 </Button>
             </StackPanel>
         </Grid>
