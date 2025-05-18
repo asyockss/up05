@@ -81,6 +81,9 @@
     <Compile Include="Elements\RoomCard.xaml.cs">
       <DependentUpon>RoomCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Elements\UserCard.xaml.cs">
+      <DependentUpon>UserCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\Developer.cs" />
     <Compile Include="Models\Direction.cs" />
     <Compile Include="Models\Equipment.cs" />
@@ -116,6 +119,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Elements\RoomCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Elements\UserCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
