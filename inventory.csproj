@@ -76,6 +76,7 @@
     <Compile Include="Elements\RoomCard.xaml.cs">
       <DependentUpon>RoomCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\Developer.cs" />
     <Compile Include="Models\Direction.cs" />
     <Compile Include="Models\Equipment.cs" />
     <Compile Include="Models\EquipmentModel.cs" />
