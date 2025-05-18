@@ -88,6 +88,9 @@
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\Software.cs" />
     <Compile Include="Models\Status.cs" />
+    <Compile Include="Pages\ConsumablesPage.xaml.cs">
+      <DependentUpon>ConsumablesPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\InventoryPage.xaml.cs">
       <DependentUpon>InventoryPage.xaml</DependentUpon>
     </Compile>
@@ -122,6 +125,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\AddEditEquipmentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ConsumablesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
