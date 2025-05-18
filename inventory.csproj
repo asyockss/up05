@@ -82,6 +82,7 @@
     <Compile Include="Models\EquipmentModel.cs" />
     <Compile Include="Models\EquipmentType.cs" />
     <Compile Include="Models\Inventory.cs" />
+    <Compile Include="Models\InventoryCheck.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\Software.cs" />
     <Compile Include="Models\Status.cs" />
