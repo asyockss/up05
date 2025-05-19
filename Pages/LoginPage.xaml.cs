@@ -2,21 +2,20 @@
 using System.Windows;
 using System.Windows.Controls;
 using inventory.Models;
-using System.Linq;
 using inventory.Context.Common;
-using inventory.Context;
+using MySql.Data.MySqlClient;
 
 namespace inventory.Pages
 {
     public partial class LoginPage : Page
     {
         public bool IsMenuVisible => false;
-        private readonly InventoryContext _context;
+        private readonly DBConnection _dbConnection;
 
         public LoginPage()
         {
             InitializeComponent();
-            _context = new InventoryContext();
+            _dbConnection = new DBConnection();
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -32,23 +31,25 @@ namespace inventory.Pages
 
             try
             {
-                using (var context = new InventoryContext())
+                using (var connection = (MySqlConnection)_dbConnection.OpenConnection("MySql"))
                 {
-                    var user = context.Users.FirstOrDefault(u => u.Login == login && u.Password == password);
+                    var query = $"SELECT * FROM Users WHERE Login = '{login}' AND Password = '{password}'";
+                    var dataReader = (MySqlDataReader)_dbConnection.Query(query, connection);
 
-                    if (user == null)
+                    if (dataReader.Read())
+                    {
+                        CurrentUser.Id = dataReader.GetInt32(0);
+                        CurrentUser.Login = dataReader.GetString(1);
+                        CurrentUser.Role = dataReader.GetString(2);
+                        CurrentUser.FullName = dataReader.GetString(3);
+
+                        var mainWindow = (MainWindow)Application.Current.MainWindow;
+                        mainWindow.NavigateToMainPage();
+                    }
+                    else
                     {
                         ShowError("Неверный логин или пароль");
-                        return;
                     }
-
-                    CurrentUser.Id = user.Id;
-                    CurrentUser.Login = user.Login;
-                    CurrentUser.Role = user.Role;
-                    CurrentUser.FullName = user.FullName;
-
-                    var mainWindow = (MainWindow)Application.Current.MainWindow;
-                    mainWindow.NavigateToMainPage();
                 }
             }
             catch (Exception ex)

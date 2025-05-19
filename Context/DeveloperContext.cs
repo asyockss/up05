@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
+using MySql.Data.MySqlClient;
+using inventory.Interfase;
 using inventory.Models;
+using inventory.Context.Common;
 
-namespace inventory.Context.OleDb
+namespace inventory.Context.MySql
 {
-    public class DeveloperContext : Developer, Interfaces.IDeveloper
+    public class DeveloperContext : Developer, IDeveloper
     {
-        public List<DeveloperContext> AllDevelopers()
+        public List<Developer> AllDevelopers()
         {
-            List<DeveloperContext> allDevelopers = new List<DeveloperContext>();
-            OleDbConnection connection = Common.DBConnection.Connection();
-            OleDbDataReader dataDevelopers = Common.DBConnection.Query("SELECT * FROM Developers", connection);
-            while (dataDevelopers.Read())
+            List<Developer> allDevelopers = new List<Developer>();
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                DeveloperContext newDeveloper = new DeveloperContext();
-                newDeveloper.Id = dataDevelopers.GetInt32(0);
-                newDeveloper.Name = dataDevelopers.GetString(1);
-                allDevelopers.Add(newDeveloper);
+                MySqlDataReader dataDevelopers = (MySqlDataReader)new DBConnection().Query("SELECT * FROM Developers", connection);
+                while (dataDevelopers.Read())
+                {
+                    Developer newDeveloper = new Developer();
+                    newDeveloper.Id = dataDevelopers.GetInt32(0);
+                    newDeveloper.Name = dataDevelopers.GetString(1);
+                    allDevelopers.Add(newDeveloper);
+                }
             }
-            Common.DBConnection.CloseConnection(connection);
             return allDevelopers;
         }
 
@@ -27,29 +30,32 @@ namespace inventory.Context.OleDb
         {
             if (Update)
             {
-                OleDbConnection connection = Common.DBConnection.Connection();
-                Common.DBConnection.Query("UPDATE Developers " +
-                    "SET " +
-                    $"Name = '{this.Name}' " +
-                    $"WHERE Id = {this.Id}", connection);
-                Common.DBConnection.CloseConnection(connection);
+                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                {
+                    new DBConnection().Query("UPDATE Developers " +
+                        "SET " +
+                        $"Name = '{this.Name}' " +
+                        $"WHERE Id = {this.Id}", connection);
+                }
             }
             else
             {
-                OleDbConnection connection = Common.DBConnection.Connection();
-                Common.DBConnection.Query("INSERT INTO Developers " +
-                    "(Name) " +
-                    "VALUES (" +
-                    $"'{this.Name}')", connection);
-                Common.DBConnection.CloseConnection(connection);
+                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                {
+                    new DBConnection().Query("INSERT INTO Developers " +
+                        "(Name) " +
+                        "VALUES (" +
+                        $"'{this.Name}')", connection);
+                }
             }
         }
 
         public void Delete()
         {
-            OleDbConnection connection = Common.DBConnection.Connection();
-            Common.DBConnection.Query($"DELETE FROM Developers WHERE Id = {this.Id}", connection);
-            Common.DBConnection.CloseConnection(connection);
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+            {
+                new DBConnection().Query($"DELETE FROM Developers WHERE Id = {this.Id}", connection);
+            }
         }
     }
 }

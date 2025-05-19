@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
+using MySql.Data.MySqlClient;
+using inventory.Interfase;
 using inventory.Models;
+using inventory.Context.Common;
 
-namespace inventory.Context.OleDb
+namespace inventory.Context.MySql
 {
-    public class ConsumableTypeContext : ConsumableType, Interfaces.IConsumableType
+    public class ConsumableTypeContext : ConsumableType, IConsumableType
     {
-        public List<ConsumableTypeContext> AllConsumableTypes()
+        public List<ConsumableType> AllConsumableTypes()
         {
-            List<ConsumableTypeContext> allTypes = new List<ConsumableTypeContext>();
-            OleDbConnection connection = Common.DBConnection.Connection();
-            OleDbDataReader dataTypes = Common.DBConnection.Query("SELECT * FROM ConsumableTypes", connection);
-            while (dataTypes.Read())
+            List<ConsumableType> allTypes = new List<ConsumableType>();
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                ConsumableTypeContext newType = new ConsumableTypeContext();
-                newType.Id = dataTypes.GetInt32(0);
-                newType.Type = dataTypes.GetString(1);
-                allTypes.Add(newType);
+                MySqlDataReader dataTypes = (MySqlDataReader)new DBConnection().Query("SELECT * FROM ConsumableTypes", connection);
+                while (dataTypes.Read())
+                {
+                    ConsumableType newType = new ConsumableType();
+                    newType.Id = dataTypes.GetInt32(0);
+                    newType.Type = dataTypes.GetString(1);
+                    allTypes.Add(newType);
+                }
             }
-            Common.DBConnection.CloseConnection(connection);
             return allTypes;
         }
 
@@ -27,29 +30,32 @@ namespace inventory.Context.OleDb
         {
             if (Update)
             {
-                OleDbConnection connection = Common.DBConnection.Connection();
-                Common.DBConnection.Query("UPDATE ConsumableTypes " +
-                    "SET " +
-                    $"Type = '{this.Type}' " +
-                    $"WHERE Id = {this.Id}", connection);
-                Common.DBConnection.CloseConnection(connection);
+                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                {
+                    new DBConnection().Query("UPDATE ConsumableTypes " +
+                        "SET " +
+                        $"Type = '{this.Type}' " +
+                        $"WHERE Id = {this.Id}", connection);
+                }
             }
             else
             {
-                OleDbConnection connection = Common.DBConnection.Connection();
-                Common.DBConnection.Query("INSERT INTO ConsumableTypes " +
-                    "(Type) " +
-                    "VALUES (" +
-                    $"'{this.Type}')", connection);
-                Common.DBConnection.CloseConnection(connection);
+                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                {
+                    new DBConnection().Query("INSERT INTO ConsumableTypes " +
+                        "(Type) " +
+                        "VALUES (" +
+                        $"'{this.Type}')", connection);
+                }
             }
         }
 
         public void Delete()
         {
-            OleDbConnection connection = Common.DBConnection.Connection();
-            Common.DBConnection.Query($"DELETE FROM ConsumableTypes WHERE Id = {this.Id}", connection);
-            Common.DBConnection.CloseConnection(connection);
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+            {
+                new DBConnection().Query($"DELETE FROM ConsumableTypes WHERE Id = {this.Id}", connection);
+            }
         }
     }
 }

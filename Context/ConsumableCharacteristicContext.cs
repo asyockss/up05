@@ -1,26 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
+using MySql.Data.MySqlClient;
+using inventory.Interfase;
 using inventory.Models;
+using inventory.Context.Common;
 
-namespace inventory.Context.OleDb
+namespace inventory.Context.MySql
 {
-    public class ConsumableCharacteristicContext : ConsumableCharacteristic, Interfaces.IConsumableCharacteristic
+    public class ConsumableCharacteristicContext : ConsumableCharacteristic, IConsumableCharacteristic
     {
-        public List<ConsumableCharacteristicContext> AllConsumableCharacteristics()
+        public List<ConsumableCharacteristic> AllConsumableCharacteristics()
         {
-            List<ConsumableCharacteristicContext> allCharacteristics = new List<ConsumableCharacteristicContext>();
-            OleDbConnection connection = Common.DBConnection.Connection();
-            OleDbDataReader dataCharacteristics = Common.DBConnection.Query("SELECT * FROM ConsumableCharacteristics", connection);
-            while (dataCharacteristics.Read())
+            List<ConsumableCharacteristic> allCharacteristics = new List<ConsumableCharacteristic>();
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                ConsumableCharacteristicContext newCharacteristic = new ConsumableCharacteristicContext();
-                newCharacteristic.Id = dataCharacteristics.GetInt32(0);
-                newCharacteristic.ConsumableTypeId = dataCharacteristics.GetInt32(1);
-                newCharacteristic.CharacteristicName = dataCharacteristics.GetString(2);
-                allCharacteristics.Add(newCharacteristic);
+                MySqlDataReader dataCharacteristics = (MySqlDataReader)new DBConnection().Query("SELECT * FROM ConsumableCharacteristics", connection);
+                while (dataCharacteristics.Read())
+                {
+                    ConsumableCharacteristic newCharacteristic = new ConsumableCharacteristic();
+                    newCharacteristic.Id = dataCharacteristics.GetInt32(0);
+                    newCharacteristic.ConsumableTypeId = dataCharacteristics.GetInt32(1);
+                    newCharacteristic.CharacteristicName = dataCharacteristics.GetString(2);
+                    allCharacteristics.Add(newCharacteristic);
+                }
+                dataCharacteristics.Close();
             }
-            Common.DBConnection.CloseConnection(connection);
             return allCharacteristics;
         }
 
@@ -28,31 +32,34 @@ namespace inventory.Context.OleDb
         {
             if (Update)
             {
-                OleDbConnection connection = Common.DBConnection.Connection();
-                Common.DBConnection.Query("UPDATE ConsumableCharacteristics " +
-                    "SET " +
-                    $"ConsumableTypeId = {this.ConsumableTypeId}, " +
-                    $"CharacteristicName = '{this.CharacteristicName}' " +
-                    $"WHERE Id = {this.Id}", connection);
-                Common.DBConnection.CloseConnection(connection);
+                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                {
+                    new DBConnection().Query("UPDATE ConsumableCharacteristics " +
+                        "SET " +
+                        $"ConsumableTypeId = {this.ConsumableTypeId}, " +
+                        $"CharacteristicName = '{this.CharacteristicName}' " +
+                        $"WHERE Id = {this.Id}", connection);
+                }
             }
             else
             {
-                OleDbConnection connection = Common.DBConnection.Connection();
-                Common.DBConnection.Query("INSERT INTO ConsumableCharacteristics " +
-                    "(ConsumableTypeId, CharacteristicName) " +
-                    "VALUES (" +
-                    $"{this.ConsumableTypeId}, " +
-                    $"'{this.CharacteristicName}')", connection);
-                Common.DBConnection.CloseConnection(connection);
+                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                {
+                    new DBConnection().Query("INSERT INTO ConsumableCharacteristics " +
+                        "(ConsumableTypeId, CharacteristicName) " +
+                        "VALUES (" +
+                        $"{this.ConsumableTypeId}, " +
+                        $"'{this.CharacteristicName}')", connection);
+                }
             }
         }
 
         public void Delete()
         {
-            OleDbConnection connection = Common.DBConnection.Connection();
-            Common.DBConnection.Query($"DELETE FROM ConsumableCharacteristics WHERE Id = {this.Id}", connection);
-            Common.DBConnection.CloseConnection(connection);
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+            {
+                new DBConnection().Query($"DELETE FROM ConsumableCharacteristics WHERE Id = {this.Id}", connection);
+            }
         }
     }
 }

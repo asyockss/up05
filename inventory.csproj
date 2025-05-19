@@ -157,7 +157,17 @@
     <Compile Include="Elements\UserCard.xaml.cs">
       <DependentUpon>UserCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interfase\IConsumable.cs" />
+    <Compile Include="Interfase\IConsumableCharacteristic.cs" />
+    <Compile Include="Interfase\IConsumableCharacteristicValue.cs" />
+    <Compile Include="Interfase\IConsumableResponsibleHistory.cs" />
+    <Compile Include="Interfase\IConsumableType.cs" />
     <Compile Include="Interfase\IDatabaseConnection.cs" />
+    <Compile Include="Interfase\IDeveloper.cs" />
+    <Compile Include="Interfase\IDirection.cs" />
+    <Compile Include="Interfase\IEquipment.cs" />
+    <Compile Include="Interfase\IEquipmentConsumable.cs" />
+    <Compile Include="Interfase\IEquipmentLocationHistory.cs" />
     <Compile Include="Models\Developer.cs" />
     <Compile Include="Models\Direction.cs" />
     <Compile Include="Models\Equipment.cs" />

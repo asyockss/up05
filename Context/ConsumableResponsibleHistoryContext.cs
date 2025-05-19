@@ -1,27 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
+using MySql.Data.MySqlClient;
+using inventory.Interfase;
 using inventory.Models;
+using inventory.Context.Common;
 
-namespace inventory.Context.OleDb
+namespace inventory.Context.MySql
 {
-    public class ConsumableResponsibleHistoryContext : ConsumableResponsibleHistory, Interfaces.IConsumableResponsibleHistory
+    public class ConsumableResponsibleHistoryContext : ConsumableResponsibleHistory, IConsumableResponsibleHistory
     {
-        public List<ConsumableResponsibleHistoryContext> AllConsumableResponsibleHistories()
+        public List<ConsumableResponsibleHistory> AllConsumableResponsibleHistories()
         {
-            List<ConsumableResponsibleHistoryContext> allHistories = new List<ConsumableResponsibleHistoryContext>();
-            OleDbConnection connection = Common.DBConnection.Connection();
-            OleDbDataReader dataHistories = Common.DBConnection.Query("SELECT * FROM ConsumableResponsibleHistories", connection);
-            while (dataHistories.Read())
+            List<ConsumableResponsibleHistory> allHistories = new List<ConsumableResponsibleHistory>();
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                ConsumableResponsibleHistoryContext newHistory = new ConsumableResponsibleHistoryContext();
-                newHistory.Id = dataHistories.GetInt32(0);
-                newHistory.ConsumableId = dataHistories.GetInt32(1);
-                newHistory.OldUserId = dataHistories.IsDBNull(2) ? (int?)null : dataHistories.GetInt32(2);
-                newHistory.ChangeDate = dataHistories.GetDateTime(3);
-                allHistories.Add(newHistory);
+                MySqlDataReader dataHistories = (MySqlDataReader)new DBConnection().Query("SELECT * FROM ConsumableResponsibleHistories", connection);
+                while (dataHistories.Read())
+                {
+                    ConsumableResponsibleHistory newHistory = new ConsumableResponsibleHistory();
+                    newHistory.Id = dataHistories.GetInt32(0);
+                    newHistory.ConsumableId = dataHistories.GetInt32(1);
+                    newHistory.OldUserId = dataHistories.IsDBNull(2) ? (int?)null : dataHistories.GetInt32(2);
+                    newHistory.ChangeDate = dataHistories.GetDateTime(3);
+                    allHistories.Add(newHistory);
+                }
             }
-            Common.DBConnection.CloseConnection(connection);
             return allHistories;
         }
 
@@ -29,33 +32,36 @@ namespace inventory.Context.OleDb
         {
             if (Update)
             {
-                OleDbConnection connection = Common.DBConnection.Connection();
-                Common.DBConnection.Query("UPDATE ConsumableResponsibleHistories " +
-                    "SET " +
-                    $"ConsumableId = {this.ConsumableId}, " +
-                    $"OldUserId = {(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
-                    $"ChangeDate = '{this.ChangeDate.ToString("yyyy-MM-dd")}' " +
-                    $"WHERE Id = {this.Id}", connection);
-                Common.DBConnection.CloseConnection(connection);
+                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                {
+                    new DBConnection().Query("UPDATE ConsumableResponsibleHistories " +
+                        "SET " +
+                        $"ConsumableId = {this.ConsumableId}, " +
+                        $"OldUserId = {(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
+                        $"ChangeDate = '{this.ChangeDate.ToString("yyyy-MM-dd")}' " +
+                        $"WHERE Id = {this.Id}", connection);
+                }
             }
             else
             {
-                OleDbConnection connection = Common.DBConnection.Connection();
-                Common.DBConnection.Query("INSERT INTO ConsumableResponsibleHistories " +
-                    "(ConsumableId, OldUserId, ChangeDate) " +
-                    "VALUES (" +
-                    $"{this.ConsumableId}, " +
-                    $"{this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL"}, " +
-                    $"'{this.ChangeDate.ToString("yyyy-MM-dd")}')", connection);
-                Common.DBConnection.CloseConnection(connection);
+                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                {
+                    new DBConnection().Query("INSERT INTO ConsumableResponsibleHistories " +
+                        "(ConsumableId, OldUserId, ChangeDate) " +
+                        "VALUES (" +
+                        $"{this.ConsumableId}, " +
+                        $"{(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
+                        $"'{this.ChangeDate.ToString("yyyy-MM-dd")}')", connection);
+                }
             }
         }
 
         public void Delete()
         {
-            OleDbConnection connection = Common.DBConnection.Connection();
-            Common.DBConnection.Query($"DELETE FROM ConsumableResponsibleHistories WHERE Id = {this.Id}", connection);
-            Common.DBConnection.CloseConnection(connection);
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+            {
+                new DBConnection().Query($"DELETE FROM ConsumableResponsibleHistories WHERE Id = {this.Id}", connection);
+            }
         }
     }
 }

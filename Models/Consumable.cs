@@ -10,6 +10,7 @@ namespace inventory.Models
 {
     public class Consumable
     {
+
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Название расходника обязательно")]
