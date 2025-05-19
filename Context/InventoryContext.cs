@@ -1,6 +1,8 @@
-﻿using inventory.Models;
+﻿using inventory.Context.Common;
+using inventory.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Entity;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
@@ -11,7 +13,7 @@ namespace inventory.Context
 {
     public class InventoryContext : DbContext
     {
-        public InventoryContext() : base("name=up05")
+        public InventoryContext() : base(DBConnection.config)
         {
         }
 
