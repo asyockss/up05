@@ -1,34 +1,73 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using inventory.Models;
+using System.Linq;
+using inventory.Context.Common;
+using inventory.Context;
 
 namespace inventory.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для LoginPage.xaml
-    /// </summary>
     public partial class LoginPage : Page
     {
+        public bool IsMenuVisible => false;
+        private readonly InventoryContext _context;
+
         public LoginPage()
         {
             InitializeComponent();
+            _context = new InventoryContext();
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            string login = LoginTextBox.Text;
+            string password = PasswordBox.Password;
 
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            {
+                ShowError("Введите логин и пароль");
+                return;
+            }
+
+            try
+            {
+                var user = _context.Users.FirstOrDefault(u => u.Login == login && u.Password == password);
+
+                if (user == null)
+                {
+                    ShowError("Неверный логин или пароль");
+                    return;
+                }
+
+                // Сохраняем данные пользователя
+                CurrentUser.Id = user.Id;
+                CurrentUser.Login = user.Login;
+                CurrentUser.Role = user.Role;
+                CurrentUser.FullName = user.FullName;
+
+                // Переходим на главную страницу
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+                mainWindow.NavigateToPage(new MainPage());
+            }
+            catch (Exception ex)
+            {
+                ShowError($"Ошибка авторизации: {ex.Message}");
+            }
         }
-        public bool IsMenuVisible => false;
+
+        private void ShowError(string message)
+        {
+            ErrorMessage.Text = message;
+            ErrorMessage.Visibility = Visibility.Visible;
+        }
+    }
+
+    public static class CurrentUser
+    {
+        public static int Id { get; set; }
+        public static string Login { get; set; }
+        public static string Role { get; set; }
+        public static string FullName { get; set; }
     }
 }
