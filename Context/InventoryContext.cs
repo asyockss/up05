@@ -11,7 +11,7 @@ namespace inventory.Context
 {
     public class InventoryContext : DbContext
     {
-        public InventoryContext() : base("name=InventoryContext")
+        public InventoryContext() : base("name=up05")
         {
         }
 
