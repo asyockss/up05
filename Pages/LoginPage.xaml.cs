@@ -32,23 +32,24 @@ namespace inventory.Pages
 
             try
             {
-                var user = _context.Users.FirstOrDefault(u => u.Login == login && u.Password == password);
-
-                if (user == null)
+                using (var context = new InventoryContext())
                 {
-                    ShowError("Неверный логин или пароль");
-                    return;
+                    var user = context.Users.FirstOrDefault(u => u.Login == login && u.Password == password);
+
+                    if (user == null)
+                    {
+                        ShowError("Неверный логин или пароль");
+                        return;
+                    }
+
+                    CurrentUser.Id = user.Id;
+                    CurrentUser.Login = user.Login;
+                    CurrentUser.Role = user.Role;
+                    CurrentUser.FullName = user.FullName;
+
+                    var mainWindow = (MainWindow)Application.Current.MainWindow;
+                    mainWindow.NavigateToMainPage();
                 }
-
-                // Сохраняем данные пользователя
-                CurrentUser.Id = user.Id;
-                CurrentUser.Login = user.Login;
-                CurrentUser.Role = user.Role;
-                CurrentUser.FullName = user.FullName;
-
-                // Переходим на главную страницу
-                var mainWindow = (MainWindow)Application.Current.MainWindow;
-                mainWindow.NavigateToMainPage();
             }
             catch (Exception ex)
             {

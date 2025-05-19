@@ -11,7 +11,7 @@ namespace inventory.Context.Common
 {
     public class DBConnection
     {
-        public static string config = "Server=127.0.0.1;Database=up05;Uid=root;Pwd=;";
+        public static string config = "server=127.0.0.1;database=up05;user=root;password=;";
 
         public static MySqlConnection OpenConnection()
         {

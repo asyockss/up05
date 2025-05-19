@@ -15,6 +15,7 @@ namespace inventory.Context
     {
         public InventoryContext() : base(DBConnection.config)
         {
+            Database.SetInitializer<InventoryContext>(null); // Отключаем миграции
         }
 
         public DbSet<Consumable> Consumables { get; set; }
