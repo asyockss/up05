@@ -23,6 +23,13 @@ namespace inventory.Pages
         public InventoryPage()
         {
             InitializeComponent();
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Доступ запрещен. Требуются права администратора.");
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+                mainWindow.NavigateToMainPage();
+                return;
+            }
         }
         public bool IsMenuVisible => true;
     }

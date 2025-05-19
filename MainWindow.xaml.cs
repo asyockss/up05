@@ -17,27 +17,27 @@ using inventory.ViewModels;
 
 namespace inventory
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
-            NavigateToPage(new LoginPage());
+            NavigateToLoginPage();
         }
+
+        public void NavigateToLoginPage()
+        {
+            MainFrame.Navigate(new LoginPage());
+        }
+
+        public void NavigateToMainPage()
+        {
+            MainFrame.Navigate(new MainPage());
+        }
+
         public void NavigateToPage(Page page)
         {
             MainFrame.Navigate(page);
-        }
-
-        public void NavigateBack()
-        {
-            if (MainFrame.CanGoBack)
-            {
-                MainFrame.GoBack();
-            }
         }
     }
 }

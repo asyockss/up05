@@ -48,7 +48,7 @@ namespace inventory.Pages
 
                 // Переходим на главную страницу
                 var mainWindow = (MainWindow)Application.Current.MainWindow;
-                mainWindow.NavigateToPage(new MainPage());
+                mainWindow.NavigateToMainPage();
             }
             catch (Exception ex)
             {
@@ -69,5 +69,7 @@ namespace inventory.Pages
         public static string Login { get; set; }
         public static string Role { get; set; }
         public static string FullName { get; set; }
+
+        public static bool IsAdmin => Role?.ToLower() == "admin";
     }
 }
