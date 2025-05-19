@@ -14,6 +14,7 @@ namespace inventory.ViewModels
 {
     public class AddEditEquipmentViewModel //INotifyPropertyChanged
     {
+        public bool IsMenuVisible => true;
         //private readonly DataService _dataService;
         //private Equipment _currentEquipment;
         //private BitmapImage _imagePreview;

@@ -29,5 +29,6 @@ namespace inventory.Pages
         {
 
         }
+        public bool IsMenuVisible => false;
     }
 }

@@ -15,8 +15,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Меню -->
-        <Menu Grid.Row="0">
+        <!-- Меню (видимость зависит от текущей страницы) -->
+        <Menu Grid.Row="0" Visibility="{Binding ElementName=MainFrame, Path=Content.IsMenuVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <MenuItem Header="Файл">
                 <MenuItem Header="Выход" Command="{Binding ExitCommand}"/>
             </MenuItem>
@@ -28,7 +28,7 @@
                 <MenuItem Header="Список расходников" Command="{Binding ShowConsumablesCommand}"/>
                 <MenuItem Header="Добавить расходник" Command="{Binding AddConsumableCommand}"/>
             </MenuItem>
-            <MenuItem Header="Администрирование">
+            <MenuItem Header="Администрирование" Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}">
                 <MenuItem Header="Пользователи" Command="{Binding ShowUsersCommand}"/>
             </MenuItem>
         </Menu>

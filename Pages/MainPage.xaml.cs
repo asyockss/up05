@@ -24,5 +24,6 @@ namespace inventory.Pages
         {
             InitializeComponent();
         }
+        public bool IsMenuVisible => true;
     }
 }
