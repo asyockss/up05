@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using inventory.Pages;
 using System.Windows.Input;
 using System.Windows;
-using GalaSoft.MvvmLight.Command;
 
 namespace inventory.ViewModels
 {
@@ -27,6 +26,8 @@ namespace inventory.ViewModels
             NavigateToRoomsCommand = new RelayCommand(NavigateToRooms);
             NavigateToInventoryCommand = new RelayCommand(NavigateToInventory);
             NavigateToUsersCommand = new RelayCommand(NavigateToUsers);
+
+            ExitCommand = new RelayCommand(Exit);
         }
 
         private void NavigateToEquipment()
@@ -67,6 +68,13 @@ namespace inventory.ViewModels
             }
             var mainWindow = (MainWindow)Application.Current.MainWindow;
             mainWindow.NavigateToPage(new UsersPage());
+        }
+        public ICommand ExitCommand { get; }
+
+
+        private void Exit()
+        {
+            Application.Current.Shutdown();
         }
     }
 }
