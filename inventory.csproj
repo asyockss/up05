@@ -134,8 +134,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Context\BaseContext.cs" />
     <Compile Include="Context\Common\DBConnection.cs" />
-    <Compile Include="Context\InventoryContext.cs" />
+    <Compile Include="Context\ConsumableContext.cs" />
     <Compile Include="Elements\EquipmentCard.xaml.cs">
       <DependentUpon>EquipmentCard.xaml</DependentUpon>
     </Compile>
