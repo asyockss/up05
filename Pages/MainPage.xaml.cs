@@ -1,4 +1,5 @@
-﻿using System;
+﻿using inventory.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace inventory.Pages
         public MainPage()
         {
             InitializeComponent();
+            DataContext = new MainPageViewModel();
         }
         public bool IsMenuVisible => true;
     }
