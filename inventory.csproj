@@ -134,9 +134,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Context\BaseContext.cs" />
     <Compile Include="Context\Common\DBConnection.cs" />
+    <Compile Include="Context\ConsumableCharacteristicContext.cs" />
+    <Compile Include="Context\ConsumableCharacteristicValueContext.cs" />
     <Compile Include="Context\ConsumableContext.cs" />
+    <Compile Include="Context\ConsumableResponsibleHistoryContext.cs" />
+    <Compile Include="Context\ConsumableTypeContext.cs" />
+    <Compile Include="Context\DeveloperContext.cs" />
+    <Compile Include="Context\DirectionContext.cs" />
+    <Compile Include="Context\EquipmentConsumableContext.cs" />
+    <Compile Include="Context\EquipmentContext.cs" />
+    <Compile Include="Context\EquipmentLocationHistoryContext.cs" />
     <Compile Include="Elements\EquipmentCard.xaml.cs">
       <DependentUpon>EquipmentCard.xaml</DependentUpon>
     </Compile>
@@ -149,6 +157,7 @@
     <Compile Include="Elements\UserCard.xaml.cs">
       <DependentUpon>UserCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interfase\IDatabaseConnection.cs" />
     <Compile Include="Models\Developer.cs" />
     <Compile Include="Models\Direction.cs" />
     <Compile Include="Models\Equipment.cs" />

@@ -1,36 +1,67 @@
-﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data.OleDb;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using MySql.Data.MySqlClient;
+using inventory.Interfase;
 namespace inventory.Context.Common
 {
-    public class DBConnection
+    public class DBConnection : IDatabaseConnection
     {
-        public static string config = "server=127.0.0.1;database=up05;port=3307;user=root;password=;";
+        public static string MySqlConfig = "server=127.0.0.1;database=up05;port=3307;user=root;password=;";
+        public static string OleDbConfig = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=yourDatabasePath.mdb;";
 
-        public static MySqlConnection OpenConnection()
+        public object OpenConnection(string provider = "MySql")
         {
-            MySqlConnection connection = new MySqlConnection(config);
-            connection.Open();
-            return connection;
+            if (provider == "MySql")
+            {
+                MySqlConnection connection = new MySqlConnection(MySqlConfig);
+                connection.Open();
+                return connection;
+            }
+            else if (provider == "OleDb")
+            {
+                OleDbConnection connection = new OleDbConnection(OleDbConfig);
+                connection.Open();
+                return connection;
+            }
+            else
+            {
+                throw new ArgumentException("Unsupported database provider");
+            }
         }
 
-        public static MySqlDataReader Query(string SQL, MySqlConnection connection)
+        public object Query(string sql, object connection)
         {
-            MySqlCommand command = new MySqlCommand(SQL, connection);
-            return command.ExecuteReader();
+            if (connection is MySqlConnection)
+            {
+                MySqlCommand command = new MySqlCommand(sql, (MySqlConnection)connection);
+                return command.ExecuteReader();
+            }
+            else if (connection is OleDbConnection)
+            {
+                OleDbCommand command = new OleDbCommand(sql, (OleDbConnection)connection);
+                return command.ExecuteReader();
+            }
+            else
+            {
+                throw new ArgumentException("Unsupported connection type");
+            }
         }
 
-        public static void CloseConnection(MySqlConnection connection)
+        public void CloseConnection(object connection)
         {
-            connection.Close();
-            MySqlConnection.ClearPool(connection);
+            if (connection is MySqlConnection)
+            {
+                ((MySqlConnection)connection).Close();
+                MySqlConnection.ClearPool((MySqlConnection)connection);
+            }
+            else if (connection is OleDbConnection)
+            {
+                ((OleDbConnection)connection).Close();
+            }
+            else
+            {
+                throw new ArgumentException("Unsupported connection type");
+            }
         }
     }
 }
-
