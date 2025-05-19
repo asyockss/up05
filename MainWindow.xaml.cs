@@ -25,7 +25,6 @@ namespace inventory
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
             NavigateToPage(new LoginPage());
         }
         public void NavigateToPage(Page page)
