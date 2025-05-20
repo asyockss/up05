@@ -30,5 +30,6 @@
 
         <!-- Контент -->
         <Frame x:Name="ContentFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>
+        
     </Grid>
 </Page>
