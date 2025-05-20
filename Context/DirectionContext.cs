@@ -9,7 +9,7 @@ namespace inventory.Context.MySql
 {
     public class DirectionContext : Direction, IDirection
     {
-        public List<Direction> AllDirections()
+        public  List<Direction> AllDirections()
         {
             List<Direction> allDirections = new List<Direction>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))

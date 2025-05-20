@@ -1,61 +1,70 @@
-﻿using inventory.Context.MySql;
-using inventory.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using inventory.Context;
+using inventory.Context.MySql;
 using inventory.Models;
 
 namespace inventory.Pages
 {
-    public partial class ConsumablesPage : Page
+    public partial class ConsumablesPage : Page, INotifyPropertyChanged
     {
-        public List<Consumable> consumables = ConsumableContext.AllConsumables().Cast<Consumable>().ToList();
+        private List<Consumable> _consumableList;
+        private List<ConsumableType> _consumableTypes;
+        private int? _selectedTypeFilter;
+
+        public List<Consumable> ConsumableList
+        {
+            get => _consumableList;
+            set { _consumableList = value; OnPropertyChanged(nameof(ConsumableList)); }
+        }
+
+        public List<ConsumableType> ConsumableTypes
+        {
+            get => _consumableTypes;
+            set { _consumableTypes = value; OnPropertyChanged(nameof(ConsumableTypes)); }
+        }
+
+        public int? SelectedTypeFilter
+        {
+            get => _selectedTypeFilter;
+            set { _selectedTypeFilter = value; OnPropertyChanged(nameof(SelectedTypeFilter)); FilterConsumables(); }
+        }
+
+        public bool IsMenuVisible => true;
+
         public ConsumablesPage()
         {
             InitializeComponent();
-            CreateUI();
+            DataContext = this;
+            LoadData();
         }
 
-        public void CreateUI()
+        public void LoadData()
         {
-            parent.Children.Clear();
-            foreach (Consumable item in consumables)
-            {
-                parent.Children.Add(new Elements.ConsumableCard(item));
-            }
+            ConsumableList = ConsumableContext.AllConsumables().Cast<Consumable>().ToList();
+            ConsumableTypes = ConsumableTypeContext.AllConsumableTypes().Cast<ConsumableType>().ToList();
+        }
+
+        private void FilterConsumables()
+        {
+            ConsumableList = ConsumableContext.AllConsumables()
+                .Cast<Consumable>()
+                .Where(c => !SelectedTypeFilter.HasValue || c.ConsumableTypeId == SelectedTypeFilter)
+                .ToList();
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            // Логика для добавления нового расходника
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.NavigateToPage(new AddEditConsumablePage());
         }
 
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
-            // Логика для редактирования расходника
-        }
+        private void Refresh_Click(object sender, RoutedEventArgs e) => LoadData();
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            // Логика для удаления расходника
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            consumables = ConsumableContext.AllConsumables().Cast<Consumable>().ToList();
-            CreateUI();
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

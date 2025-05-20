@@ -1,74 +1,95 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace inventory.Models
 {
-    public class Equipment
+    public class Equipment : INotifyPropertyChanged
     {
-        public int Id { get; set; }
+        private int _id;
+        private string _name;
+        private byte[] _photo;
+        private string _inventoryNumber;
+        private int? _roomId;
+        private int? _responsibleId;
+        private int? _tempResponsibleId;
+        private decimal _cost;
+        private string _comment;
+        private int? _statusId;
+        private int? _modelId;
+        private int? _equipmentTypeId;
+        private int? _directionId;
 
-        [Required(ErrorMessage = "Название оборудования обязательно")]
-        [StringLength(255, ErrorMessage = "Название не должно превышать 255 символов")]
-        public string Name { get; set; }
-
-        public byte[] Photo { get; set; }
-
-        [Required(ErrorMessage = "Инвентарный номер обязателен")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "Инвентарный номер должен содержать только цифры")]
-        public string InventoryNumber { get; set; }
-
-        [ForeignKey("Room")]
-        public int? RoomId { get; set; }
-        public virtual Room Room { get; set; }
-
-        [ForeignKey("ResponsibleUser")]
-        public int? ResponsibleId { get; set; }
-        public virtual User ResponsibleUser { get; set; }
-
-        [ForeignKey("TempResponsibleUser")]
-        public int? TempResponsibleId { get; set; }
-        public virtual User TempResponsibleUser { get; set; }
-
-        [Range(0, double.MaxValue, ErrorMessage = "Стоимость должна быть положительной")]
-        public decimal Cost { get; set; }
-
-        public string Comment { get; set; }
-
-        [ForeignKey("Status")]
-        public int? StatusId { get; set; }
-        public virtual Status Status { get; set; }
-
-        [ForeignKey("EquipmentModel")]
-        public int? ModelId { get; set; }
-        public virtual EquipmentModel EquipmentModel { get; set; }
-
-        [ForeignKey("EquipmentType")]
-        public int? EquipmentTypeId { get; set; }
-        public virtual EquipmentType EquipmentType { get; set; }
-
-        [ForeignKey("Direction")]
-        public int? DirectionId { get; set; }
-        public virtual Direction Direction { get; set; }
-
-        public virtual ICollection<Software> Software { get; set; }
-        public virtual ICollection<Network> NetworkSettings { get; set; }
-        public virtual ICollection<EquipmentConsumable> EquipmentConsumables { get; set; }
-        public virtual ICollection<EquipmentLocationHistory> LocationHistory { get; set; }
-        public virtual ICollection<EquipmentResponsibleHistory> ResponsibleHistory { get; set; }
-
-        public Equipment()
+        public int Id
         {
-            Software = new HashSet<Software>();
-            NetworkSettings = new HashSet<Network>();
-            EquipmentConsumables = new HashSet<EquipmentConsumable>();
-            LocationHistory = new HashSet<EquipmentLocationHistory>();
-            ResponsibleHistory = new HashSet<EquipmentResponsibleHistory>();
+            get => _id;
+            set { _id = value; OnPropertyChanged(nameof(Id)); }
         }
+        public string Name
+        {
+            get => _name;
+            set { _name = value; OnPropertyChanged(nameof(Name)); }
+        }
+        public byte[] Photo
+        {
+            get => _photo;
+            set { _photo = value; OnPropertyChanged(nameof(Photo)); }
+        }
+        public string InventoryNumber
+        {
+            get => _inventoryNumber;
+            set { _inventoryNumber = value; OnPropertyChanged(nameof(InventoryNumber)); }
+        }
+        public int? RoomId
+        {
+            get => _roomId;
+            set { _roomId = value; OnPropertyChanged(nameof(RoomId)); }
+        }
+        public int? ResponsibleId
+        {
+            get => _responsibleId;
+            set { _responsibleId = value; OnPropertyChanged(nameof(ResponsibleId)); }
+        }
+        public int? TempResponsibleId
+        {
+            get => _tempResponsibleId;
+            set { _tempResponsibleId = value; OnPropertyChanged(nameof(TempResponsibleId)); }
+        }
+        public decimal Cost
+        {
+            get => _cost;
+            set { _cost = value; OnPropertyChanged(nameof(Cost)); }
+        }
+        public string Comment
+        {
+            get => _comment;
+            set { _comment = value; OnPropertyChanged(nameof(Comment)); }
+        }
+        public int? StatusId
+        {
+            get => _statusId;
+            set { _statusId = value; OnPropertyChanged(nameof(StatusId)); }
+        }
+        public int? ModelId
+        {
+            get => _modelId;
+            set { _modelId = value; OnPropertyChanged(nameof(ModelId)); }
+        }
+        public int? EquipmentTypeId
+        {
+            get => _equipmentTypeId;
+            set { _equipmentTypeId = value; OnPropertyChanged(nameof(EquipmentTypeId)); }
+        }
+        public int? DirectionId
+        {
+            get => _directionId;
+            set { _directionId = value; OnPropertyChanged(nameof(DirectionId)); }
+        }
+
+        // Связанные объекты (для отображения в UI)
+        public EquipmentType EquipmentType { get; set; }
+        public Status Status { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
-

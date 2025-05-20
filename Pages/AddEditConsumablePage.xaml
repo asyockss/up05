@@ -1,0 +1,62 @@
+﻿<Page x:Class="inventory.Pages.AddEditEquipmentPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="800" d:DesignWidth="1000"
+      Title="{Binding Title}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="10">
+                <GroupBox Header="Идентификация" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBox materialDesign:HintAssist.Hint="Название*" Text="{Binding CurrentEquipment.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}"/>
+                        <TextBox materialDesign:HintAssist.Hint="Инвентарный номер*" Text="{Binding CurrentEquipment.InventoryNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Классификация" Margin="0,0,0,10">
+                    <StackPanel>
+                        <ComboBox materialDesign:HintAssist.Hint="Тип оборудования*" ItemsSource="{Binding EquipmentTypes}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.EquipmentTypeId}" Style="{StaticResource ComboBoxStyle}"/>
+                        <ComboBox materialDesign:HintAssist.Hint="Модель" ItemsSource="{Binding EquipmentModels}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.ModelId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                        <ComboBox materialDesign:HintAssist.Hint="Направление" ItemsSource="{Binding Directions}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.DirectionId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Статус" Margin="0,0,0,10">
+                    <StackPanel>
+                        <ComboBox materialDesign:HintAssist.Hint="Статус оборудования" ItemsSource="{Binding Statuses}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.StatusId}" Style="{StaticResource ComboBoxStyle}"/>
+                        <TextBox materialDesign:HintAssist.Hint="Стоимость" Text="{Binding CurrentEquipment.Cost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Расположение" Margin="0,0,0,10">
+                    <ComboBox materialDesign:HintAssist.Hint="Аудитория" ItemsSource="{Binding Rooms}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.RoomId}" Style="{StaticResource ComboBoxStyle}"/>
+                </GroupBox>
+                <GroupBox Header="Ответственные" Margin="0,0,0,10">
+                    <StackPanel>
+                        <ComboBox materialDesign:HintAssist.Hint="Ответственный" ItemsSource="{Binding Users}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.ResponsibleId}" Style="{StaticResource ComboBoxStyle}"/>
+                        <ComboBox materialDesign:HintAssist.Hint="Временно ответственный" ItemsSource="{Binding Users}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.TempResponsibleId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Фото оборудования" Margin="0,0,0,10">
+                    <StackPanel>
+                        <Image Source="{Binding ImagePreview}" MaxHeight="150" MaxWidth="200" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+                        <Button Content="Выбрать фото" Click="SelectImageButton_Click" Style="{StaticResource ToolButtonStyle}" HorizontalAlignment="Left"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Сохранить" Click="SaveButton_Click" Style="{StaticResource ActionButtonStyle}" Width="120"/>
+            <Button Content="Отмена" Click="CancelButton_Click" Style="{StaticResource ActionButtonStyle}" Width="120" Margin="10,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Page>

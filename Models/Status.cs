@@ -1,25 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace inventory.Models
 {
-    public class Status
+    public class Status : INotifyPropertyChanged
     {
-        public int Id { get; set; }
+        private int _id;
+        private string _name;
 
-        [Required(ErrorMessage = "Название статуса обязательно")]
-        public string Name { get; set; }
-
-        public virtual ICollection<Equipment> Equipment { get; set; }
-
-        public Status()
+        public int Id
         {
-            Equipment = new HashSet<Equipment>();
+            get => _id;
+            set { _id = value; OnPropertyChanged(nameof(Id)); }
         }
+        public string Name
+        {
+            get => _name;
+            set { _name = value; OnPropertyChanged(nameof(Name)); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

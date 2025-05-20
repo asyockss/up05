@@ -13,11 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace inventory.Elements
+namespace inventory.Pages
 {
-    public partial class InventoryCard : UserControl
+    /// <summary>
+    /// Логика взаимодействия для AddEditConsumablePage.xaml
+    /// </summary>
+    public partial class AddEditConsumablePage : Page
     {
-        public InventoryCard()
+        public AddEditConsumablePage()
         {
             InitializeComponent();
         }

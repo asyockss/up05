@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace inventory.Models
 {
-    public class ConsumableType
+    public class ConsumableType : INotifyPropertyChanged
     {
-        public int Id { get; set; }
+        private int _id;
+        private string _name;
 
-        [Required(ErrorMessage = "Тип расходника обязателен")]
-        public string Type { get; set; }
-
-        public virtual ICollection<Consumable> Consumables { get; set; }
-        public virtual ICollection<ConsumableCharacteristic> Characteristics { get; set; }
-
-        public ConsumableType()
+        public int Id
         {
-            Consumables = new HashSet<Consumable>();
-            Characteristics = new HashSet<ConsumableCharacteristic>();
+            get => _id;
+            set { _id = value; OnPropertyChanged(nameof(Id)); }
         }
+        public string Name
+        {
+            get => _name;
+            set { _name = value; OnPropertyChanged(nameof(Name)); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

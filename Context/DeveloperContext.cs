@@ -9,7 +9,7 @@ namespace inventory.Context.MySql
 {
     public class DeveloperContext : Developer, IDeveloper
     {
-        public List<Developer> AllDevelopers()
+        public  List<Developer> AllDevelopers()
         {
             List<Developer> allDevelopers = new List<Developer>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))

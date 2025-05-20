@@ -1,31 +1,44 @@
-﻿using inventory.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using inventory.Pages;
 
 namespace inventory.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для MainPage.xaml
-    /// </summary>
     public partial class MainPage : Page
     {
+        public bool IsMenuVisible => false;
+
         public MainPage()
         {
             InitializeComponent();
-            DataContext = new MainPageViewModel();
         }
-        public bool IsMenuVisible => false;
+
+        private void NavigateToEquipment_Click(object sender, RoutedEventArgs e) => NavigateTo(new EquipmentPage());
+        private void NavigateToConsumables_Click(object sender, RoutedEventArgs e) => NavigateTo(new ConsumablesPage());
+        private void NavigateToRooms_Click(object sender, RoutedEventArgs e) => NavigateTo(new RoomsPage());
+        private void NavigateToInventory_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Только администраторы могут запускать инвентаризацию");
+                return;
+            }
+            NavigateTo(new InventoryPage());
+        }
+        private void NavigateToUsers_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Только администраторы могут управлять пользователями");
+                return;
+            }
+            NavigateTo(new UsersPage());
+        }
+
+        private void NavigateTo(Page page)
+        {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.NavigateToPage(page);
+        }
     }
 }

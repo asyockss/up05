@@ -1,60 +1,66 @@
-﻿using inventory.Context.MySql;
-using inventory.Models;
-using inventory.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using inventory.Context.MySql;
+using inventory.Models;
 
 namespace inventory.Pages
 {
-    public partial class RoomsPage : Page
+    public partial class RoomsPage : Page, INotifyPropertyChanged
     {
-        public List<Room> rooms = RoomContext.AllRooms().Cast<Room>().ToList();
+        private List<Room> _roomList;
+        private string _searchText;
+
+        public List<Room> RoomList
+        {
+            get => _roomList;
+            set { _roomList = value; OnPropertyChanged(nameof(RoomList)); }
+        }
+
+        public string SearchText
+        {
+            get => _searchText;
+            set { _searchText = value; OnPropertyChanged(nameof(SearchText)); FilterRooms(); }
+        }
+
+        public bool IsMenuVisible => true;
+
         public RoomsPage()
         {
             InitializeComponent();
-            CreateUI();
+            DataContext = this;
+            LoadRooms();
         }
 
-        public void CreateUI()
+        public void LoadRooms()
         {
-            parent.Children.Clear();
-            foreach (Room item in rooms)
-            {
-                parent.Children.Add(new Elements.RoomCard(item));
-            }
+            RoomList = RoomContext.AllRooms().Cast<Room>().ToList();
+        }
+
+        private void FilterRooms()
+        {
+            if (string.IsNullOrEmpty(SearchText))
+                LoadRooms();
+            else
+                RoomList = RoomContext.AllRooms()
+                    .Cast<Room>()
+                    .Where(r => r.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                                r.ShortName.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            // Логика для добавления новой аудитории
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.NavigateToPage(new AddEditRoomPage());
         }
 
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
-            // Логика для редактирования аудитории
-        }
+        private void Refresh_Click(object sender, RoutedEventArgs e) => LoadRooms();
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            // Логика для удаления аудитории
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            rooms = RoomContext.AllRooms().Cast<Room>().ToList();
-            CreateUI();
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

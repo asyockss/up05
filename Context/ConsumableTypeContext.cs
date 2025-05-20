@@ -9,7 +9,7 @@ namespace inventory.Context.MySql
 {
     public class ConsumableTypeContext : ConsumableType, IConsumableType
     {
-        public List<ConsumableType> AllConsumableTypes()
+        public  List<ConsumableType> AllConsumableTypes()
         {
             List<ConsumableType> allTypes = new List<ConsumableType>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))

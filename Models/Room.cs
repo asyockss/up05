@@ -1,36 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace inventory.Models
 {
-    public class Room
+    public class Room : INotifyPropertyChanged
     {
-        public int Id { get; set; }
+        private int _id;
+        private string _name;
+        private string _shortName;
+        private int? _responsibleId;
+        private int? _tempResponsibleId;
 
-        [Required(ErrorMessage = "Название аудитории обязательно")]
-        public string Name { get; set; }
-
-        public string ShortName { get; set; }
-
-        [ForeignKey("ResponsibleUser")]
-        public int? ResponsibleId { get; set; }
-        public virtual User ResponsibleUser { get; set; }
-
-        [ForeignKey("TempResponsibleUser")]
-        public int? TempResponsibleId { get; set; }
-        public virtual User TempResponsibleUser { get; set; }
-
-        public virtual ICollection<Equipment> Equipment { get; set; }
-
-        public Room()
+        public int Id
         {
-            Equipment = new HashSet<Equipment>();
+            get => _id;
+            set { _id = value; OnPropertyChanged(nameof(Id)); }
         }
+        public string Name
+        {
+            get => _name;
+            set { _name = value; OnPropertyChanged(nameof(Name)); }
+        }
+        public string ShortName
+        {
+            get => _shortName;
+            set { _shortName = value; OnPropertyChanged(nameof(ShortName)); }
+        }
+        public int? ResponsibleId
+        {
+            get => _responsibleId;
+            set { _responsibleId = value; OnPropertyChanged(nameof(ResponsibleId)); }
+        }
+        public int? TempResponsibleId
+        {
+            get => _tempResponsibleId;
+            set { _tempResponsibleId = value; OnPropertyChanged(nameof(TempResponsibleId)); }
+        }
+
+        public User ResponsibleUser { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
-

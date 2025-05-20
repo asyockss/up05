@@ -1,61 +1,76 @@
-﻿using inventory.Context.MySql;
-using inventory.Models;
-using inventory.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Linq;
+using inventory.Context.MySql;
+using inventory.Models;
 
 namespace inventory.Pages
 {
-    public partial class EquipmentPage : Page
+    public partial class EquipmentPage : Page, INotifyPropertyChanged
     {
-        public List<Equipment> equipment = EquipmentContext.AllEquipment().Cast<Equipment>().ToList();
+        private List<Equipment> _equipmentList;
+        private string _searchText;
+
+        public List<Equipment> EquipmentList
+        {
+            get => _equipmentList;
+            set { _equipmentList = value; OnPropertyChanged(nameof(EquipmentList)); }
+        }
+
+        public string SearchText
+        {
+            get => _searchText;
+            set { _searchText = value; OnPropertyChanged(nameof(SearchText)); FilterEquipment(); }
+        }
+
+        public bool IsMenuVisible => true;
+
         public EquipmentPage()
         {
             InitializeComponent();
-            CreateUI();
+            DataContext = this;
+            LoadEquipment();
         }
 
-        public void CreateUI()
+        private void LoadEquipment()
         {
-            parent.Children.Clear();
-            foreach (Equipment item in equipment)
+            var equipment = new EquipmentContext().AllEquipment();
+            var types = new EquipmentTypeContext().AllEquipmentTypes().ToDictionary(t => t.Id, t => t);
+            var statuses = new StatusContext().AllStatuses().ToDictionary(s => s.Id, s => s);
+
+            foreach (var item in equipment)
             {
-                parent.Children.Add(new Elements.EquipmentCard(item));
+                if (item.EquipmentTypeId.HasValue && types.ContainsKey(item.EquipmentTypeId.Value))
+                    item.EquipmentType = types[item.EquipmentTypeId.Value];
+                if (item.StatusId.HasValue && statuses.ContainsKey(item.StatusId.Value))
+                    item.Status = statuses[item.StatusId.Value];
             }
+            EquipmentList = equipment;
+        }
+
+        private void FilterEquipment()
+        {
+            if (string.IsNullOrEmpty(SearchText))
+                LoadEquipment();
+            else
+                EquipmentList = EquipmentList.Where(e => e.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                                                         e.InventoryNumber.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                                             .ToList();
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            // Логика для добавления нового оборудования
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.NavigateToPage(new AddEditEquipmentPage());
         }
 
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
-            // Логика для редактирования оборудования
-        }
+        private void Refresh_Click(object sender, RoutedEventArgs e) => LoadEquipment();
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            // Логика для удаления оборудования
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            equipment = EquipmentContext.AllEquipment().Cast<Equipment>().ToList();
-            CreateUI();
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

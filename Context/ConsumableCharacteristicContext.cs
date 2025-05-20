@@ -9,7 +9,7 @@ namespace inventory.Context.MySql
 {
     public class ConsumableCharacteristicContext : ConsumableCharacteristic, IConsumableCharacteristic
     {
-        public List<ConsumableCharacteristic> AllConsumableCharacteristics()
+        public  List<ConsumableCharacteristic> AllConsumableCharacteristics()
         {
             List<ConsumableCharacteristic> allCharacteristics = new List<ConsumableCharacteristic>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))

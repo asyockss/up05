@@ -8,7 +8,6 @@
         Title="Инвентаризация оборудования" 
         Height="800" Width="1200"
         WindowStartupLocation="CenterScreen">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,18 +17,18 @@
         <!-- Меню (видимость зависит от текущей страницы) -->
         <Menu Grid.Row="0" Visibility="{Binding ElementName=MainFrame, Path=Content.IsMenuVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <MenuItem Header="Файл">
-                <MenuItem Header="Выход" Command="{Binding ExitCommand}"/>
+                <MenuItem Header="Выход" Click="Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Оборудование">
-                <MenuItem Header="Список оборудования" Command="{Binding ShowEquipmentCommand}"/>
-                <MenuItem Header="Добавить оборудование" Command="{Binding AddEquipmentCommand}"/>
+                <MenuItem Header="Список оборудования" Click="ShowEquipment_Click"/>
+                <MenuItem Header="Добавить оборудование" Click="AddEquipment_Click"/>
             </MenuItem>
             <MenuItem Header="Расходники">
-                <MenuItem Header="Список расходников" Command="{Binding ShowConsumablesCommand}"/>
-                <MenuItem Header="Добавить расходник" Command="{Binding AddConsumableCommand}"/>
+                <MenuItem Header="Список расходников" Click="ShowConsumables_Click"/>
+                <MenuItem Header="Добавить расходник" Click="AddConsumable_Click"/>
             </MenuItem>
-            <MenuItem Header="Администрирование" Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}">
-                <MenuItem Header="Пользователи" Command="{Binding ShowUsersCommand}"/>
+            <MenuItem Header="Администрирование" Visibility="{Binding Source={x:Static local:CurrentUser.IsAdmin}, Converter={StaticResource BoolToVisibilityConverter}}">
+                <MenuItem Header="Пользователи" Click="ShowUsers_Click"/>
             </MenuItem>
         </Menu>
 

@@ -1,55 +1,75 @@
-﻿using inventory.Context;
-using inventory.Context.MySql;
-using inventory.Models;
-using inventory.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using inventory.Context.MySql;
+using inventory.Models;
 
 namespace inventory.Pages
 {
-    public partial class UsersPage : Page
+    public partial class UsersPage : Page, INotifyPropertyChanged
     {
-        public List<User> users = UserContext.AllUsers().Cast<User>().ToList();
+        private List<User> _userList;
+        private string _searchText;
+        private string _selectedRoleFilter;
+
+        public List<User> UserList
+        {
+            get => _userList;
+            set { _userList = value; OnPropertyChanged(nameof(UserList)); }
+        }
+
+        public string SearchText
+        {
+            get => _searchText;
+            set { _searchText = value; OnPropertyChanged(nameof(SearchText)); FilterUsers(); }
+        }
+
+        public List<string> RoleFilters => new List<string> { "Все", "Admin", "User" };
+
+        public string SelectedRoleFilter
+        {
+            get => _selectedRoleFilter;
+            set { _selectedRoleFilter = value; OnPropertyChanged(nameof(SelectedRoleFilter)); FilterUsers(); }
+        }
+
+        public bool IsMenuVisible => true;
+
         public UsersPage()
         {
             InitializeComponent();
-            CreateUI();
+            DataContext = this;
+            SelectedRoleFilter = "Все";
+            LoadUsers();
         }
 
-        public void CreateUI()
+        private void LoadUsers()
         {
-            parent.Children.Clear();
-            foreach (User item in users)
-            {
-                parent.Children.Add(new Elements.UserCard(item));
-            }
+            UserList = UserContext.AllUsers().Cast<User>().ToList();
+        }
+
+        private void FilterUsers()
+        {
+            var users = UserContext.AllUsers().Cast<User>();
+            if (!string.IsNullOrEmpty(SearchText))
+                users = users.Where(u => u.FullName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                                         u.Login.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+            if (SelectedRoleFilter != "Все")
+                users = users.Where(u => u.Role.Equals(SelectedRoleFilter, StringComparison.OrdinalIgnoreCase));
+            UserList = users.ToList();
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            // Логика для добавления нового пользователя
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.NavigateToPage(new AddEditUserPage());
         }
 
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
-            // Логика для редактирования пользователя
-        }
+        private void Refresh_Click(object sender, RoutedEventArgs e) => LoadUsers();
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            // Логика для удаления пользователя
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

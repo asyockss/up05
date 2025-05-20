@@ -1,33 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using inventory.Context.MySql;
 using inventory.Models;
+using inventory.Pages;
 
 namespace inventory.Elements
 {
-    /// <summary>
-    /// Логика взаимодействия для EquipmentCard.xaml
-    /// </summary>
     public partial class EquipmentCard : UserControl
     {
-        public EquipmentCard(Equipment item)
+        public EquipmentCard()
         {
             InitializeComponent();
         }
 
-        
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is Equipment equipment)
+            {
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+                mainWindow.NavigateToPage(new AddEditEquipmentPage(equipment));
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is Equipment equipment &&
+                MessageBox.Show("Вы уверены, что хотите удалить это оборудование?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                new EquipmentContext().Delete(equipment.Id);
+                RefreshParentPage();
+            }
+        }
+
+        private void RefreshParentPage()
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(this);
+            while (parent != null && !(parent is EquipmentPage))
+                parent = VisualTreeHelper.GetParent(parent);
+            if (parent is EquipmentPage page) page.LoadEquipment();
+        }
     }
 }

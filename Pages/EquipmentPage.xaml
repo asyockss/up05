@@ -3,33 +3,30 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:inventory.Elements"
       mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="800"
       Title="Оборудование">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Панель инструментов -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
-            <Button Content="Добавить" Command="{Binding AddCommand}" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Редактировать" Command="{Binding EditCommand}" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Удалить" Command="{Binding DeleteCommand}" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Обновить" Command="{Binding RefreshCommand}" Style="{StaticResource ToolButtonStyle}"/>
-
-            <ComboBox ItemsSource="{Binding FilterOptions}" SelectedItem="{Binding SelectedFilter}"
-                      DisplayMemberPath="Name" Width="200" Margin="10,0,0,0"/>
-            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     Width="200" Margin="5,0,0,0" Padding="5"/>
+            <Button Content="Добавить" Click="Add_Click" Style="{StaticResource ToolButtonStyle}"/>
+            <Button Content="Обновить" Click="Refresh_Click" Style="{StaticResource ToolButtonStyle}"/>
+            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="10,0,0,0" Padding="5"/>
         </StackPanel>
 
-        <ScrollViewer  VerticalScrollBarVisibility="Visible" Grid.Row="1">
-            <StackPanel x:Name="parent">
-                <!-- Здесь будут отображаться пользовательские элементы -->
-            </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding EquipmentList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:EquipmentCard DataContext="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
     </Grid>
 </Page>
