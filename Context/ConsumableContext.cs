@@ -13,7 +13,7 @@ namespace inventory.Context.MySql
             List<Consumable> allConsumables = new List<Consumable>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlCommand command = new MySqlCommand("SELECT * FROM Consumables", connection);
+                MySqlCommand command = new MySqlCommand("SELECT * FROM consumables", connection);
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -24,11 +24,11 @@ namespace inventory.Context.MySql
                             Name = reader.GetString(1),
                             Description = reader.GetString(2),
                             ReceiptDate = reader.GetDateTime(3),
-                            Image = (byte[])reader["Image"],
-                            Quantity = reader.GetInt32(4),
-                            ResponsibleId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5),
-                            TempResponsibleId = reader.IsDBNull(6) ? (int?)null : reader.GetInt32(6),
-                            ConsumableTypeId = reader.IsDBNull(7) ? (int?)null : reader.GetInt32(7)
+                            Image = reader.IsDBNull(4) ? null : (byte[])reader["Image"],
+                            Quantity = reader.GetInt32(5),
+                            ResponsibleId = reader.IsDBNull(6) ? (int?)null : reader.GetInt32(6),
+                            TempResponsibleId = reader.IsDBNull(7) ? (int?)null : reader.GetInt32(7),
+                            ConsumableTypeId = reader.IsDBNull(8) ? (int?)null : reader.GetInt32(8)
                         });
                     }
                 }
@@ -36,13 +36,14 @@ namespace inventory.Context.MySql
             return allConsumables;
         }
 
+
         public void Save(Consumable consumable, bool update = false)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
                 string query = update
-                    ? "UPDATE Consumables SET Name = @Name, Description = @Description, ReceiptDate = @ReceiptDate, Image = @Image, Quantity = @Quantity, ResponsibleId = @ResponsibleId, TempResponsibleId = @TempResponsibleId, ConsumableTypeId = @ConsumableTypeId WHERE Id = @Id"
-                    : "INSERT INTO Consumables (Name, Description, ReceiptDate, Image, Quantity, ResponsibleId, TempResponsibleId, ConsumableTypeId) VALUES (@Name, @Description, @ReceiptDate, @Image, @Quantity, @ResponsibleId, @TempResponsibleId, @ConsumableTypeId)";
+                    ? "UPDATE consumables SET name = @Name, description = @Description, receipt_date = @ReceiptDate, image = @Image, quantity = @Quantity, responsible_id  = @ResponsibleId, timeresponsible_id  = @TempResponsibleId, type_consumables_id  = @ConsumableTypeId WHERE id = @Id"
+                    : "INSERT INTO consumables (name, description, receipt_date, image, quantity, responsible_id , timeresponsible_id , type_consumables_id ) VALUES (@Name, @Description, @ReceiptDate, @Image, @Quantity, @ResponsibleId, @TempResponsibleId, @ConsumableTypeId)";
 
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Id", consumable.Id);
@@ -67,7 +68,7 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlCommand command = new MySqlCommand("DELETE FROM Consumables WHERE Id = @Id", connection);
+                MySqlCommand command = new MySqlCommand("DELETE FROM consumables WHERE id = @Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 command.ExecuteNonQuery();
             }

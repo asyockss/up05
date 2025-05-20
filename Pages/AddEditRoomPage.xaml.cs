@@ -12,7 +12,8 @@ namespace inventory.Pages
     public partial class AddEditRoomPage : Page, INotifyPropertyChanged
     {
         private RoomContext roomContext;
-        private UserContext userContext;
+        private UserContext userContext; 
+
         public Room CurrentRoom { get; set; }
         public new string Title => CurrentRoom.Id == 0 ? "Добавить аудиторию" : "Редактировать аудиторию";
         public List<User> Users { get; set; }
@@ -22,9 +23,10 @@ namespace inventory.Pages
         {
             InitializeComponent();
             CurrentRoom = room ?? new Room();
+            roomContext = new RoomContext();
+            userContext = new UserContext();
             LoadData();
             DataContext = this;
-            roomContext = new RoomContext();
         }
 
         private void LoadData()

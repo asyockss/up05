@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<InventoryCheck> allChecks = new List<InventoryCheck>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataChecks = (MySqlDataReader)new DBConnection().Query("SELECT * FROM InventoryChecks", connection);
+                MySqlDataReader dataChecks = (MySqlDataReader)new DBConnection().Query("SELECT * FROM inventory_checks", connection);
                 while (dataChecks.Read())
                 {
                     InventoryCheck newCheck = new InventoryCheck();
@@ -36,22 +36,22 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE InventoryChecks " +
+                    new DBConnection().Query("UPDATE inventory_checks " +
                         "SET " +
-                        $"InventoryId = {this.InventoryId}, " +
-                        $"EquipmentId = {this.EquipmentId}, " +
-                        $"UserId = {this.UserId}, " +
-                        $"CheckDate = '{this.CheckDate.ToString("yyyy-MM-dd")}', " +
-                        $"Comment = '{this.Comment}' " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"inventory_id = {this.InventoryId}, " +
+                        $"equipment_id = {this.EquipmentId}, " +
+                        $"users_id = {this.UserId}, " +
+                        $"check_date = '{this.CheckDate.ToString("yyyy-MM-dd")}', " +
+                        $"comment = '{this.Comment}' " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO InventoryChecks " +
-                        "(InventoryId, EquipmentId, UserId, CheckDate, Comment) " +
+                    new DBConnection().Query("INSERT INTO inventory_checks " +
+                        "(inventory_id, equipment_id, users_id, check_date, comment) " +
                         "VALUES (" +
                         $"{this.InventoryId}, " +
                         $"{this.EquipmentId}, " +
@@ -66,7 +66,7 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM InventoryChecks WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM inventory_checks WHERE id = {this.Id}", connection);
             }
         }
     }

@@ -15,7 +15,7 @@ namespace inventory.Context.MySql
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
                 MySqlDataReader dataHistories = (MySqlDataReader)new DBConnection().Query(
-                    "SELECT * FROM EquipmentResponsibleHistories",
+                    "SELECT * FROM equipment_responsible_history",
                     connection);
 
                 while (dataHistories.Read())
@@ -38,14 +38,14 @@ namespace inventory.Context.MySql
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
                 string query = Update
-                    ? "UPDATE EquipmentResponsibleHistories SET " +
-                      $"EquipmentId = {this.EquipmentId}, " +
-                      $"OldUserId = {(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
-                      $"ChangeDate = '{this.ChangeDate.ToString("yyyy-MM-dd")}', " +
-                      $"Comment = '{this.Comment}' " +
+                    ? "UPDATE equipment_responsible_history SET " +
+                      $"equipment_id = {this.EquipmentId}, " +
+                      $"old_user_id = {(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
+                      $"change_date = '{this.ChangeDate.ToString("yyyy-MM-dd")}', " +
+                      $"comment = '{this.Comment}' " +
                       $"WHERE Id = {this.Id}"
-                    : "INSERT INTO EquipmentResponsibleHistories " +
-                      "(EquipmentId, OldUserId, ChangeDate, Comment) " +
+                    : "INSERT INTO equipment_responsible_history " +
+                      "(equipment_id, old_user_id , change_date, comment) " +
                       "VALUES (" +
                       $"{this.EquipmentId}, " +
                       $"{(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
@@ -61,7 +61,7 @@ namespace inventory.Context.MySql
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
                 new DBConnection().Query(
-                    $"DELETE FROM EquipmentResponsibleHistories WHERE Id = {this.Id}",
+                    $"DELETE FROM equipment_responsible_history WHERE id = {this.Id}",
                     connection);
             }
         }

@@ -208,6 +208,9 @@
     <Compile Include="Pages\AddEditEquipmentPage.xaml.cs">
       <DependentUpon>AddEditEquipmentPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AddEditInventoryPage.xaml.cs">
+      <DependentUpon>AddEditInventoryPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AddEditRoomPage.xaml.cs">
       <DependentUpon>AddEditRoomPage.xaml</DependentUpon>
     </Compile>
@@ -266,6 +269,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\AddEditEquipmentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AddEditInventoryPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

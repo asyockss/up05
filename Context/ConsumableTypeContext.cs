@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<ConsumableType> allTypes = new List<ConsumableType>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataTypes = (MySqlDataReader)new DBConnection().Query("SELECT * FROM ConsumableTypes", connection);
+                MySqlDataReader dataTypes = (MySqlDataReader)new DBConnection().Query("SELECT * FROM type_consumables", connection);
                 while (dataTypes.Read())
                 {
                     ConsumableType newType = new ConsumableType();
@@ -32,18 +32,18 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE ConsumableTypes " +
+                    new DBConnection().Query("UPDATE type_consumables " +
                         "SET " +
-                        $"Type = '{this.Type}' " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"type = '{this.Type}' " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO ConsumableTypes " +
-                        "(Type) " +
+                    new DBConnection().Query("INSERT INTO type_consumables " +
+                        "(type) " +
                         "VALUES (" +
                         $"'{this.Type}')", connection);
                 }
@@ -54,7 +54,7 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM ConsumableTypes WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM type_consumables WHERE id = {this.Id}", connection);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<EquipmentType> allTypes = new List<EquipmentType>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataTypes = (MySqlDataReader)new DBConnection().Query("SELECT * FROM EquipmentTypes", connection);
+                MySqlDataReader dataTypes = (MySqlDataReader)new DBConnection().Query("SELECT * FROM equipment_type", connection);
                 while (dataTypes.Read())
                 {
                     EquipmentType newType = new EquipmentType
@@ -34,18 +34,18 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE EquipmentTypes " +
+                    new DBConnection().Query("UPDATE equipment_type " +
                         "SET " +
-                        $"Name = '{this.Name}' " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"name = '{this.Name}' " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO EquipmentTypes " +
-                        "(Name) " +
+                    new DBConnection().Query("INSERT INTO equipment_type " +
+                        "(name) " +
                         "VALUES (" +
                         $"'{this.Name}')", connection);
                 }
@@ -56,7 +56,7 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM EquipmentTypes WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM equipment_type WHERE id = {this.Id}", connection);
             }
         }
     }

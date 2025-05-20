@@ -12,7 +12,7 @@ namespace inventory.Context.MySql
             List<User> allUsers = new List<User>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlCommand command = new MySqlCommand("SELECT * FROM Users", connection);
+                MySqlCommand command = new MySqlCommand("SELECT * FROM users", connection);
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -41,8 +41,8 @@ namespace inventory.Context.MySql
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
                 string query = update
-                    ? "UPDATE Users SET Login = @Login, Password = @Password, Role = @Role, Email = @Email, LastName = @LastName, FirstName = @FirstName, MiddleName = @MiddleName, Phone = @Phone, Address = @Address WHERE Id = @Id"
-                    : "INSERT INTO Users (Login, Password, Role, Email, LastName, FirstName, MiddleName, Phone, Address) VALUES (@Login, @Password, @Role, @Email, @LastName, @FirstName, @MiddleName, @Phone, @Address)";
+                    ? "UPDATE users SET login = @Login, password = @Password, role = @Role, email = @Email, last_name = @LastName, first_name = @FirstName, middle_name = @MiddleName, phone = @Phone, address = @Address WHERE id = @Id"
+                    : "INSERT INTO users (login, password, role, email, last_name, first_name, middle_name, phone, address) VALUES (@Login, @Password, @Role, @Email, @LastName, @FirstName, @MiddleName, @Phone, @Address)";
 
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Id", user.Id);
@@ -68,7 +68,7 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlCommand command = new MySqlCommand("DELETE FROM Users WHERE Id = @Id", connection);
+                MySqlCommand command = new MySqlCommand("DELETE FROM users WHERE id = @Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 command.ExecuteNonQuery();
             }

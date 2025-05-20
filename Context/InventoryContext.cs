@@ -1,60 +1,56 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
-using inventory.Interfase;
 using inventory.Models;
+using System;
 using inventory.Context.Common;
 
 namespace inventory.Context.MySql
 {
-    public class InventoryContext : Inventory, IInventory
+    public class InventoryContext
     {
         public List<Inventory> AllInventorys()
         {
             List<Inventory> allInventories = new List<Inventory>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataInventories = (MySqlDataReader)new DBConnection().Query("SELECT * FROM Inventories", connection);
-                while (dataInventories.Read())
+                MySqlCommand command = new MySqlCommand("SELECT * FROM inventories", connection);
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    Inventory newInventory = new Inventory();
-                    newInventory.Id = dataInventories.GetInt32(0);
-                    newInventory.Name = dataInventories.GetString(1);
-                    newInventory.StartDate = dataInventories.GetDateTime(2);
-                    newInventory.EndDate = dataInventories.GetDateTime(3);
-                    newInventory.UserId = dataInventories.GetInt32(4);
-                    allInventories.Add(newInventory);
+                    while (reader.Read())
+                    {
+                        allInventories.Add(new Inventory
+                        {
+                            Id = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            StartDate = reader.GetDateTime(2),
+                            EndDate = reader.GetDateTime(3),
+                            UserId = reader.GetInt32(4)
+                        });
+                    }
                 }
             }
             return allInventories;
         }
 
-        public void Save(bool Update = false)
+        public void Save(Inventory inventory, bool update = false)
         {
-            if (Update)
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                string query = update
+                    ? "UPDATE inventories SET name = @Name, start_date = @StartDate, end_date = @EndDate, users_id = @UserId WHERE id = @Id"
+                    : "INSERT INTO inventories (name, start_date, end_date, users_id) VALUES (@Name, @StartDate, @EndDate, @UserId)";
+
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Id", inventory.Id);
+                command.Parameters.AddWithValue("@Name", inventory.Name);
+                command.Parameters.AddWithValue("@StartDate", inventory.StartDate.ToString("yyyy-MM-dd"));
+                command.Parameters.AddWithValue("@EndDate", inventory.EndDate.ToString("yyyy-MM-dd"));
+                command.Parameters.AddWithValue("@UserId", inventory.UserId);
+
+                command.ExecuteNonQuery();
+                if (!update)
                 {
-                    new DBConnection().Query("UPDATE Inventories " +
-                        "SET " +
-                        $"Name = '{this.Name}', " +
-                        $"StartDate = '{this.StartDate.ToString("yyyy-MM-dd")}', " +
-                        $"EndDate = '{this.EndDate.ToString("yyyy-MM-dd")}', " +
-                        $"UserId = {this.UserId} " +
-                        $"WHERE Id = {this.Id}", connection);
-                }
-            }
-            else
-            {
-                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-                {
-                    new DBConnection().Query("INSERT INTO Inventories " +
-                        "(Name, StartDate, EndDate, UserId) " +
-                        "VALUES (" +
-                        $"'{this.Name}', " +
-                        $"'{this.StartDate.ToString("yyyy-MM-dd")}', " +
-                        $"'{this.EndDate.ToString("yyyy-MM-dd")}', " +
-                        $"{this.UserId})", connection);
+                    inventory.Id = (int)command.LastInsertedId;
                 }
             }
         }
@@ -63,7 +59,9 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM Inventories WHERE Id = {this.Id}", connection);
+                MySqlCommand command = new MySqlCommand("DELETE FROM inventories WHERE id = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                command.ExecuteNonQuery();
             }
         }
     }

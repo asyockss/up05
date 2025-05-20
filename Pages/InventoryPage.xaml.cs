@@ -47,38 +47,39 @@ namespace inventory.Pages
                 return;
             }
             DataContext = this;
+            inventoryContext = new InventoryContext();
             LoadInventories();
         }
 
         public void LoadInventories()
         {
-            InventoryList = inventoryContext.AllInventorys().Cast<Inventory>().ToList();
+            InventoryList = inventoryContext.AllInventorys().ToList(); 
         }
 
         private void FilterInventories()
         {
-            var inventories = inventoryContext.AllInventorys().Cast<Inventory>();
+            IEnumerable<Inventory> inventories = inventoryContext.AllInventorys();
             if (StartDateFilter.HasValue)
                 inventories = inventories.Where(i => i.StartDate >= StartDateFilter.Value);
             if (EndDateFilter.HasValue)
                 inventories = inventories.Where(i => i.EndDate <= EndDateFilter.Value);
+
             InventoryList = inventories.ToList();
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Добавление новой инвентаризации еще не реализовано.");
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.NavigateToPage(new AddEditInventoryPage());
         }
 
         private void PerformCheck_Click(object sender, RoutedEventArgs e)
         {
-            // Implement check logic if needed
             MessageBox.Show("Проведение проверки еще не реализовано.");
         }
 
         private void GenerateReport_Click(object sender, RoutedEventArgs e)
         {
-            // Implement report logic if needed
             MessageBox.Show("Генерация отчета еще не реализована.");
         }
 

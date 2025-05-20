@@ -13,7 +13,7 @@ namespace inventory.Context.MySql
             List<Room> allRooms = new List<Room>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlCommand command = new MySqlCommand("SELECT * FROM Rooms", connection);
+                MySqlCommand command = new MySqlCommand("SELECT * FROM rooms", connection);
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -36,8 +36,8 @@ namespace inventory.Context.MySql
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
                 string query = update
-                    ? "UPDATE Rooms SET Name = @Name, ShortName = @ShortName, ResponsibleId = @ResponsibleId WHERE Id = @Id"
-                    : "INSERT INTO Rooms (Name, ShortName, ResponsibleId) VALUES (@Name, @ShortName, @ResponsibleId)";
+                    ? "UPDATE rooms SET name = @Name, short_name = @ShortName, responsible_id = @ResponsibleId WHERE id = @Id"
+                    : "INSERT INTO rooms (name, short_name, responsible_id) VALUES (@Name, @ShortName, @ResponsibleId)";
 
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Id", room.Id);
@@ -57,7 +57,7 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlCommand command = new MySqlCommand("DELETE FROM Rooms WHERE Id = @Id", connection);
+                MySqlCommand command = new MySqlCommand("DELETE FROM rooms WHERE id = @Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 command.ExecuteNonQuery();
             }

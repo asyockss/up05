@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<Developer> allDevelopers = new List<Developer>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataDevelopers = (MySqlDataReader)new DBConnection().Query("SELECT * FROM Developers", connection);
+                MySqlDataReader dataDevelopers = (MySqlDataReader)new DBConnection().Query("SELECT * FROM developers", connection);
                 while (dataDevelopers.Read())
                 {
                     Developer newDeveloper = new Developer();
@@ -32,18 +32,18 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE Developers " +
+                    new DBConnection().Query("UPDATE developers " +
                         "SET " +
-                        $"Name = '{this.Name}' " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"name = '{this.Name}' " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO Developers " +
-                        "(Name) " +
+                    new DBConnection().Query("INSERT INTO developers " +
+                        "(name) " +
                         "VALUES (" +
                         $"'{this.Name}')", connection);
                 }
@@ -54,7 +54,7 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM Developers WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM developers WHERE id = {this.Id}", connection);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<Direction> allDirections = new List<Direction>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataDirections = (MySqlDataReader)new DBConnection().Query("SELECT * FROM Directions", connection);
+                MySqlDataReader dataDirections = (MySqlDataReader)new DBConnection().Query("SELECT * FROM directions", connection);
                 while (dataDirections.Read())
                 {
                     Direction newDirection = new Direction();
@@ -32,18 +32,18 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE Directions " +
+                    new DBConnection().Query("UPDATE directions " +
                         "SET " +
-                        $"Name = '{this.Name}' " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"name = '{this.Name}' " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO Directions " +
-                        "(Name) " +
+                    new DBConnection().Query("INSERT INTO directions " +
+                        "(name) " +
                         "VALUES (" +
                         $"'{this.Name}')", connection);
                 }
@@ -54,7 +54,7 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM Directions WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM Directions WHERE id = {this.Id}", connection);
             }
         }
     }

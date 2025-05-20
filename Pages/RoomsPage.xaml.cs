@@ -33,8 +33,9 @@ namespace inventory.Pages
         {
             InitializeComponent();
             DataContext = this;
-            LoadRooms();
             roomContext = new RoomContext();
+            LoadRooms();
+            
         }
 
         public void LoadRooms()
