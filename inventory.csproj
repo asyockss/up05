@@ -152,6 +152,7 @@
     <Compile Include="Context\InventoryContext.cs" />
     <Compile Include="Context\NetworkContext.cs" />
     <Compile Include="Context\RoomContext.cs" />
+    <Compile Include="Context\SoftwareContext.cs" />
     <Compile Include="Context\StatusContext.cs" />
     <Compile Include="Context\UserContext.cs" />
     <Compile Include="Elements\EquipmentCard.xaml.cs">
