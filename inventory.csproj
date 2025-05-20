@@ -168,6 +168,7 @@
     <Compile Include="Interfase\IEquipment.cs" />
     <Compile Include="Interfase\IEquipmentConsumable.cs" />
     <Compile Include="Interfase\IEquipmentLocationHistory.cs" />
+    <Compile Include="Interfase\IInventoryCheck.cs" />
     <Compile Include="Interfase\INetwork.cs" />
     <Compile Include="Interfase\IRoom.cs" />
     <Compile Include="Interfase\IStatus.cs" />
