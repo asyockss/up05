@@ -146,6 +146,7 @@
     <Compile Include="Context\EquipmentContext.cs" />
     <Compile Include="Context\EquipmentLocationHistoryContext.cs" />
     <Compile Include="Context\InventoryCheckContext.cs" />
+    <Compile Include="Context\InventoryContext.cs" />
     <Compile Include="Context\NetworkContext.cs" />
     <Compile Include="Context\RoomContext.cs" />
     <Compile Include="Context\StatusContext.cs" />
