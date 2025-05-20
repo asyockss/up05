@@ -175,6 +175,7 @@
     <Compile Include="Interfase\IInventoryCheck.cs" />
     <Compile Include="Interfase\INetwork.cs" />
     <Compile Include="Interfase\IRoom.cs" />
+    <Compile Include="Interfase\ISoftware.cs" />
     <Compile Include="Interfase\IStatus.cs" />
     <Compile Include="Interfase\IUser.cs" />
     <Compile Include="Models\Developer.cs" />
