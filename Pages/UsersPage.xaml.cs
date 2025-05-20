@@ -11,6 +11,7 @@ namespace inventory.Pages
 {
     public partial class UsersPage : Page, INotifyPropertyChanged
     {
+        private UserContext userContext;
         private List<User> _userList;
         private string _searchText;
         private string _selectedRoleFilter;
@@ -43,19 +44,20 @@ namespace inventory.Pages
             DataContext = this;
             SelectedRoleFilter = "Все";
             LoadUsers();
+            userContext = new UserContext();
         }
 
-        private void LoadUsers()
+        public void LoadUsers()
         {
-            UserList = UserContext.AllUsers().Cast<User>().ToList();
+            UserList = userContext.AllUsers().Cast<User>().ToList();
         }
 
         private void FilterUsers()
         {
-            var users = UserContext.AllUsers().Cast<User>();
+            var users = userContext.AllUsers().Cast<User>();
             if (!string.IsNullOrEmpty(SearchText))
-                users = users.Where(u => u.FullName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                                         u.Login.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+                users = users.Where(u => u.FullName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                         u.Login.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0);
             if (SelectedRoleFilter != "Все")
                 users = users.Where(u => u.Role.Equals(SelectedRoleFilter, StringComparison.OrdinalIgnoreCase));
             UserList = users.ToList();
@@ -70,6 +72,7 @@ namespace inventory.Pages
         private void Refresh_Click(object sender, RoutedEventArgs e) => LoadUsers();
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

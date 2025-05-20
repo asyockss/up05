@@ -10,8 +10,9 @@ namespace inventory.Pages
 {
     public partial class AddEditUserPage : Page, INotifyPropertyChanged
     {
+        private UserContext userContext;
         public User CurrentUser { get; set; }
-        public string Title => CurrentUser.Id == 0 ? "Добавить пользователя" : "Редактировать пользователя";
+        public new string Title => CurrentUser.Id == 0 ? "Добавить пользователя" : "Редактировать пользователя";
         public List<string> Roles => new List<string> { "Admin", "User" };
         public bool IsMenuVisible => true;
 
@@ -20,6 +21,7 @@ namespace inventory.Pages
             InitializeComponent();
             CurrentUser = user ?? new User();
             DataContext = this;
+            userContext = new UserContext();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -31,8 +33,8 @@ namespace inventory.Pages
                 MessageBox.Show("Заполните обязательные поля");
                 return;
             }
-            CurrentUser.Password = PasswordBox.Password; // Insecure, consider hashing in production
-            UserContext.Save(CurrentUser, CurrentUser.Id != 0);
+            CurrentUser.Password = PasswordBox.Password;
+            userContext.Save(CurrentUser, CurrentUser.Id != 0);
             NavigateBack();
         }
 

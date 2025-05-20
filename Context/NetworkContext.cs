@@ -62,7 +62,7 @@ namespace inventory.Context.MySql
             }
         }
 
-        public void Delete()
+        public void Delete(int id)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {

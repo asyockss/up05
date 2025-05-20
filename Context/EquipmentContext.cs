@@ -1,7 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using inventory.Models;
-using inventory.Context.MySql;
 using System;
 using inventory.Context.Common;
 
@@ -23,17 +22,12 @@ namespace inventory.Context.MySql
                         {
                             Id = reader.GetInt32(0),
                             Name = reader.GetString(1),
-                            Photo = (byte[])reader["Photo"],
-                            InventoryNumber = reader.GetString(2),
-                            RoomId = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
-                            ResponsibleId = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
-                            TempResponsibleId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5),
+                            Photo = reader.IsDBNull(2) ? null : (byte[])reader["Photo"],
+                            InventoryNumber = reader.GetString(3),
+                            RoomId = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
+                            ResponsibleId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5),
                             Cost = reader.GetDecimal(6),
-                            Comment = reader.GetString(7),
-                            StatusId = reader.IsDBNull(8) ? (int?)null : reader.GetInt32(8),
-                            ModelId = reader.IsDBNull(9) ? (int?)null : reader.GetInt32(9),
-                            EquipmentTypeId = reader.IsDBNull(10) ? (int?)null : reader.GetInt32(10),
-                            DirectionId = reader.IsDBNull(11) ? (int?)null : reader.GetInt32(11)
+                            Comment = reader.GetString(7)
                         });
                     }
                 }
@@ -46,8 +40,8 @@ namespace inventory.Context.MySql
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
                 string query = update
-                    ? "UPDATE Equipment SET Name = @Name, Photo = @Photo, InventoryNumber = @InventoryNumber, RoomId = @RoomId, ResponsibleId = @ResponsibleId, TempResponsibleId = @TempResponsibleId, Cost = @Cost, Comment = @Comment, StatusId = @StatusId, ModelId = @ModelId, EquipmentTypeId = @EquipmentTypeId, DirectionId = @DirectionId WHERE Id = @Id"
-                    : "INSERT INTO Equipment (Name, Photo, InventoryNumber, RoomId, ResponsibleId, TempResponsibleId, Cost, Comment, StatusId, ModelId, EquipmentTypeId, DirectionId) VALUES (@Name, @Photo, @InventoryNumber, @RoomId, @ResponsibleId, @TempResponsibleId, @Cost, @Comment, @StatusId, @ModelId, @EquipmentTypeId, @DirectionId)";
+                    ? "UPDATE Equipment SET Name = @Name, Photo = @Photo, InventoryNumber = @InventoryNumber, RoomId = @RoomId, ResponsibleId = @ResponsibleId, Cost = @Cost, Comment = @Comment WHERE Id = @Id"
+                    : "INSERT INTO Equipment (Name, Photo, InventoryNumber, RoomId, ResponsibleId, Cost, Comment) VALUES (@Name, @Photo, @InventoryNumber, @RoomId, @ResponsibleId, @Cost, @Comment)";
 
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Id", equipment.Id);
@@ -56,13 +50,8 @@ namespace inventory.Context.MySql
                 command.Parameters.AddWithValue("@InventoryNumber", equipment.InventoryNumber);
                 command.Parameters.AddWithValue("@RoomId", equipment.RoomId ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("@ResponsibleId", equipment.ResponsibleId ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@TempResponsibleId", equipment.TempResponsibleId ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("@Cost", equipment.Cost);
                 command.Parameters.AddWithValue("@Comment", equipment.Comment);
-                command.Parameters.AddWithValue("@StatusId", equipment.StatusId ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@ModelId", equipment.ModelId ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@EquipmentTypeId", equipment.EquipmentTypeId ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@DirectionId", equipment.DirectionId ?? (object)DBNull.Value);
 
                 command.ExecuteNonQuery();
                 if (!update)

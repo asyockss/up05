@@ -35,7 +35,7 @@ namespace inventory.Pages
             LoadEquipment();
         }
 
-        private void LoadEquipment()
+        public void LoadEquipment()
         {
             var equipment = new EquipmentContext().AllEquipment();
             var types = new EquipmentTypeContext().AllEquipmentTypes().ToDictionary(t => t.Id, t => t);
@@ -43,10 +43,10 @@ namespace inventory.Pages
 
             foreach (var item in equipment)
             {
-                if (item.EquipmentTypeId.HasValue && types.ContainsKey(item.EquipmentTypeId.Value))
-                    item.EquipmentType = types[item.EquipmentTypeId.Value];
-                if (item.StatusId.HasValue && statuses.ContainsKey(item.StatusId.Value))
-                    item.Status = statuses[item.StatusId.Value];
+                if (types.TryGetValue(item.EquipmentTypeId, out var equipmentType))
+                    item.EquipmentType = equipmentType;
+                if (statuses.TryGetValue(item.StatusId, out var status))
+                    item.Status = status;
             }
             EquipmentList = equipment;
         }
@@ -54,11 +54,16 @@ namespace inventory.Pages
         private void FilterEquipment()
         {
             if (string.IsNullOrEmpty(SearchText))
+            {
                 LoadEquipment();
+            }
             else
-                EquipmentList = EquipmentList.Where(e => e.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                                                         e.InventoryNumber.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
-                                             .ToList();
+            {
+                EquipmentList = EquipmentList
+                    .Where(e => e.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                e.InventoryNumber.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)

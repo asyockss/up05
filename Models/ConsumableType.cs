@@ -18,6 +18,8 @@ namespace inventory.Models
             set { _name = value; OnPropertyChanged(nameof(Name)); }
         }
 
+        public string Type { get; internal set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

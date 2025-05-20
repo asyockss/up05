@@ -28,7 +28,7 @@ namespace inventory.Elements
             if (DataContext is Consumable consumable &&
                 MessageBox.Show("Вы уверены, что хотите удалить этот расходник?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                ConsumableContext.Delete(consumable.Id);
+                new ConsumableContext().Delete(consumable.Id);
                 RefreshParentPage();
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using inventory.Context.MySql;
@@ -10,6 +11,7 @@ namespace inventory.Pages
 {
     public partial class InventoryPage : Page, INotifyPropertyChanged
     {
+        private InventoryContext inventoryContext;
         private List<Inventory> _inventoryList;
         private DateTime? _startDateFilter;
         private DateTime? _endDateFilter;
@@ -48,14 +50,14 @@ namespace inventory.Pages
             LoadInventories();
         }
 
-        private void LoadInventories()
+        public void LoadInventories()
         {
-            InventoryList = InventoryContext.AllInventorys().Cast<Inventory>().ToList();
+            InventoryList = inventoryContext.AllInventorys().Cast<Inventory>().ToList();
         }
 
         private void FilterInventories()
         {
-            var inventories = InventoryContext.AllInventorys().Cast<Inventory>();
+            var inventories = inventoryContext.AllInventorys().Cast<Inventory>();
             if (StartDateFilter.HasValue)
                 inventories = inventories.Where(i => i.StartDate >= StartDateFilter.Value);
             if (EndDateFilter.HasValue)
@@ -65,7 +67,6 @@ namespace inventory.Pages
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            // Implement add logic if needed
             MessageBox.Show("Добавление новой инвентаризации еще не реализовано.");
         }
 

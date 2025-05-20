@@ -7,22 +7,30 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using inventory.Context.MySql;
 using inventory.Models;
-using System.Linq;
-using inventory.Context;
 
 namespace inventory.Pages
 {
     public partial class AddEditEquipmentPage : Page, INotifyPropertyChanged
     {
-        public Equipment CurrentEquipment { get; set; }
-        public string Title => CurrentEquipment.Id == 0 ? "Добавить оборудование" : "Редактировать оборудование";
+        private Equipment _currentEquipment;
+        public Equipment CurrentEquipment
+        {
+            get => _currentEquipment;
+            set { _currentEquipment = value; OnPropertyChanged(nameof(CurrentEquipment)); }
+        }
+        public new string Title => CurrentEquipment.Id == 0 ? "Добавить оборудование" : "Редактировать оборудование";
         public List<EquipmentType> EquipmentTypes { get; set; }
         public List<EquipmentModel> EquipmentModels { get; set; }
         public List<Direction> Directions { get; set; }
         public List<Status> Statuses { get; set; }
         public List<Room> Rooms { get; set; }
         public List<User> Users { get; set; }
-        public BitmapImage ImagePreview { get; set; }
+        private BitmapImage _imagePreview;
+        public BitmapImage ImagePreview
+        {
+            get => _imagePreview;
+            set { _imagePreview = value; OnPropertyChanged(nameof(ImagePreview)); }
+        }
         public bool IsMenuVisible => true;
 
         public AddEditEquipmentPage(Equipment equipment = null)
@@ -37,12 +45,12 @@ namespace inventory.Pages
 
         private void LoadData()
         {
-            EquipmentTypes = EquipmentTypeContext.AllEquipmentTypes().Cast<EquipmentType>().ToList();
-            EquipmentModels = EquipmentModelContext.AllEquipmentModels().Cast<EquipmentModel>().ToList();
-            Directions = DirectionContext.AllDirections().Cast<Direction>().ToList();
-            Statuses = StatusContext.AllStatuses().Cast<Status>().ToList();
-            Rooms = RoomContext.AllRooms().Cast<Room>().ToList();
-            Users = UserContext.AllUsers().Cast<User>().ToList();
+            EquipmentTypes = new EquipmentTypeContext().AllEquipmentTypes();
+            EquipmentModels = new EquipmentModelContext().AllEquipmentModels();
+            Directions = new DirectionContext().AllDirections();
+            Statuses = new StatusContext().AllStatuses();
+            Rooms = new RoomContext().AllRooms();
+            Users = new UserContext().AllUsers();
         }
 
         private void SelectImageButton_Click(object sender, RoutedEventArgs e)
@@ -52,7 +60,6 @@ namespace inventory.Pages
             {
                 CurrentEquipment.Photo = System.IO.File.ReadAllBytes(dialog.FileName);
                 ImagePreview = ByteArrayToImage(CurrentEquipment.Photo);
-                OnPropertyChanged(nameof(ImagePreview));
             }
         }
 
@@ -63,7 +70,7 @@ namespace inventory.Pages
                 MessageBox.Show("Заполните обязательные поля");
                 return;
             }
-            EquipmentContext.Save(CurrentEquipment, CurrentEquipment.Id != 0);
+            new EquipmentContext().Save(CurrentEquipment, CurrentEquipment.Id != 0);
             NavigateBack();
         }
 
@@ -89,6 +96,7 @@ namespace inventory.Pages
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

@@ -11,6 +11,7 @@ namespace inventory.Pages
 {
     public partial class RoomsPage : Page, INotifyPropertyChanged
     {
+        private RoomContext roomContext;
         private List<Room> _roomList;
         private string _searchText;
 
@@ -33,23 +34,28 @@ namespace inventory.Pages
             InitializeComponent();
             DataContext = this;
             LoadRooms();
+            roomContext = new RoomContext();
         }
 
         public void LoadRooms()
         {
-            RoomList = RoomContext.AllRooms().Cast<Room>().ToList();
+            RoomList = roomContext.AllRooms().Cast<Room>().ToList();
         }
 
         private void FilterRooms()
         {
             if (string.IsNullOrEmpty(SearchText))
+            {
                 LoadRooms();
+            }
             else
-                RoomList = RoomContext.AllRooms()
+            {
+                RoomList = roomContext.AllRooms()
                     .Cast<Room>()
-                    .Where(r => r.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                                r.ShortName.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                    .Where(r => r.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                               r.ShortName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
+            }
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
@@ -61,6 +67,7 @@ namespace inventory.Pages
         private void Refresh_Click(object sender, RoutedEventArgs e) => LoadRooms();
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

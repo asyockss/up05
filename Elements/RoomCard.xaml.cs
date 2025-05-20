@@ -9,9 +9,11 @@ namespace inventory.Elements
 {
     public partial class RoomCard : UserControl
     {
+        private RoomContext roomContext;
         public RoomCard()
         {
             InitializeComponent();
+            roomContext = new RoomContext();
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
@@ -28,7 +30,7 @@ namespace inventory.Elements
             if (DataContext is Room room &&
                 MessageBox.Show("Вы уверены, что хотите удалить эту аудиторию?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                RoomContext.Delete(room.Id);
+                roomContext.Delete(room.Id);
                 RefreshParentPage();
             }
         }

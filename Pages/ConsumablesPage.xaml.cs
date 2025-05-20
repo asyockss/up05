@@ -44,14 +44,20 @@ namespace inventory.Pages
 
         public void LoadData()
         {
-            ConsumableList = ConsumableContext.AllConsumables().Cast<Consumable>().ToList();
-            ConsumableTypes = ConsumableTypeContext.AllConsumableTypes().Cast<ConsumableType>().ToList();
+            var consumables = new ConsumableContext().AllConsumables();
+            var types = new ConsumableTypeContext().AllConsumableTypes().ToDictionary(t => t.Id, t => t);
+            foreach (var item in consumables)
+            {
+                if (item.ConsumableTypeId.HasValue && types.ContainsKey(item.ConsumableTypeId.Value))
+                    item.ConsumableType = types[item.ConsumableTypeId.Value];
+            }
+            ConsumableList = consumables;
+            ConsumableTypes = new ConsumableTypeContext().AllConsumableTypes();
         }
 
         private void FilterConsumables()
         {
-            ConsumableList = ConsumableContext.AllConsumables()
-                .Cast<Consumable>()
+            ConsumableList = new ConsumableContext().AllConsumables()
                 .Where(c => !SelectedTypeFilter.HasValue || c.ConsumableTypeId == SelectedTypeFilter)
                 .ToList();
         }
@@ -65,6 +71,7 @@ namespace inventory.Pages
         private void Refresh_Click(object sender, RoutedEventArgs e) => LoadData();
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

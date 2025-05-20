@@ -9,9 +9,11 @@ namespace inventory.Elements
 {
     public partial class UserCard : UserControl
     {
+        private UserContext userContext;
         public UserCard()
         {
             InitializeComponent();
+            userContext = new UserContext();
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
@@ -28,7 +30,7 @@ namespace inventory.Elements
             if (DataContext is User user &&
                 MessageBox.Show("Вы уверены, что хотите удалить этого пользователя?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                UserContext.Delete(user.Id);
+                userContext.Delete(user.Id);
                 RefreshParentPage();
             }
         }

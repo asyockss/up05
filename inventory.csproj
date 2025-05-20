@@ -155,6 +155,7 @@
     <Compile Include="Context\SoftwareContext.cs" />
     <Compile Include="Context\StatusContext.cs" />
     <Compile Include="Context\UserContext.cs" />
+    <Compile Include="CurrentUser.cs" />
     <Compile Include="Elements\ConsumableCard.xaml.cs">
       <DependentUpon>ConsumableCard.xaml</DependentUpon>
     </Compile>
