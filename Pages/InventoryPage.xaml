@@ -24,15 +24,10 @@
         </StackPanel>
 
         <!-- Список инвентаризаций -->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Inventories}"
-                  SelectedItem="{Binding SelectedInventory}"
-                  AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Дата начала" Binding="{Binding StartDate, StringFormat=d}" Width="120"/>
-                <DataGridTextColumn Header="Дата окончания" Binding="{Binding EndDate, StringFormat=d}" Width="120"/>
-                <DataGridTextColumn Header="Ответственный" Binding="{Binding User.FullName}" Width="180"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel x:Name="parent">
+                <!-- Здесь будут отображаться пользовательские элементы -->
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

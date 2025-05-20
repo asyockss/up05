@@ -1,9 +1,9 @@
 ﻿<Page x:Class="inventory.Pages.ConsumablesPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      mc:Ignorable="d" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="800"
       Title="Расходные материалы">
 
@@ -20,21 +20,16 @@
             <Button Content="Удалить" Command="{Binding DeleteCommand}" Style="{StaticResource ToolButtonStyle}"/>
             <Button Content="Обновить" Command="{Binding RefreshCommand}" Style="{StaticResource ToolButtonStyle}"/>
 
-            <ComboBox ItemsSource="{Binding ConsumableTypes}" DisplayMemberPath="Type" 
-                      SelectedValuePath="Id" SelectedValue="{Binding SelectedTypeFilter}" 
+            <ComboBox ItemsSource="{Binding ConsumableTypes}" DisplayMemberPath="Type"
+                      SelectedValuePath="Id" SelectedValue="{Binding SelectedTypeFilter}"
                       Width="200" Margin="10,0,0,0"/>
         </StackPanel>
 
         <!-- Список расходников -->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Consumables}" 
-                  SelectedItem="{Binding SelectedConsumable}" 
-                  AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Тип" Binding="{Binding ConsumableType.Type}" Width="120"/>
-                <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" Width="80"/>
-                <DataGridTextColumn Header="Ответственный" Binding="{Binding ResponsibleUser.FullName}" Width="180"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel x:Name="parent">
+                <!-- Здесь будут отображаться пользовательские элементы -->
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

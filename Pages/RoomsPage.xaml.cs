@@ -1,4 +1,5 @@
-﻿using inventory.ViewModels;
+﻿using inventory.Context.MySql;
+using inventory.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,42 @@ namespace inventory.Pages
     /// </summary>
     public partial class RoomsPage : Page
     {
+        public List<RoomContext> roomContexts = RoomContext.AllRooms();
         public RoomsPage()
         {
             InitializeComponent();
-            DataContext = new MainPageViewModel();
+            CreateUI();
         }
-        public bool IsMenuVisible => true;
+
+        public void CreateUI()
+        {
+            parent.Children.Clear();
+            foreach (RoomContext item in roomContexts)
+            {
+                parent.Children.Add(new Elements.RoomCard(item));
+            }
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для добавления новой аудитории
+        }
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для редактирования аудитории
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для удаления аудитории
+        }
+
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            roomContexts = RoomContext.AllRooms();
+            CreateUI();
+        }
     }
+
 }

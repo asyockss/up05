@@ -1,11 +1,14 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
+using inventory.Context.MySql;
 using inventory.ViewModels;
 
 namespace inventory.Pages
 {
     public partial class InventoryPage : Page
     {
+        public List<InventoryContext> inventoryContexts = InventoryContext.AllInventories();
         public InventoryPage()
         {
             InitializeComponent();
@@ -16,10 +19,35 @@ namespace inventory.Pages
                 mainWindow.NavigateToMainPage();
                 return;
             }
-            DataContext = new InventoryViewModel();
             DataContext = new MainPageViewModel();
+            CreateUI();
         }
 
         public bool IsMenuVisible => true;
+
+        public void CreateUI()
+        {
+            parent.Children.Clear();
+            foreach (InventoryContext item in inventoryContexts)
+            {
+                parent.Children.Add(new Elements.InventoryCard(item));
+            }
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для добавления новой инвентаризации
+        }
+
+        private void PerformCheck_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для проведения проверки
+        }
+
+        private void GenerateReport_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для генерации отчета
+        }
     }
+
 }

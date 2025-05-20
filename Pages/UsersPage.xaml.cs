@@ -1,4 +1,5 @@
-﻿using inventory.ViewModels;
+﻿using inventory.Context.MySql;
+using inventory.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,18 +22,36 @@ namespace inventory.Pages
     /// </summary>
     public partial class UsersPage : Page
     {
+        public List<UserContext> userContexts = UserContext.AllUsers();
         public UsersPage()
         {
             InitializeComponent();
-            if (!CurrentUser.IsAdmin)
-            {
-                MessageBox.Show("Доступ запрещен. Требуются права администратора.");
-                var mainWindow = (MainWindow)Application.Current.MainWindow;
-                mainWindow.NavigateToMainPage();
-                return;
-            }
-            DataContext = new MainPageViewModel();
+            CreateUI();
         }
-        public bool IsMenuVisible => true;
+
+        public void CreateUI()
+        {
+            parent.Children.Clear();
+            foreach (UserContext item in userContexts)
+            {
+                parent.Children.Add(new Elements.UserCard(item));
+            }
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для добавления нового пользователя
+        }
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для редактирования пользователя
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для удаления пользователя
+        }
     }
+
 }

@@ -217,7 +217,6 @@
       <DependentUpon>UsersPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="RelayCommand.cs" />
-    <Compile Include="ViewModels\InventoryViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Page Include="Elements\EquipmentCard.xaml">
       <SubType>Designer</SubType>
