@@ -1,4 +1,5 @@
-﻿using System;
+﻿using inventory.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +16,12 @@ using System.Windows.Shapes;
 
 namespace inventory.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для ConsumablesPage.xaml
-    /// </summary>
     public partial class ConsumablesPage : Page
     {
         public ConsumablesPage()
         {
             InitializeComponent();
+            DataContext = new MainPageViewModel();
         }
         public bool IsMenuVisible => true;
     }
