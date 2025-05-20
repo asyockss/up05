@@ -168,6 +168,7 @@
     <Compile Include="Interfase\IEquipment.cs" />
     <Compile Include="Interfase\IEquipmentConsumable.cs" />
     <Compile Include="Interfase\IEquipmentLocationHistory.cs" />
+    <Compile Include="Interfase\IStatus.cs" />
     <Compile Include="Interfase\IUser.cs" />
     <Compile Include="Models\Developer.cs" />
     <Compile Include="Models\Direction.cs" />
