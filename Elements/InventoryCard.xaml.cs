@@ -20,7 +20,7 @@ namespace inventory.Elements
     /// </summary>
     public partial class InventoryCard : UserControl
     {
-        public InventoryCard()
+        public InventoryCard(Models.Inventory item)
         {
             InitializeComponent();
         }

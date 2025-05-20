@@ -15,12 +15,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using inventory.Context;
+using inventory.Models;
 
 namespace inventory.Pages
 {
     public partial class ConsumablesPage : Page
     {
-        public List<ConsumableContext> consumableContexts = ConsumableContext.AllConsumables();
+        public List<Consumable> consumables = ConsumableContext.AllConsumables().Cast<Consumable>().ToList();
         public ConsumablesPage()
         {
             InitializeComponent();
@@ -30,7 +31,7 @@ namespace inventory.Pages
         public void CreateUI()
         {
             parent.Children.Clear();
-            foreach (ConsumableContext item in consumableContexts)
+            foreach (Consumable item in consumables)
             {
                 parent.Children.Add(new Elements.ConsumableCard(item));
             }
@@ -53,9 +54,8 @@ namespace inventory.Pages
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
-            consumableContexts = ConsumableContext.AllConsumables();
+            consumables = ConsumableContext.AllConsumables().Cast<Consumable>().ToList();
             CreateUI();
         }
     }
-
 }

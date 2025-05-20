@@ -1,4 +1,5 @@
 ﻿using inventory.Context.MySql;
+using inventory.Models;
 using inventory.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,9 @@ using System.Xml.Linq;
 
 namespace inventory.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для EquipmentPage.xaml
-    /// </summary>
     public partial class EquipmentPage : Page
     {
-        public List<EquipmentContext> equipmentContexts = EquipmentContext.AllEquipment();
+        public List<Equipment> equipment = EquipmentContext.AllEquipment().Cast<Equipment>().ToList();
         public EquipmentPage()
         {
             InitializeComponent();
@@ -33,7 +31,7 @@ namespace inventory.Pages
         public void CreateUI()
         {
             parent.Children.Clear();
-            foreach (EquipmentContext item in equipmentContexts)
+            foreach (Equipment item in equipment)
             {
                 parent.Children.Add(new Elements.EquipmentCard(item));
             }
@@ -56,9 +54,8 @@ namespace inventory.Pages
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
-            equipmentContexts = EquipmentContext.AllEquipment();
+            equipment = EquipmentContext.AllEquipment().Cast<Equipment>().ToList();
             CreateUI();
         }
     }
-
 }

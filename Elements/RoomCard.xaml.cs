@@ -20,7 +20,7 @@ namespace inventory.Elements
     /// </summary>
     public partial class RoomCard : UserControl
     {
-        public RoomCard()
+        public RoomCard(Models.Room item)
         {
             InitializeComponent();
         }

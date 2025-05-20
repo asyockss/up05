@@ -23,8 +23,7 @@
             <DatePicker SelectedDate="{Binding EndDateFilter}" Width="150" Margin="5,0,0,0"/>
         </StackPanel>
 
-        <!-- Список инвентаризаций -->
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer  VerticalScrollBarVisibility="Visible" Grid.Row="1">
             <StackPanel x:Name="parent">
                 <!-- Здесь будут отображаться пользовательские элементы -->
             </StackPanel>

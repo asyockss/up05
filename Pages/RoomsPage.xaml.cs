@@ -1,4 +1,5 @@
 ﻿using inventory.Context.MySql;
+using inventory.Models;
 using inventory.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -17,12 +18,9 @@ using System.Windows.Shapes;
 
 namespace inventory.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для RoomsPage.xaml
-    /// </summary>
     public partial class RoomsPage : Page
     {
-        public List<RoomContext> roomContexts = RoomContext.AllRooms();
+        public List<Room> rooms = RoomContext.AllRooms().Cast<Room>().ToList();
         public RoomsPage()
         {
             InitializeComponent();
@@ -32,7 +30,7 @@ namespace inventory.Pages
         public void CreateUI()
         {
             parent.Children.Clear();
-            foreach (RoomContext item in roomContexts)
+            foreach (Room item in rooms)
             {
                 parent.Children.Add(new Elements.RoomCard(item));
             }
@@ -55,9 +53,8 @@ namespace inventory.Pages
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
-            roomContexts = RoomContext.AllRooms();
+            rooms = RoomContext.AllRooms().Cast<Room>().ToList();
             CreateUI();
         }
     }
-
 }

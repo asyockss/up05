@@ -1,4 +1,6 @@
-﻿using inventory.Context.MySql;
+﻿using inventory.Context;
+using inventory.Context.MySql;
+using inventory.Models;
 using inventory.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -17,12 +19,9 @@ using System.Windows.Shapes;
 
 namespace inventory.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для UsersPage.xaml
-    /// </summary>
     public partial class UsersPage : Page
     {
-        public List<UserContext> userContexts = UserContext.AllUsers();
+        public List<User> users = UserContext.AllUsers().Cast<User>().ToList();
         public UsersPage()
         {
             InitializeComponent();
@@ -32,7 +31,7 @@ namespace inventory.Pages
         public void CreateUI()
         {
             parent.Children.Clear();
-            foreach (UserContext item in userContexts)
+            foreach (User item in users)
             {
                 parent.Children.Add(new Elements.UserCard(item));
             }
@@ -53,5 +52,4 @@ namespace inventory.Pages
             // Логика для удаления пользователя
         }
     }
-
 }

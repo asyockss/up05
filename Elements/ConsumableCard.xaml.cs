@@ -20,7 +20,7 @@ namespace inventory.Elements
     /// </summary>
     public partial class ConsumableCard : UserControl
     {
-        public ConsumableCard()
+        public ConsumableCard(Models.Consumable item)
         {
             InitializeComponent();
         }

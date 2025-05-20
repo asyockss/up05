@@ -2,13 +2,14 @@
 using System.Windows;
 using System.Windows.Controls;
 using inventory.Context.MySql;
+using inventory.Models;
 using inventory.ViewModels;
 
 namespace inventory.Pages
 {
     public partial class InventoryPage : Page
     {
-        public List<InventoryContext> inventoryContexts = InventoryContext.AllInventories();
+        public List<Inventory> inventories = InventoryContext.AllInventorys().Cast<Inventory>().ToList();
         public InventoryPage()
         {
             InitializeComponent();
@@ -28,7 +29,7 @@ namespace inventory.Pages
         public void CreateUI()
         {
             parent.Children.Clear();
-            foreach (InventoryContext item in inventoryContexts)
+            foreach (Inventory item in inventories)
             {
                 parent.Children.Add(new Elements.InventoryCard(item));
             }
@@ -49,5 +50,4 @@ namespace inventory.Pages
             // Логика для генерации отчета
         }
     }
-
 }
