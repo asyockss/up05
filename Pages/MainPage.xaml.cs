@@ -26,6 +26,6 @@ namespace inventory.Pages
             InitializeComponent();
             DataContext = new MainPageViewModel();
         }
-        public bool IsMenuVisible => true;
+        public bool IsMenuVisible => false;
     }
 }
