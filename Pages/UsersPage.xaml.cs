@@ -43,18 +43,23 @@ namespace inventory.Pages
             InitializeComponent();
             DataContext = this;
             SelectedRoleFilter = "Все";
-            LoadUsers();
             userContext = new UserContext();
+            LoadUsers();
         }
 
         public void LoadUsers()
         {
-            UserList = userContext.AllUsers().Cast<User>().ToList();
+            UserList = userContext.AllUsers()?.Cast<User>().ToList() ?? new List<User>();
         }
 
         private void FilterUsers()
         {
-            var users = userContext.AllUsers().Cast<User>();
+            if (userContext == null)
+            {
+                userContext = new UserContext();
+            }
+
+            var users = userContext.AllUsers()?.Cast<User>() ?? Enumerable.Empty<User>();
             if (!string.IsNullOrEmpty(SearchText))
                 users = users.Where(u => u.FullName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                          u.Login.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0);
@@ -62,6 +67,7 @@ namespace inventory.Pages
                 users = users.Where(u => u.Role.Equals(SelectedRoleFilter, StringComparison.OrdinalIgnoreCase));
             UserList = users.ToList();
         }
+
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
