@@ -9,6 +9,7 @@ using inventory.Context.Common;
 using inventory.Models;
 using MySql.Data.MySqlClient;
 using inventory.Interfase;
+using System.Text;
 
 namespace inventory.Pages
 {
@@ -90,6 +91,7 @@ namespace inventory.Pages
         }
 
 
+
         private void PerformInventoryCheck()
         {
             try
@@ -114,35 +116,42 @@ namespace inventory.Pages
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlCommand command = new MySqlCommand("SELECT COUNT(*) FROM equipment WHERE id = @Id", connection);
+                MySqlCommand command = new MySqlCommand("SELECT COUNT(*) FROM inventories WHERE id = @Id", connection);
                 command.Parameters.AddWithValue("@Id", inventory.Id);
                 int count = Convert.ToInt32(command.ExecuteScalar());
                 return count > 0;
             }
         }
 
+
+
         private void LogDiscrepancy(Inventory inventory)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                // Убедитесь, что inventory.Id существует в таблице equipment
-                MySqlCommand checkCommand = new MySqlCommand("SELECT COUNT(*) FROM equipment WHERE id = @Id", connection);
-                checkCommand.Parameters.AddWithValue("@Id", inventory.Id);
-                int count = Convert.ToInt32(checkCommand.ExecuteScalar());
+                MySqlCommand checkInventoryCommand = new MySqlCommand("SELECT COUNT(*) FROM inventories WHERE id = @Id", connection);
+                checkInventoryCommand.Parameters.AddWithValue("@Id", inventory.Id);
+                int inventoryCount = Convert.ToInt32(checkInventoryCommand.ExecuteScalar());
 
-                if (count > 0)
+                MySqlCommand checkEquipmentCommand = new MySqlCommand("SELECT COUNT(*) FROM equipment WHERE id = @Id", connection);
+                checkEquipmentCommand.Parameters.AddWithValue("@Id", inventory.Id);
+                int equipmentCount = Convert.ToInt32(checkEquipmentCommand.ExecuteScalar());
+
+                MySqlCommand checkUserCommand = new MySqlCommand("SELECT COUNT(*) FROM users WHERE id = @Id", connection);
+                checkUserCommand.Parameters.AddWithValue("@Id", CurrentUser.Id);
+                int userCount = Convert.ToInt32(checkUserCommand.ExecuteScalar());
+
+                if (inventoryCount > 0 && equipmentCount > 0 && userCount > 0)
                 {
-                    // Создаем объект InventoryCheck и заполняем его данными
                     InventoryCheck check = new InventoryCheck
                     {
                         InventoryId = inventory.Id,
-                        EquipmentId = inventory.Id, // Предполагаем, что equipment_id совпадает с inventory.Id
-                        UserId = CurrentUser.Id, // Предполагаем, что CurrentUser.Id - это ID текущего пользователя
+                        EquipmentId = inventory.Id,
+                        UserId = CurrentUser.Id, 
                         CheckDate = DateTime.Now,
-                        Comment = "Discrepancy found during inventory check"
+                        Comment = "Что-то это значит"
                     };
 
-                    // Сохраняем запись в таблицу inventory_checks
                     InventoryCheckContext checkContext = new InventoryCheckContext();
                     checkContext.Id = check.Id;
                     checkContext.InventoryId = check.InventoryId;
@@ -154,7 +163,7 @@ namespace inventory.Pages
                 }
                 else
                 {
-                    MessageBox.Show($"Ошибка: equipment_id {inventory.Id} не существует в таблице equipment.");
+                    MessageBox.Show($"Ошибка: inventory_id, equipment_id или user_id не существует в соответствующих таблицах.");
                 }
             }
         }
@@ -163,8 +172,49 @@ namespace inventory.Pages
 
         private void GenerateReport_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Генерация отчета еще не реализована.");
+            try
+            {
+                Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
+                excelApp.Visible = false;
+
+                Microsoft.Office.Interop.Excel.Workbook workbook = excelApp.Workbooks.Add();
+                Microsoft.Office.Interop.Excel.Worksheet worksheet = workbook.Sheets[1];
+
+                worksheet.Cells[1, 1].Value = "ID";
+                worksheet.Cells[1, 2].Value = "Name";
+                worksheet.Cells[1, 3].Value = "Start Date";
+                worksheet.Cells[1, 4].Value = "End Date";
+                worksheet.Cells[1, 5].Value = "User ID";
+
+                int row = 2;
+                foreach (var inventory in InventoryList)
+                {
+                    worksheet.Cells[row, 1].Value = inventory.Id;
+                    worksheet.Cells[row, 2].Value = inventory.Name;
+                    worksheet.Cells[row, 3].Value = inventory.StartDate.ToString("yyyy-MM-dd");
+                    worksheet.Cells[row, 4].Value = inventory.EndDate.ToString("yyyy-MM-dd");
+                    worksheet.Cells[row, 5].Value = inventory.UserId;
+                    row++;
+                }
+
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+                saveFileDialog.Filter = "Excel files (*.xlsx)|*.xlsx";
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    workbook.SaveAs(saveFileDialog.FileName);
+                    workbook.Close();
+                    excelApp.Quit();
+                    MessageBox.Show("Отчет успешно сгенерирован.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при генерации отчета: {ex.Message}");
+            }
         }
+
+
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
