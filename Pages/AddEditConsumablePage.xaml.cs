@@ -10,20 +10,16 @@ using inventory.Models;
 
 namespace inventory.Pages
 {
-    public partial class AddEditEquipmentPage : Page, INotifyPropertyChanged
+    public partial class AddEditConsumablePage : Page, INotifyPropertyChanged
     {
-        private Equipment _currentEquipment;
-        public Equipment CurrentEquipment
+        private Consumable _currentConsumable;
+        public Consumable CurrentConsumable
         {
-            get => _currentEquipment;
-            set { _currentEquipment = value; OnPropertyChanged(nameof(CurrentEquipment)); }
+            get => _currentConsumable;
+            set { _currentConsumable = value; OnPropertyChanged(nameof(CurrentConsumable)); }
         }
-        public new string Title => CurrentEquipment.Id == 0 ? "Добавить оборудование" : "Редактировать оборудование";
-        public List<EquipmentType> EquipmentTypes { get; set; }
-        public List<EquipmentModel> EquipmentModels { get; set; }
-        public List<Direction> Directions { get; set; }
-        public List<Status> Statuses { get; set; }
-        public List<Room> Rooms { get; set; }
+        public new string Title => CurrentConsumable.Id == 0 ? "Добавить расходник" : "Редактировать расходник";
+        public List<ConsumableType> ConsumableTypes { get; set; }
         public List<User> Users { get; set; }
         private BitmapImage _imagePreview;
         public BitmapImage ImagePreview
@@ -33,23 +29,19 @@ namespace inventory.Pages
         }
         public bool IsMenuVisible => true;
 
-        public AddEditEquipmentPage(Equipment equipment = null)
+        public AddEditConsumablePage(Consumable consumable = null)
         {
             InitializeComponent();
-            CurrentEquipment = equipment ?? new Equipment();
+            CurrentConsumable = consumable ?? new Consumable { ReceiptDate = DateTime.Now };
             LoadData();
             DataContext = this;
-            if (CurrentEquipment.Photo != null)
-                ImagePreview = ByteArrayToImage(CurrentEquipment.Photo);
+            if (CurrentConsumable.Image != null)
+                ImagePreview = ByteArrayToImage(CurrentConsumable.Image);
         }
 
         private void LoadData()
         {
-            EquipmentTypes = new EquipmentTypeContext().AllEquipmentTypes();
-            EquipmentModels = new EquipmentModelContext().AllEquipmentModels();
-            Directions = new DirectionContext().AllDirections();
-            Statuses = new StatusContext().AllStatuses();
-            Rooms = new RoomContext().AllRooms();
+            ConsumableTypes = new ConsumableTypeContext().AllConsumableTypes();
             Users = new UserContext().AllUsers();
         }
 
@@ -58,19 +50,19 @@ namespace inventory.Pages
             OpenFileDialog dialog = new OpenFileDialog { Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*" };
             if (dialog.ShowDialog() == true)
             {
-                CurrentEquipment.Photo = System.IO.File.ReadAllBytes(dialog.FileName);
-                ImagePreview = ByteArrayToImage(CurrentEquipment.Photo);
+                CurrentConsumable.Image = System.IO.File.ReadAllBytes(dialog.FileName);
+                ImagePreview = ByteArrayToImage(CurrentConsumable.Image);
             }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(CurrentEquipment.Name) || string.IsNullOrEmpty(CurrentEquipment.InventoryNumber))
+            if (string.IsNullOrEmpty(CurrentConsumable.Name) || CurrentConsumable.Quantity < 0)
             {
-                MessageBox.Show("Заполните обязательные поля");
+                MessageBox.Show("Заполните обязательные поля корректно");
                 return;
             }
-            new EquipmentContext().Save(CurrentEquipment, CurrentEquipment.Id != 0);
+            new ConsumableContext().Save(CurrentConsumable, CurrentConsumable.Id != 0);
             NavigateBack();
         }
 
@@ -79,7 +71,7 @@ namespace inventory.Pages
         private void NavigateBack()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
-            mainWindow.NavigateToPage(new EquipmentPage());
+            mainWindow.NavigateToPage(new ConsumablesPage());
         }
 
         private BitmapImage ByteArrayToImage(byte[] bytes)

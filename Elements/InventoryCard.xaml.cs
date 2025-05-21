@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace inventory.Elements
 {
-    /// <summary>
-    /// Логика взаимодействия для InventoryCard.xaml
-    /// </summary>
     public partial class InventoryCard : UserControl
     {
         public InventoryCard()

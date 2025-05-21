@@ -7,30 +7,28 @@ using inventory.Pages;
 
 namespace inventory.Elements
 {
-    public partial class RoomCard : UserControl
+    public partial class ConsumableCard : UserControl
     {
-        private RoomContext roomContext;
-        public RoomCard()
+        public ConsumableCard()
         {
             InitializeComponent();
-            roomContext = new RoomContext();
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is Room room)
+            if (DataContext is Consumable consumable)
             {
                 var mainWindow = (MainWindow)Application.Current.MainWindow;
-                mainWindow.NavigateToPage(new AddEditRoomPage(room));
+                mainWindow.NavigateToPage(new AddEditConsumablePage(consumable));
             }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is Room room &&
-                MessageBox.Show("Вы уверены, что хотите удалить эту аудиторию?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (DataContext is Consumable consumable &&
+                MessageBox.Show("Вы уверены, что хотите удалить этот расходник?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                roomContext.Delete(room.Id);
+                new ConsumableContext().Delete(consumable.Id);
                 RefreshParentPage();
             }
         }
@@ -38,9 +36,9 @@ namespace inventory.Elements
         private void RefreshParentPage()
         {
             DependencyObject parent = VisualTreeHelper.GetParent(this);
-            while (parent != null && !(parent is RoomsPage))
+            while (parent != null && !(parent is ConsumablesPage))
                 parent = VisualTreeHelper.GetParent(parent);
-            if (parent is RoomsPage page) page.LoadRooms();
+            if (parent is ConsumablesPage page) page.LoadData();
         }
     }
 }

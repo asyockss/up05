@@ -5,12 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
              d:DesignHeight="180" d:DesignWidth="320">
-    <Border BorderThickness="1"
-            CornerRadius="6"
-            Margin="6"
-            BorderBrush="#DDDDDD"
-            Background="White"
-            Padding="0">
+    <Border BorderThickness="1" CornerRadius="6" Margin="6" BorderBrush="#DDDDDD" Background="White" Padding="0">
         <Grid Margin="12">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -25,94 +20,40 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Аватар -->
-            <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="4"
-                    Width="60" Height="60" CornerRadius="30" 
-                    Background="#F8F8F8" BorderBrush="#EEEEEE" BorderThickness="1"
-                    Margin="0,0,12,0" VerticalAlignment="Top">
+            <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" Width="60" Height="60" CornerRadius="30" Background="#F8F8F8" BorderBrush="#EEEEEE" BorderThickness="1" Margin="0,0,12,0" VerticalAlignment="Top">
                 <Path Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
-                      Width="30" Height="30"
-                      Fill="#666666" Stretch="Fill"/>
+                      Width="30" Height="30" Fill="#666666" Stretch="Fill"/>
             </Border>
 
-            <!-- ФИО -->
-            <TextBlock Grid.Row="0" Grid.Column="1"
-                       Text="{Binding FullName}" 
-                       FontSize="16"
-                       FontWeight="SemiBold"
-                       Margin="0,0,0,2"/>
-
-            <!-- Логин и роль -->
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FullName}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,2"/>
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,4,0,0">
                 <Path Data="M12,15C12.81,15 13.5,14.7 14.11,14.11C14.7,13.5 15,12.81 15,12C15,11.19 14.7,10.5 14.11,9.89C13.5,9.3 12.81,9 12,9C11.19,9 10.5,9.3 9.89,9.89C9.3,10.5 9,11.19 9,12C9,12.81 9.3,13.5 9.89,14.11C10.5,14.7 11.19,15 12,15M12,2C14.75,2 17.1,3 19.05,4.95C21,6.9 22,9.25 22,12V13.45C22,14.45 21.65,15.3 21,16C20.3,16.67 19.5,17 18.5,17C17.5,17 16.65,16.67 16,16C15.35,15.3 15,14.45 15,13.45V12C15,8.9 13.6,6.3 10.8,4.2C11.55,3.9 12.25,3.75 13,3.6V2.29C12.69,2.1 12.36,2 12,2M6,8C5.45,8 5,8.19 4.58,8.59C4.17,9 4,9.45 4,10V16C4,16.55 4.17,17 4.58,17.41C5,17.81 5.45,18 6,18H7V19C7,19.55 7.17,20 7.58,20.41C8,20.81 8.45,21 9,21H15C15.55,21 16,20.81 16.41,20.41C16.81,20 17,19.55 17,19V18H18C18.55,18 19,17.81 19.41,17.41C19.81,17 20,16.55 20,16V10C20,9.45 19.81,9 19.41,8.59C19,8.19 18.55,8 18,8H6Z"
-                  Width="16" Height="16"
-                  Fill="#666666" Stretch="Fill"/>
-                <TextBlock Text="{Binding Login}"
-                           Margin="6,0,0,0"
-                           FontSize="13"/>
-                <TextBlock Text=" | "
-                           Margin="4,0,4,0"
-                           FontSize="13"/>
-                <TextBlock Text="{Binding Role}"
-                           FontSize="13"/>
+                      Width="16" Height="16" Fill="#666666" Stretch="Fill"/>
+                <TextBlock Text="{Binding Login}" Margin="6,0,0,0" FontSize="13"/>
+                <TextBlock Text=" | " Margin="4,0,4,0" FontSize="13"/>
+                <TextBlock Text="{Binding Role}" FontSize="13"/>
             </StackPanel>
-
-            <!-- Email -->
             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="0,6,0,0">
                 <Path Data="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"
-                      Width="16" Height="16"
-                      Fill="#666666" Stretch="Fill"/>
-                <TextBlock Text="{Binding Email}" 
-                           Margin="6,0,0,0"
-                           FontSize="13"
-                           TextTrimming="CharacterEllipsis"/>
+                      Width="16" Height="16" Fill="#666666" Stretch="Fill"/>
+                <TextBlock Text="{Binding Email}" Margin="6,0,0,0" FontSize="13" TextTrimming="CharacterEllipsis"/>
             </StackPanel>
-
-            <!-- Телефон -->
             <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="0,6,0,0">
                 <Path Data="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"
-                      Width="16" Height="16"
-                      Fill="#666666" Stretch="Fill"/>
-                <TextBlock Text="{Binding Phone}" 
-                           Margin="6,0,0,0"
-                           FontSize="13"/>
+                      Width="16" Height="16" Fill="#666666" Stretch="Fill"/>
+                <TextBlock Text="{Binding Phone}" Margin="6,0,0,0" FontSize="13"/>
             </StackPanel>
-
-            <!-- Адрес -->
             <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="0,8,0,19" Grid.RowSpan="2">
                 <Path Data="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z"
-                      Width="16" Height="16"
-                      Fill="#666666" Stretch="Fill"/>
-                <TextBlock Text="{Binding Address}" 
-                           Margin="6,0,0,0"
-                           FontSize="13"
-                           TextTrimming="CharacterEllipsis"/>
+                      Width="16" Height="16" Fill="#666666" Stretch="Fill"/>
+                <TextBlock Text="{Binding Address}" Margin="6,0,0,0" FontSize="13" TextTrimming="CharacterEllipsis"/>
             </StackPanel>
-
-            <!-- Кнопки действий -->
-            <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
-                        Orientation="Horizontal" 
-                        HorizontalAlignment="Right"
-                        Margin="0,8,0,0">
-                <Button Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                        CommandParameter="{Binding}"
-                        ToolTip="Редактировать"
-                        Width="30" Height="30"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Cursor="Hand">
+            <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                <Button Click="EditButton_Click" ToolTip="Редактировать" Width="30" Height="30" Background="Transparent" BorderThickness="0" Cursor="Hand">
                     <Path Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
                           Fill="#0060AC"/>
                 </Button>
-
-                <Button Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                        CommandParameter="{Binding}"
-                        ToolTip="Удалить"
-                        Width="30" Height="30"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Margin="6,0,0,0"
-                        Cursor="Hand">
+                <Button Click="DeleteButton_Click" ToolTip="Удалить" Width="30" Height="30" Background="Transparent" BorderThickness="0" Margin="6,0,0,0" Cursor="Hand">
                     <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
                           Fill="#E41613"/>
                 </Button>

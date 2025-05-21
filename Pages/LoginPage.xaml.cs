@@ -18,7 +18,7 @@ namespace inventory.Pages
             _dbConnection = new DBConnection();
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        public void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string login = LoginTextBox.Text;
             string password = PasswordBox.Password;
@@ -33,22 +33,26 @@ namespace inventory.Pages
             {
                 using (var connection = (MySqlConnection)_dbConnection.OpenConnection("MySql"))
                 {
-                    var query = $"SELECT * FROM Users WHERE Login = '{login}' AND Password = '{password}'";
-                    var dataReader = (MySqlDataReader)_dbConnection.Query(query, connection);
-
-                    if (dataReader.Read())
+                    var query = "SELECT * FROM Users WHERE Login = @Login AND Password = @Password";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@Login", login);
+                    command.Parameters.AddWithValue("@Password", password);
+                    using (var dataReader = command.ExecuteReader())
                     {
-                        CurrentUser.Id = dataReader.GetInt32(0);
-                        CurrentUser.Login = dataReader.GetString(1);
-                        CurrentUser.Role = dataReader.GetString(2);
-                        CurrentUser.FullName = dataReader.GetString(3);
+                        if (dataReader.Read())
+                        {
+                            CurrentUser.Id = dataReader.GetInt32(0);
+                            CurrentUser.Login = dataReader.GetString(1);
+                            CurrentUser.Role = dataReader.GetString(2);
+                            CurrentUser.FullName = dataReader.GetString(3);
 
-                        var mainWindow = (MainWindow)Application.Current.MainWindow;
-                        mainWindow.NavigateToMainPage();
-                    }
-                    else
-                    {
-                        ShowError("Неверный логин или пароль");
+                            var mainWindow = (MainWindow)Application.Current.MainWindow;
+                            mainWindow.NavigateToMainPage();
+                        }
+                        else
+                        {
+                            ShowError("Неверный логин или пароль");
+                        }
                     }
                 }
             }
@@ -71,7 +75,6 @@ namespace inventory.Pages
         public static string Login { get; set; }
         public static string Role { get; set; }
         public static string FullName { get; set; }
-
         public static bool IsAdmin => Role?.ToLower() == "admin";
     }
 }

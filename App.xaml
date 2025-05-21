@@ -109,8 +109,5 @@
 
         <!-- Конвертер для видимости -->
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        
-        
     </Application.Resources>
-    
 </Application>

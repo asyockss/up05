@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<Network> allNetworks = new List<Network>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataNetworks = (MySqlDataReader)new DBConnection().Query("SELECT * FROM Networks", connection);
+                MySqlDataReader dataNetworks = (MySqlDataReader)new DBConnection().Query("SELECT * FROM network", connection);
                 while (dataNetworks.Read())
                 {
                     Network newNetwork = new Network();
@@ -36,22 +36,22 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE Networks " +
+                    new DBConnection().Query("UPDATE network " +
                         "SET " +
-                        $"EquipmentId = {this.EquipmentId}, " +
-                        $"IpAddress = '{this.IpAddress}', " +
-                        $"SubnetMask = '{this.SubnetMask}', " +
-                        $"Gateway = '{this.Gateway}', " +
-                        $"DnsServers = '{this.DnsServers}' " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"equipment_id  = {this.EquipmentId}, " +
+                        $"ip_address = '{this.IpAddress}', " +
+                        $"subnet_mask = '{this.SubnetMask}', " +
+                        $"gateway = '{this.Gateway}', " +
+                        $"dns_servers = '{this.DnsServers}' " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO Networks " +
-                        "(EquipmentId, IpAddress, SubnetMask, Gateway, DnsServers) " +
+                    new DBConnection().Query("INSERT INTO network " +
+                        "(equipment_id , ip_address, subnet_mask, gateway, dns_servers) " +
                         "VALUES (" +
                         $"{this.EquipmentId}, " +
                         $"'{this.IpAddress}', " +
@@ -62,11 +62,11 @@ namespace inventory.Context.MySql
             }
         }
 
-        public void Delete()
+        public void Delete(int id)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM Networks WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM network WHERE id = {this.Id}", connection);
             }
         }
     }

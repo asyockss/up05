@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<Software> allSoftwares = new List<Software>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataSoftwares = (MySqlDataReader)new DBConnection().Query("SELECT * FROM Softwares", connection);
+                MySqlDataReader dataSoftwares = (MySqlDataReader)new DBConnection().Query("SELECT * FROM software", connection);
                 while (dataSoftwares.Read())
                 {
                     Software newSoftware = new Software();
@@ -35,21 +35,21 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE Softwares " +
+                    new DBConnection().Query("UPDATE software " +
                         "SET " +
-                        $"Name = '{this.Name}', " +
-                        $"Version = {(this.Version != null ? $"'{this.Version}'" : "NULL")}, " +
-                        $"DeveloperId = {(this.DeveloperId.HasValue ? this.DeveloperId.ToString() : "NULL")}, " +
-                        $"EquipmentId = {(this.EquipmentId.HasValue ? this.EquipmentId.ToString() : "NULL")} " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"name = '{this.Name}', " +
+                        $"version = {(this.Version != null ? $"'{this.Version}'" : "NULL")}, " +
+                        $"developer_id  = {(this.DeveloperId.HasValue ? this.DeveloperId.ToString() : "NULL")}, " +
+                        $"equipment_id  = {(this.EquipmentId.HasValue ? this.EquipmentId.ToString() : "NULL")} " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO Softwares " +
-                        "(Name, Version, DeveloperId, EquipmentId) " +
+                    new DBConnection().Query("INSERT INTO software " +
+                        "(name, version, developer_id , equipment_id ) " +
                         "VALUES (" +
                         $"'{this.Name}', " +
                         $"{(this.Version != null ? $"'{this.Version}'" : "NULL")}, " +
@@ -59,11 +59,11 @@ namespace inventory.Context.MySql
             }
         }
 
-        public void Delete()
+        public void Delete(int id)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM Softwares WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM software WHERE id = {this.Id}", connection);
             }
         }
     }

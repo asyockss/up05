@@ -14,15 +14,17 @@ namespace inventory.Context.MySql
             List<EquipmentModel> allModels = new List<EquipmentModel>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataModels = (MySqlDataReader)new DBConnection().Query("SELECT * FROM EquipmentModels", connection);
-                while (dataModels.Read())
+                MySqlCommand command = new MySqlCommand("SELECT id, name FROM equipment_model", connection);
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    allModels.Add(new EquipmentModel
+                    while (reader.Read())
                     {
-                        Id = dataModels.GetInt32(0),
-                        Name = dataModels.GetString(1),
-                        EquipmentTypeId = dataModels.GetInt32(2)
-                    });
+                        allModels.Add(new EquipmentModel
+                        {
+                            Id = reader.GetInt32(0), 
+                            Name = reader.GetString(1)
+                        });
+                    }
                 }
             }
             return allModels;
@@ -34,31 +36,29 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE EquipmentModels " +
+                    new DBConnection().Query("UPDATE equipment_model " +
                         "SET " +
-                        $"Name = '{this.Name}', " +
-                        $"EquipmentTypeId = {this.EquipmentTypeId} " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"name = '{this.Name}', " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO EquipmentModels " +
-                        "(Name, EquipmentTypeId) " +
+                    new DBConnection().Query("INSERT INTO equipment_model " +
+                        "(name) " +
                         "VALUES (" +
-                        $"'{this.Name}', " +
-                        $"{this.EquipmentTypeId})", connection);
+                        $"'{this.Name}', ", connection);
                 }
             }
         }
 
-        public void Delete()
+        public void Delete(int id)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM EquipmentModels WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM equipment_model WHERE id = {this.Id}", connection);
             }
         }
     }

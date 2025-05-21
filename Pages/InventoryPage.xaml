@@ -3,36 +3,32 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:inventory.Elements"
       mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="800"
       Title="Инвентаризация">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Панель инструментов -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
-            <Button Content="Новая инвентаризация" Command="{Binding AddCommand}" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Провести проверку" Command="{Binding PerformCheckCommand}" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Отчет" Command="{Binding GenerateReportCommand}" Style="{StaticResource ToolButtonStyle}"/>
-
+            <Button Content="Новая инвентаризация" Click="Add_Click" Style="{StaticResource ToolButtonStyle}"/>
+            <Button Content="Провести проверку" Click="PerformCheck_Click" Style="{StaticResource ToolButtonStyle}"/>
+            <Button Content="Отчет" Click="GenerateReport_Click" Style="{StaticResource ToolButtonStyle}"/>
             <DatePicker SelectedDate="{Binding StartDateFilter}" Width="150" Margin="10,0,0,0"/>
             <DatePicker SelectedDate="{Binding EndDateFilter}" Width="150" Margin="5,0,0,0"/>
         </StackPanel>
 
-        <!-- Список инвентаризаций -->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Inventories}"
-                  SelectedItem="{Binding SelectedInventory}"
-                  AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Дата начала" Binding="{Binding StartDate, StringFormat=d}" Width="120"/>
-                <DataGridTextColumn Header="Дата окончания" Binding="{Binding EndDate, StringFormat=d}" Width="120"/>
-                <DataGridTextColumn Header="Ответственный" Binding="{Binding User.FullName}" Width="180"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding InventoryList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:InventoryCard DataContext="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </Page>

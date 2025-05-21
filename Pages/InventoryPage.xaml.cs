@@ -1,11 +1,41 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
-using inventory.ViewModels;
+using inventory.Context.MySql;
+using inventory.Models;
 
 namespace inventory.Pages
 {
-    public partial class InventoryPage : Page
+    public partial class InventoryPage : Page, INotifyPropertyChanged
     {
+        private InventoryContext inventoryContext;
+        private List<Inventory> _inventoryList;
+        private DateTime? _startDateFilter;
+        private DateTime? _endDateFilter;
+
+        public List<Inventory> InventoryList
+        {
+            get => _inventoryList;
+            set { _inventoryList = value; OnPropertyChanged(nameof(InventoryList)); }
+        }
+
+        public DateTime? StartDateFilter
+        {
+            get => _startDateFilter;
+            set { _startDateFilter = value; OnPropertyChanged(nameof(StartDateFilter)); FilterInventories(); }
+        }
+
+        public DateTime? EndDateFilter
+        {
+            get => _endDateFilter;
+            set { _endDateFilter = value; OnPropertyChanged(nameof(EndDateFilter)); FilterInventories(); }
+        }
+
+        public bool IsMenuVisible => true;
+
         public InventoryPage()
         {
             InitializeComponent();
@@ -16,10 +46,44 @@ namespace inventory.Pages
                 mainWindow.NavigateToMainPage();
                 return;
             }
-            DataContext = new InventoryViewModel();
-            DataContext = new MainPageViewModel();
+            DataContext = this;
+            inventoryContext = new InventoryContext();
+            LoadInventories();
         }
 
-        public bool IsMenuVisible => true;
+        public void LoadInventories()
+        {
+            InventoryList = inventoryContext.AllInventorys().ToList(); 
+        }
+
+        private void FilterInventories()
+        {
+            IEnumerable<Inventory> inventories = inventoryContext.AllInventorys();
+            if (StartDateFilter.HasValue)
+                inventories = inventories.Where(i => i.StartDate >= StartDateFilter.Value);
+            if (EndDateFilter.HasValue)
+                inventories = inventories.Where(i => i.EndDate <= EndDateFilter.Value);
+
+            InventoryList = inventories.ToList();
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.NavigateToPage(new AddEditInventoryPage());
+        }
+
+        private void PerformCheck_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Проведение проверки еще не реализовано.");
+        }
+
+        private void GenerateReport_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Генерация отчета еще не реализована.");
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

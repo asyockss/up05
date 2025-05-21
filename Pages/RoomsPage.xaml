@@ -1,38 +1,32 @@
 ﻿<Page x:Class="inventory.Pages.RoomsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      mc:Ignorable="d" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:inventory.Elements"
+      mc:Ignorable="d"
       d:DesignHeight="600" d:DesignWidth="800"
       Title="Аудитории">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Панель инструментов -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
-            <Button Content="Добавить" Command="{Binding AddCommand}" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Редактировать" Command="{Binding EditCommand}" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Удалить" Command="{Binding DeleteCommand}" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Обновить" Command="{Binding RefreshCommand}" Style="{StaticResource ToolButtonStyle}"/>
-
-            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
-                     Width="200" Margin="10,0,0,0" Padding="5"/>
+            <Button Content="Добавить" Click="Add_Click" Style="{StaticResource ToolButtonStyle}"/>
+            <Button Content="Обновить" Click="Refresh_Click" Style="{StaticResource ToolButtonStyle}"/>
+            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="10,0,0,0" Padding="5"/>
         </StackPanel>
 
-        <!-- Список аудиторий -->
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Rooms}" 
-                  SelectedItem="{Binding SelectedRoom}" 
-                  AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Сокращение" Binding="{Binding ShortName}" Width="100"/>
-                <DataGridTextColumn Header="Ответственный" Binding="{Binding ResponsibleUser.FullName}" Width="180"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding RoomList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:RoomCard DataContext="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </Page>

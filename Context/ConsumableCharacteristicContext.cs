@@ -9,7 +9,7 @@ namespace inventory.Context.MySql
 {
     public class ConsumableCharacteristicContext : ConsumableCharacteristic, IConsumableCharacteristic
     {
-        public List<ConsumableCharacteristic> AllConsumableCharacteristics()
+        public  List<ConsumableCharacteristic> AllConsumableCharacteristics()
         {
             List<ConsumableCharacteristic> allCharacteristics = new List<ConsumableCharacteristic>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
@@ -34,19 +34,19 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE ConsumableCharacteristics " +
+                    new DBConnection().Query("UPDATE consumable_characteristics " +
                         "SET " +
-                        $"ConsumableTypeId = {this.ConsumableTypeId}, " +
-                        $"CharacteristicName = '{this.CharacteristicName}' " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"type_consumables_id = {this.ConsumableTypeId}, " +
+                        $"characteristic_name = '{this.CharacteristicName}' " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO ConsumableCharacteristics " +
-                        "(ConsumableTypeId, CharacteristicName) " +
+                    new DBConnection().Query("INSERT INTO consumable_characteristics " +
+                        "(type_consumables_id, characteristic_name) " +
                         "VALUES (" +
                         $"{this.ConsumableTypeId}, " +
                         $"'{this.CharacteristicName}')", connection);
@@ -54,11 +54,11 @@ namespace inventory.Context.MySql
             }
         }
 
-        public void Delete()
+        public void Delete(int id)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM ConsumableCharacteristics WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM consumable_characteristics WHERE id = {this.Id}", connection);
             }
         }
     }

@@ -11,6 +11,6 @@ namespace inventory.Interfase
     {
         List<ConsumableResponsibleHistory> AllConsumableResponsibleHistories();
         void Save(bool Update = false);
-        void Delete();
+        void Delete(int id);
     }
 }

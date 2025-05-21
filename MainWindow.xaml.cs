@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using inventory.Pages;
-using inventory.ViewModels;
 
 namespace inventory
 {
@@ -25,19 +12,15 @@ namespace inventory
             NavigateToLoginPage();
         }
 
-        public void NavigateToLoginPage()
-        {
-            MainFrame.Navigate(new LoginPage());
-        }
+        public void NavigateToLoginPage() => MainFrame.Navigate(new LoginPage());
+        public void NavigateToMainPage() => MainFrame.Navigate(new MainPage());
+        public void NavigateToPage(Page page) => MainFrame.Navigate(page);
 
-        public void NavigateToMainPage()
-        {
-            MainFrame.Navigate(new MainPage());
-        }
-
-        public void NavigateToPage(Page page)
-        {
-            MainFrame.Navigate(page);
-        }
+        private void Exit_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
+        private void ShowEquipment_Click(object sender, RoutedEventArgs e) => NavigateToPage(new EquipmentPage());
+        private void AddEquipment_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditEquipmentPage());
+        private void ShowConsumables_Click(object sender, RoutedEventArgs e) => NavigateToPage(new ConsumablesPage());
+        private void AddConsumable_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditConsumablePage());
+        private void ShowUsers_Click(object sender, RoutedEventArgs e) => NavigateToPage(new UsersPage());
     }
 }

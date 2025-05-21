@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<EquipmentConsumable> allEquipmentConsumables = new List<EquipmentConsumable>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataEquipmentConsumables = (MySqlDataReader)new DBConnection().Query("SELECT * FROM EquipmentConsumables", connection);
+                MySqlDataReader dataEquipmentConsumables = (MySqlDataReader)new DBConnection().Query("SELECT * FROM equipment_consumables", connection);
                 while (dataEquipmentConsumables.Read())
                 {
                     EquipmentConsumable newEquipmentConsumable = new EquipmentConsumable();
@@ -33,19 +33,19 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE EquipmentConsumables " +
+                    new DBConnection().Query("UPDATE equipment_consumables " +
                         "SET " +
-                        $"EquipmentId = {this.EquipmentId}, " +
-                        $"ConsumableId = {this.ConsumableId} " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"equipment_id  = {this.EquipmentId}, " +
+                        $"consumable_id  = {this.ConsumableId} " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO EquipmentConsumables " +
-                        "(EquipmentId, ConsumableId) " +
+                    new DBConnection().Query("INSERT INTO equipment_consumables " +
+                        "(equipment_id , consumable_id ) " +
                         "VALUES (" +
                         $"{this.EquipmentId}, " +
                         $"{this.ConsumableId})", connection);
@@ -53,11 +53,11 @@ namespace inventory.Context.MySql
             }
         }
 
-        public void Delete()
+        public void Delete(int id)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM EquipmentConsumables WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM equipment_consumables WHERE id = {this.Id}", connection);
             }
         }
     }

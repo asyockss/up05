@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<Status> allStatuses = new List<Status>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataStatuses = (MySqlDataReader)new DBConnection().Query("SELECT * FROM Statuses", connection);
+                MySqlDataReader dataStatuses = (MySqlDataReader)new DBConnection().Query("SELECT * FROM status", connection);
                 while (dataStatuses.Read())
                 {
                     Status newStatus = new Status();
@@ -32,29 +32,29 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE Statuses " +
+                    new DBConnection().Query("UPDATE status " +
                         "SET " +
-                        $"Name = '{this.Name}' " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"name = '{this.Name}' " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO Statuses " +
-                        "(Name) " +
+                    new DBConnection().Query("INSERT INTO status " +
+                        "(name) " +
                         "VALUES (" +
                         $"'{this.Name}')", connection);
                 }
             }
         }
 
-        public void Delete()
+        public void Delete(int id)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM Statuses WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM status WHERE id = {this.Id}", connection);
             }
         }
     }

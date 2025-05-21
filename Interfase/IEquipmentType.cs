@@ -12,6 +12,6 @@ namespace inventory.Interfase
     {
         List<EquipmentType> AllEquipmentTypes();
         void Save(bool Update = false);
-        void Delete();
+        void Delete(int id);
     }
 }

@@ -14,7 +14,7 @@ namespace inventory.Context.MySql
             List<ConsumableResponsibleHistory> allHistories = new List<ConsumableResponsibleHistory>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataHistories = (MySqlDataReader)new DBConnection().Query("SELECT * FROM ConsumableResponsibleHistories", connection);
+                MySqlDataReader dataHistories = (MySqlDataReader)new DBConnection().Query("SELECT * FROM consumable_responsible_history", connection);
                 while (dataHistories.Read())
                 {
                     ConsumableResponsibleHistory newHistory = new ConsumableResponsibleHistory();
@@ -34,20 +34,20 @@ namespace inventory.Context.MySql
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("UPDATE ConsumableResponsibleHistories " +
+                    new DBConnection().Query("UPDATE consumable_responsible_history " +
                         "SET " +
-                        $"ConsumableId = {this.ConsumableId}, " +
-                        $"OldUserId = {(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
-                        $"ChangeDate = '{this.ChangeDate.ToString("yyyy-MM-dd")}' " +
-                        $"WHERE Id = {this.Id}", connection);
+                        $"consumable_id  = {this.ConsumableId}, " +
+                        $"old_user_id  = {(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
+                        $"change_date = '{this.ChangeDate.ToString("yyyy-MM-dd")}' " +
+                        $"WHERE id = {this.Id}", connection);
                 }
             }
             else
             {
                 using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    new DBConnection().Query("INSERT INTO ConsumableResponsibleHistories " +
-                        "(ConsumableId, OldUserId, ChangeDate) " +
+                    new DBConnection().Query("INSERT INTO consumable_responsible_history " +
+                        "(consumable_id , old_user_id, change_date) " +
                         "VALUES (" +
                         $"{this.ConsumableId}, " +
                         $"{(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
@@ -56,11 +56,11 @@ namespace inventory.Context.MySql
             }
         }
 
-        public void Delete()
+        public void Delete(int id)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM ConsumableResponsibleHistories WHERE Id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM consumable_responsible_history WHERE id = {this.Id}", connection);
             }
         }
     }

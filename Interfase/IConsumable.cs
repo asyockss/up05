@@ -11,7 +11,7 @@ namespace inventory.Interfase
     {
         List<Consumable> AllConsumables();
         void Save(bool Update = false);
-        void Delete();
+        void Delete(int id);
     }
 
 }
