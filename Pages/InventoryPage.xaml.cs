@@ -125,21 +125,32 @@ namespace inventory.Pages
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                // inventory.Id существует в таблице equipment
+                // Убедитесь, что inventory.Id существует в таблице equipment
                 MySqlCommand checkCommand = new MySqlCommand("SELECT COUNT(*) FROM equipment WHERE id = @Id", connection);
                 checkCommand.Parameters.AddWithValue("@Id", inventory.Id);
                 int count = Convert.ToInt32(checkCommand.ExecuteScalar());
 
                 if (count > 0)
                 {
-                    MySqlCommand command = new MySqlCommand(
-                        "INSERT INTO inventory_checks (inventory_id, equipment_id, users_id, comment) VALUES (@InventoryId, @EquipmentId, @UserId, @Comment)",
-                        connection);
-                    command.Parameters.AddWithValue("@InventoryId", inventory.Id);
-                    command.Parameters.AddWithValue("@EquipmentId", inventory.Id);
-                    command.Parameters.AddWithValue("@UserId", CurrentUser.Id);
-                    command.Parameters.AddWithValue("@Comment", "Discrepancy found during inventory check");
-                    command.ExecuteNonQuery();
+                    // Создаем объект InventoryCheck и заполняем его данными
+                    InventoryCheck check = new InventoryCheck
+                    {
+                        InventoryId = inventory.Id,
+                        EquipmentId = inventory.Id, // Предполагаем, что equipment_id совпадает с inventory.Id
+                        UserId = CurrentUser.Id, // Предполагаем, что CurrentUser.Id - это ID текущего пользователя
+                        CheckDate = DateTime.Now,
+                        Comment = "Discrepancy found during inventory check"
+                    };
+
+                    // Сохраняем запись в таблицу inventory_checks
+                    InventoryCheckContext checkContext = new InventoryCheckContext();
+                    checkContext.Id = check.Id;
+                    checkContext.InventoryId = check.InventoryId;
+                    checkContext.EquipmentId = check.EquipmentId;
+                    checkContext.UserId = check.UserId;
+                    checkContext.CheckDate = check.CheckDate;
+                    checkContext.Comment = check.Comment;
+                    checkContext.Save();
                 }
                 else
                 {
@@ -147,6 +158,8 @@ namespace inventory.Pages
                 }
             }
         }
+
+
 
         private void GenerateReport_Click(object sender, RoutedEventArgs e)
         {
