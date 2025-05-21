@@ -1,4 +1,7 @@
-﻿using System;
+﻿using inventory.Context.MySql;
+using inventory.Models;
+using inventory.Pages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,5 +24,31 @@ namespace inventory.Elements
         {
             InitializeComponent();
         }
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is Inventory inventory)
+            {
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+                mainWindow.NavigateToPage(new AddEditInventoryPage(inventory));
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is Inventory inventory &&
+                MessageBox.Show("Вы уверены, что хотите удалить это оборудование?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                new InventoryContext().Delete(inventory.Id);
+                RefreshParentPage();
+            }
+        }
+        private void RefreshParentPage()
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(this);
+            while (parent != null && !(parent is InventoryPage))
+                parent = VisualTreeHelper.GetParent(parent);
+            if (parent is InventoryPage page) page.LoadInventories();
+        }
+
     }
 }
