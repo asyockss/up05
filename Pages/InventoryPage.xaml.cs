@@ -77,7 +77,6 @@ namespace inventory.Pages
             var mainWindow = (MainWindow)Application.Current.MainWindow;
             mainWindow.NavigateToPage(new AddEditInventoryPage());
         }
-
         private void PerformCheck_Click(object sender, RoutedEventArgs e)
         {
             if (InventoryList == null || InventoryList.Count == 0)
@@ -89,8 +88,6 @@ namespace inventory.Pages
             PerformInventoryCheck();
             MessageBox.Show("Проверка инвентаризации выполнена успешно.");
         }
-
-
 
         private void PerformInventoryCheck()
         {
@@ -111,7 +108,6 @@ namespace inventory.Pages
             }
         }
 
-
         private bool CheckInventoryItem(Inventory inventory)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
@@ -123,20 +119,21 @@ namespace inventory.Pages
             }
         }
 
-
-
         private void LogDiscrepancy(Inventory inventory)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
+                // Проверяем, существует ли inventory_id в таблице inventories
                 MySqlCommand checkInventoryCommand = new MySqlCommand("SELECT COUNT(*) FROM inventories WHERE id = @Id", connection);
                 checkInventoryCommand.Parameters.AddWithValue("@Id", inventory.Id);
                 int inventoryCount = Convert.ToInt32(checkInventoryCommand.ExecuteScalar());
 
+                // Проверяем, существует ли equipment_id в таблице equipment
                 MySqlCommand checkEquipmentCommand = new MySqlCommand("SELECT COUNT(*) FROM equipment WHERE id = @Id", connection);
                 checkEquipmentCommand.Parameters.AddWithValue("@Id", inventory.Id);
                 int equipmentCount = Convert.ToInt32(checkEquipmentCommand.ExecuteScalar());
 
+                // Проверяем, существует ли user_id в таблице users
                 MySqlCommand checkUserCommand = new MySqlCommand("SELECT COUNT(*) FROM users WHERE id = @Id", connection);
                 checkUserCommand.Parameters.AddWithValue("@Id", CurrentUser.Id);
                 int userCount = Convert.ToInt32(checkUserCommand.ExecuteScalar());
@@ -151,7 +148,6 @@ namespace inventory.Pages
                         CheckDate = DateTime.Now,
                         Comment = "Что-то это значит"
                     };
-
                     InventoryCheckContext checkContext = new InventoryCheckContext();
                     checkContext.Id = check.Id;
                     checkContext.InventoryId = check.InventoryId;
@@ -167,8 +163,6 @@ namespace inventory.Pages
                 }
             }
         }
-
-
 
         private void GenerateReport_Click(object sender, RoutedEventArgs e)
         {
