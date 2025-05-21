@@ -28,7 +28,7 @@ namespace inventory.Pages
             set { _searchText = value; OnPropertyChanged(nameof(SearchText)); FilterUsers(); }
         }
 
-        public List<string> RoleFilters => new List<string> { "Все", "Admin", "User" };
+        public List<string> RoleFilters => new List<string> { "Все", "admin", "teacher", "employee" };
 
         public string SelectedRoleFilter
         {
