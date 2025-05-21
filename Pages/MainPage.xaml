@@ -18,8 +18,7 @@
             <Button Content="Расходники" Click="NavigateToConsumables_Click" Style="{StaticResource NavButtonStyle}"/>
             <Button Content="Аудитории" Click="NavigateToRooms_Click" Style="{StaticResource NavButtonStyle}"/>
             <Button Content="Инвентаризация" Click="NavigateToInventory_Click" Style="{StaticResource NavButtonStyle}"/>
-            <Button Content="Пользователи" Click="NavigateToUsers_Click" Style="{StaticResource NavButtonStyle}" 
-                    Visibility="{Binding Source={x:Static local:CurrentUser.IsAdmin}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <Button Content="Пользователи" Click="NavigateToUsers_Click" Style="{StaticResource NavButtonStyle}"/>
         </StackPanel>
 
         <Frame x:Name="ContentFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>

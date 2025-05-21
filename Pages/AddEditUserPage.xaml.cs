@@ -13,7 +13,7 @@ namespace inventory.Pages
         private UserContext userContext;
         public User CurrentUser { get; set; }
         public new string Title => CurrentUser.Id == 0 ? "Добавить пользователя" : "Редактировать пользователя";
-        public List<string> Roles => new List<string> { "Admin", "User" };
+        public List<string> Roles => new List<string> { "admin", "teacher", "employee" };
         public bool IsMenuVisible => true;
 
         public AddEditUserPage(User user = null)
