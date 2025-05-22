@@ -192,5 +192,56 @@ namespace inventory.Pages
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        private void GenerateComsumables_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var excelApp = new Microsoft.Office.Interop.Excel.Application();
+                excelApp.Visible = false;
+                var workbook = excelApp.Workbooks.Add();
+                var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets[1];
+
+                // Заголовок акта
+                worksheet.Cells[1, 1] = "АКТ приема-передачи оборудования";
+                worksheet.Cells[2, 1] = $"г. Пермь, {DateTime.Now:dd.MM.yyyy}";
+                worksheet.Cells[3, 1] = "КГАПОУ Пермский Авиационный техникум им. А.Д. Швецова передает:";
+
+                // Шапка таблицы
+                worksheet.Cells[5, 1] = "№";
+                worksheet.Cells[5, 2] = "Название";
+                worksheet.Cells[5, 3] = "Описание";
+                worksheet.Cells[5, 4] = "Дата поступления";
+                worksheet.Cells[5, 5] = "Ответственный";
+                worksheet.Cells[5, 5] = "Количество";
+
+                int row = 6;
+                var consumableContext = new ConsumableContext();
+                var consumables = consumableContext.AllConsumables();
+                foreach (var cons in consumables)
+                {
+                    worksheet.Cells[row, 1] = row - 5;
+                    worksheet.Cells[row, 2] = cons.Name;
+                    worksheet.Cells[row, 3] = cons.Description;
+                    worksheet.Cells[row, 4] = cons.ReceiptDate;
+                    worksheet.Cells[row, 5] = cons.ResponsibleId;
+                    worksheet.Cells[row, 5] = cons.Quantity;
+                    row++;
+                }
+
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog { Filter = "Excel files (*.xlsx)|*.xlsx" };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    workbook.SaveAs(saveFileDialog.FileName);
+                    workbook.Close();
+                    excelApp.Quit();
+                    MessageBox.Show("Акт успешно сгенерирован.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при генерации акта: {ex.Message}");
+            }
+        }
     }
 }
