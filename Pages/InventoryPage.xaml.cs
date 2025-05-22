@@ -5,18 +5,15 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using inventory.Context.MySql;
-using inventory.Context.Common;
 using inventory.Models;
 using MySql.Data.MySqlClient;
-using inventory.Interfase;
-using System.Text;
+using inventory.Context.Common;
 
 namespace inventory.Pages
 {
     public partial class InventoryPage : Page, INotifyPropertyChanged
     {
         private InventoryContext inventoryContext;
-        private EquipmentContext equipmentContext;
         private List<Inventory> _inventoryList;
         private DateTime? _startDateFilter;
         private DateTime? _endDateFilter;
@@ -58,7 +55,7 @@ namespace inventory.Pages
 
         public void LoadInventories()
         {
-            InventoryList = inventoryContext.AllInventorys().ToList(); 
+            InventoryList = inventoryContext.AllInventorys().ToList();
         }
 
         private void FilterInventories()
@@ -68,7 +65,6 @@ namespace inventory.Pages
                 inventories = inventories.Where(i => i.StartDate >= StartDateFilter.Value);
             if (EndDateFilter.HasValue)
                 inventories = inventories.Where(i => i.EndDate <= EndDateFilter.Value);
-
             InventoryList = inventories.ToList();
         }
 
@@ -77,6 +73,7 @@ namespace inventory.Pages
             var mainWindow = (MainWindow)Application.Current.MainWindow;
             mainWindow.NavigateToPage(new AddEditInventoryPage());
         }
+
         private void PerformCheck_Click(object sender, RoutedEventArgs e)
         {
             if (InventoryList == null || InventoryList.Count == 0)
@@ -84,23 +81,59 @@ namespace inventory.Pages
                 MessageBox.Show("Нет доступных инвентаризаций для проверки.");
                 return;
             }
-
             PerformInventoryCheck();
-            MessageBox.Show("Проверка инвентаризации выполнена успешно.");
         }
 
         private void PerformInventoryCheck()
         {
             try
             {
-                foreach (var inventory in InventoryList)
+                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
                 {
-                    bool isValid = CheckInventoryItem(inventory);
-                    if (!isValid)
+                    foreach (var inventory in InventoryList)
                     {
-                        LogDiscrepancy(inventory);
+                        // Получаем все оборудование для данной инвентаризации
+                        MySqlCommand cmd = new MySqlCommand("SELECT id, status_id FROM equipment WHERE inventory_id = @InventoryId", connection);
+                        cmd.Parameters.AddWithValue("@InventoryId", inventory.Id);
+                        List<(int id, int statusId)> equipmentList = new List<(int, int)>();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                equipmentList.Add((reader.GetInt32(0), reader.GetInt32(1)));
+                            }
+                        }
+
+                        foreach (var equipment in equipmentList)
+                        {
+                            int equipmentId = equipment.id;
+                            int statusId = equipment.statusId;
+                            Status status = new StatusContext().AllStatuses().FirstOrDefault(s => s.Id == statusId);
+                            string comment = (status != null && status.Name == "Активен")
+                                ? "Оборудование в порядке"
+                                : $"Оборудование не активно, статус: {status?.Name ?? "Неизвестен"}";
+
+                            // Записываем результат проверки
+                            InventoryCheck check = new InventoryCheck
+                            {
+                                InventoryId = inventory.Id,
+                                EquipmentId = equipmentId,
+                                UserId = CurrentUser.Id,
+                                CheckDate = DateTime.Now,
+                                Comment = comment
+                            };
+                            InventoryCheckContext checkContext = new InventoryCheckContext();
+                            checkContext.Id = check.Id;
+                            checkContext.InventoryId = check.InventoryId;
+                            checkContext.EquipmentId = check.EquipmentId;
+                            checkContext.UserId = check.UserId;
+                            checkContext.CheckDate = check.CheckDate;
+                            checkContext.Comment = check.Comment;
+                            checkContext.Save();
+                        }
                     }
                 }
+                MessageBox.Show("Проверка инвентаризации выполнена успешно.");
             }
             catch (Exception ex)
             {
@@ -108,107 +141,54 @@ namespace inventory.Pages
             }
         }
 
-        private bool CheckInventoryItem(Inventory inventory)
-        {
-            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-            {
-                MySqlCommand command = new MySqlCommand("SELECT COUNT(*) FROM inventories WHERE id = @Id", connection);
-                command.Parameters.AddWithValue("@Id", inventory.Id);
-                int count = Convert.ToInt32(command.ExecuteScalar());
-                return count > 0;
-            }
-        }
-
-        private void LogDiscrepancy(Inventory inventory)
-        {
-            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-            {
-                // Проверяем, существует ли inventory_id в таблице inventories
-                MySqlCommand checkInventoryCommand = new MySqlCommand("SELECT COUNT(*) FROM inventories WHERE id = @Id", connection);
-                checkInventoryCommand.Parameters.AddWithValue("@Id", inventory.Id);
-                int inventoryCount = Convert.ToInt32(checkInventoryCommand.ExecuteScalar());
-
-                // Проверяем, существует ли equipment_id в таблице equipment
-                MySqlCommand checkEquipmentCommand = new MySqlCommand("SELECT COUNT(*) FROM equipment WHERE id = @Id", connection);
-                checkEquipmentCommand.Parameters.AddWithValue("@Id", inventory.Id);
-                int equipmentCount = Convert.ToInt32(checkEquipmentCommand.ExecuteScalar());
-
-                // Проверяем, существует ли user_id в таблице users
-                MySqlCommand checkUserCommand = new MySqlCommand("SELECT COUNT(*) FROM users WHERE id = @Id", connection);
-                checkUserCommand.Parameters.AddWithValue("@Id", CurrentUser.Id);
-                int userCount = Convert.ToInt32(checkUserCommand.ExecuteScalar());
-
-                if (inventoryCount > 0 && equipmentCount > 0 && userCount > 0)
-                {
-                    InventoryCheck check = new InventoryCheck
-                    {
-                        InventoryId = inventory.Id,
-                        EquipmentId = inventory.Id,
-                        UserId = CurrentUser.Id, 
-                        CheckDate = DateTime.Now,
-                        Comment = "Что-то это значит"
-                    };
-                    InventoryCheckContext checkContext = new InventoryCheckContext();
-                    checkContext.Id = check.Id;
-                    checkContext.InventoryId = check.InventoryId;
-                    checkContext.EquipmentId = check.EquipmentId;
-                    checkContext.UserId = check.UserId;
-                    checkContext.CheckDate = check.CheckDate;
-                    checkContext.Comment = check.Comment;
-                    checkContext.Save();
-                }
-                else
-                {
-                    MessageBox.Show($"Ошибка: inventory_id, equipment_id или user_id не существует в соответствующих таблицах.");
-                }
-            }
-        }
-
         private void GenerateReport_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
+                var excelApp = new Microsoft.Office.Interop.Excel.Application();
                 excelApp.Visible = false;
+                var workbook = excelApp.Workbooks.Add();
+                var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets[1];
 
-                Microsoft.Office.Interop.Excel.Workbook workbook = excelApp.Workbooks.Add();
-                Microsoft.Office.Interop.Excel.Worksheet worksheet = workbook.Sheets[1];
+                // Заголовок акта
+                worksheet.Cells[1, 1] = "АКТ приема-передачи оборудования";
+                worksheet.Cells[2, 1] = $"г. Пермь, {DateTime.Now:dd.MM.yyyy}";
+                worksheet.Cells[3, 1] = "КГАПОУ Пермский Авиационный техникум им. А.Д. Швецова передает:";
 
-                worksheet.Cells[1, 1].Value = "ID";
-                worksheet.Cells[1, 2].Value = "Name";
-                worksheet.Cells[1, 3].Value = "Start Date";
-                worksheet.Cells[1, 4].Value = "End Date";
-                worksheet.Cells[1, 5].Value = "User ID";
+                // Шапка таблицы
+                worksheet.Cells[5, 1] = "№";
+                worksheet.Cells[5, 2] = "Название";
+                worksheet.Cells[5, 3] = "Инв. номер";
+                worksheet.Cells[5, 4] = "Стоимость";
+                worksheet.Cells[5, 5] = "Ответственный";
 
-                int row = 2;
-                foreach (var inventory in InventoryList)
+                int row = 6;
+                var equipmentContext = new EquipmentContext();
+                var equipments = equipmentContext.AllEquipment();
+                foreach (var equip in equipments)
                 {
-                    worksheet.Cells[row, 1].Value = inventory.Id;
-                    worksheet.Cells[row, 2].Value = inventory.Name;
-                    worksheet.Cells[row, 3].Value = inventory.StartDate.ToString("yyyy-MM-dd");
-                    worksheet.Cells[row, 4].Value = inventory.EndDate.ToString("yyyy-MM-dd");
-                    worksheet.Cells[row, 5].Value = inventory.UserId;
+                    worksheet.Cells[row, 1] = row - 5;
+                    worksheet.Cells[row, 2] = equip.Name;
+                    worksheet.Cells[row, 3] = equip.InventoryNumber;
+                    worksheet.Cells[row, 4] = equip.Cost?.ToString("F2") ?? "Не указана";
+                    worksheet.Cells[row, 5] = equip.Responsible?.FullName ?? "Не назначен";
                     row++;
                 }
 
-                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
-                saveFileDialog.Filter = "Excel files (*.xlsx)|*.xlsx";
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog { Filter = "Excel files (*.xlsx)|*.xlsx" };
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     workbook.SaveAs(saveFileDialog.FileName);
                     workbook.Close();
                     excelApp.Quit();
-                    MessageBox.Show("Отчет успешно сгенерирован.");
+                    MessageBox.Show("Акт успешно сгенерирован.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при генерации отчета: {ex.Message}");
+                MessageBox.Show($"Ошибка при генерации акта: {ex.Message}");
             }
         }
-
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

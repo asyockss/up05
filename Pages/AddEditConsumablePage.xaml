@@ -19,16 +19,22 @@
             <StackPanel Margin="10">
                 <GroupBox Header="Основная информация" Margin="0,0,0,10">
                     <StackPanel>
+                        <Label Content="Название"></Label>
                         <TextBox materialDesign:HintAssist.Hint="Название*" Text="{Binding CurrentConsumable.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}"/>
+                        <Label Content="Описание"></Label>
                         <TextBox materialDesign:HintAssist.Hint="Описание" Text="{Binding CurrentConsumable.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Дата поступления"></Label>
                         <DatePicker materialDesign:HintAssist.Hint="Дата поступления" SelectedDate="{Binding CurrentConsumable.ReceiptDate, Mode=TwoWay}" Margin="0,10,0,0"/>
-                        <TextBox materialDesign:HintAssist.Hint="Количество*" Text="{Binding CurrentConsumable.Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Количество"></Label>
+                        <TextBox materialDesign:HintAssist.Hint="Количество*" Text="{Binding CurrentConsumable.Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}"/>
+                        <Label Content="Тип расходника"></Label>
                         <ComboBox materialDesign:HintAssist.Hint="Тип расходника" ItemsSource="{Binding ConsumableTypes}" DisplayMemberPath="Type" SelectedValuePath="Id" SelectedValue="{Binding CurrentConsumable.ConsumableTypeId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Ответственные" Margin="0,0,0,10">
                     <StackPanel>
                         <ComboBox materialDesign:HintAssist.Hint="Ответственный" ItemsSource="{Binding Users}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding CurrentConsumable.ResponsibleId}" Style="{StaticResource ComboBoxStyle}"/>
+                        <Label Content="Временно ответственный"></Label>
                         <ComboBox materialDesign:HintAssist.Hint="Временно ответственный" ItemsSource="{Binding Users}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding CurrentConsumable.TempResponsibleId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
                     </StackPanel>
                 </GroupBox>

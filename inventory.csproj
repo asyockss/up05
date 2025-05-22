@@ -131,6 +131,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Context\ByteArrayToImageConverter.cs" />
     <Compile Include="Context\Common\DBConnection.cs" />
     <Compile Include="Context\ConsumableCharacteristicContext.cs" />
     <Compile Include="Context\ConsumableCharacteristicValueContext.cs" />

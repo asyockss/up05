@@ -14,7 +14,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Меню (видимость зависит от текущей страницы) -->
         <Menu Grid.Row="0" Visibility="{Binding ElementName=MainFrame, Path=Content.IsMenuVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <MenuItem Header="Файл">
                 <MenuItem Header="Выход" Click="Exit_Click"/>
@@ -27,12 +26,20 @@
                 <MenuItem Header="Список расходников" Click="ShowConsumables_Click"/>
                 <MenuItem Header="Добавить расходник" Click="AddConsumable_Click"/>
             </MenuItem>
-            <MenuItem Header="Администрирование" Visibility="{Binding Source={x:Static local:CurrentUser.IsAdmin}, Converter={StaticResource BoolToVisibilityConverter}}">
+            <MenuItem Header="Аудитории">
+                <MenuItem Header="Список аудиторий" Click="ShowRooms_Click"/>
+                <MenuItem Header="Добавить аудиторию" Click="AddRoom_Click"/>
+            </MenuItem>
+            <MenuItem Header="Инвентаризация">
+                <MenuItem Header="Список инвентаризаций" Click="ShowInventory_Click"/>
+                <MenuItem Header="Добавить инвентаризацию" Click="AddInventory_Click"/>
+            </MenuItem>
+            <MenuItem Header="Администрирование">
                 <MenuItem Header="Пользователи" Click="ShowUsers_Click"/>
+                <MenuItem Header="Добавить пользователя" Click="AddUser_Click"/>
             </MenuItem>
         </Menu>
 
-        <!-- Основное содержимое -->
         <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>

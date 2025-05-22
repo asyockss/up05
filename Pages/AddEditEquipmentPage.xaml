@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="800" d:DesignWidth="1000"
+      d:DesignHeight="600" d:DesignWidth="800"
       Title="{Binding Title}">
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -15,64 +15,38 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
-        <TabControl Grid.Row="1">
-            <TabItem Header="Основная информация">
-                <ScrollViewer>
-                    <StackPanel Margin="10">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                <GroupBox Header="Идентификация" Margin="0,0,0,10">
-                                    <StackPanel>
-                                        <TextBox materialDesign:HintAssist.Hint="Название*" Text="{Binding CurrentEquipment.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}"/>
-                                        <TextBox materialDesign:HintAssist.Hint="Инвентарный номер*" Text="{Binding CurrentEquipment.InventoryNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
-                                    </StackPanel>
-                                </GroupBox>
-                                <GroupBox Header="Классификация" Margin="0,0,0,10">
-                                    <StackPanel>
-                                        <ComboBox materialDesign:HintAssist.Hint="Тип оборудования*" ItemsSource="{Binding EquipmentTypes}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.EquipmentTypeId}" Style="{StaticResource ComboBoxStyle}"/>
-                                        <ComboBox materialDesign:HintAssist.Hint="Модель" ItemsSource="{Binding EquipmentModels}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.ModelId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
-                                        <ComboBox materialDesign:HintAssist.Hint="Направление" ItemsSource="{Binding Directions}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.DirectionId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
-                                    </StackPanel>
-                                </GroupBox>
-                                <GroupBox Header="Статус" Margin="0,0,0,10">
-                                    <StackPanel>
-                                        <ComboBox materialDesign:HintAssist.Hint="Статус оборудования" ItemsSource="{Binding Statuses}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.StatusId}" Style="{StaticResource ComboBoxStyle}"/>
-                                        <TextBox materialDesign:HintAssist.Hint="Стоимость" Text="{Binding CurrentEquipment.Cost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
-                                    </StackPanel>
-                                </GroupBox>
-                                <GroupBox Header="Комментарий" Margin="0,0,0,10">
-                                    <StackPanel>
-                                        <TextBox materialDesign:HintAssist.Hint="Комментарий" Text="{Binding CurrentEquipment.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
-                                    </StackPanel>
-                                </GroupBox>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                <GroupBox Header="Расположение" Margin="0,0,0,10">
-                                    <ComboBox materialDesign:HintAssist.Hint="Аудитория" ItemsSource="{Binding Rooms}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.RoomId}" Style="{StaticResource ComboBoxStyle}"/>
-                                </GroupBox>
-                                <GroupBox Header="Ответственные" Margin="0,0,0,10">
-                                    <StackPanel>
-                                        <ComboBox materialDesign:HintAssist.Hint="Ответственный" ItemsSource="{Binding Users}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.ResponsibleId}" Style="{StaticResource ComboBoxStyle}"/>
-                                        <ComboBox materialDesign:HintAssist.Hint="Временно ответственный" ItemsSource="{Binding Users}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.TempResponsibleId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
-                                    </StackPanel>
-                                </GroupBox>
-                                <GroupBox Header="Фото оборудования" Margin="0,0,0,10">
-                                    <StackPanel>
-                                        <Image Source="{Binding ImagePreview}" MaxHeight="150" MaxWidth="200" HorizontalAlignment="Left" Margin="0,0,0,10"/>
-                                        <Button Content="Выбрать фото" Click="SelectImageButton_Click" Style="{StaticResource ToolButtonStyle}" HorizontalAlignment="Left"/>
-                                    </StackPanel>
-                                </GroupBox>
-                            </StackPanel>
-                        </Grid>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="10">
+                <GroupBox Header="Информация об оборудовании" Margin="0,0,0,10">
+                    <StackPanel>
+                        <Label Content="Название"></Label>
+                        <TextBox materialDesign:HintAssist.Hint="Название*" Text="{Binding CurrentEquipment.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}"/>
+                        <Label Content="Инвентарный номер"></Label>
+                        <TextBox materialDesign:HintAssist.Hint="Инвентарный номер*" Text="{Binding CurrentEquipment.InventoryNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Стоимость"></Label>
+                        <TextBox materialDesign:HintAssist.Hint="Стоимость" Text="{Binding CurrentEquipment.Cost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Комментарий"></Label>
+                        <TextBox materialDesign:HintAssist.Hint="Комментарий" Text="{Binding CurrentEquipment.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Аудитория"></Label>
+                        <ComboBox materialDesign:HintAssist.Hint="Аудитория" ItemsSource="{Binding Rooms}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.RoomId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Ответственный"></Label>
+                        <ComboBox materialDesign:HintAssist.Hint="Ответственный" ItemsSource="{Binding Users}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.ResponsibleId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Временно ответственный"></Label>
+                        <ComboBox materialDesign:HintAssist.Hint="Временно ответственный" ItemsSource="{Binding Users}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.TempResponsibleId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Тип оборудования"></Label>
+                        <ComboBox materialDesign:HintAssist.Hint="Тип оборудования*" ItemsSource="{Binding EquipmentTypes}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.EquipmentTypeId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Модель"></Label>
+                        <ComboBox materialDesign:HintAssist.Hint="Модель" ItemsSource="{Binding EquipmentModels}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.ModelId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Направление"></Label>
+                        <ComboBox materialDesign:HintAssist.Hint="Направление" ItemsSource="{Binding Directions}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.DirectionId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Статус"></Label>
+                        <ComboBox materialDesign:HintAssist.Hint="Статус*" ItemsSource="{Binding Statuses}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding CurrentEquipment.StatusId}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
+                        <Button Content="Выбрать изображение" Click="SelectImageButton_Click" Style="{StaticResource ActionButtonStyle}" Margin="0,10,0,0"/>
+                        <Image Source="{Binding ImagePreview}" Width="100" Height="100" Margin="0,10,0,0"/>
                     </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-        </TabControl>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
             <Button Content="Сохранить" Click="SaveButton_Click" Style="{StaticResource ActionButtonStyle}" Width="120"/>
