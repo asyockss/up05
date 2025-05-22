@@ -17,7 +17,16 @@ namespace inventory.Pages
         private List<Inventory> _inventoryList;
         private DateTime? _startDateFilter;
         private DateTime? _endDateFilter;
-
+        private Inventory _selectedInventory;
+        public Inventory SelectedInventory
+        {
+            get => _selectedInventory;
+            set
+            {
+                _selectedInventory = value;
+                OnPropertyChanged(nameof(SelectedInventory));
+            }
+        }
         public List<Inventory> InventoryList
         {
             get => _inventoryList;
@@ -76,6 +85,16 @@ namespace inventory.Pages
 
         private void PerformCheck_Click(object sender, RoutedEventArgs e)
         {
+            if (SelectedInventory == null)
+            {
+                MessageBox.Show("Выберите инвентаризацию для проверки");
+                return;
+            }
+            var checkWindow = new InventoryCheckWindow(SelectedInventory);
+            if (checkWindow.ShowDialog() == true)
+            {
+                LoadInventories();
+            }
             if (InventoryList == null || InventoryList.Count == 0)
             {
                 MessageBox.Show("Нет доступных инвентаризаций для проверки.");
