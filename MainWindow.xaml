@@ -38,6 +38,7 @@
                 <MenuItem Header="Пользователи" Click="ShowUsers_Click"/>
                 <MenuItem Header="Добавить пользователя" Click="AddUser_Click"/>
             </MenuItem>
+            <MenuItem Header="Сетевые настройки" Click="ShowNetworkSettings_Click"/>
         </Menu>
 
         <Frame x:Name="MainFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>
