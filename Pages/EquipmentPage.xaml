@@ -15,6 +15,7 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
             <Button Content="Добавить" Click="Add_Click" Style="{StaticResource ToolButtonStyle}"/>
+            <Button Content="Импорт из Excel" Click="ImportFromExcel_Click" Style="{StaticResource ToolButtonStyle}"/>
             <Button Content="Обновить" Click="Refresh_Click" Style="{StaticResource ToolButtonStyle}"/>
             <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="10,0,0,0" Padding="5"/>
         </StackPanel>

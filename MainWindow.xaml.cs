@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using inventory.Pages;
 
 namespace inventory
@@ -21,6 +22,12 @@ namespace inventory
         private void AddEquipment_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditEquipmentPage());
         private void ShowConsumables_Click(object sender, RoutedEventArgs e) => NavigateToPage(new ConsumablesPage());
         private void AddConsumable_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditConsumablePage());
+        private void ShowRooms_Click(object sender, RoutedEventArgs e) => NavigateToPage(new RoomsPage());
+        private void AddRoom_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditRoomPage());
+        private void ShowInventory_Click(object sender, RoutedEventArgs e) => NavigateToPage(new InventoryPage());
+        private void AddInventory_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditInventoryPage());
         private void ShowUsers_Click(object sender, RoutedEventArgs e) => NavigateToPage(new UsersPage());
+        private void AddUser_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditUserPage());
+        private void ShowNetworkSettings_Click(object sender, RoutedEventArgs e) => NavigateToPage(new NetworkSettingsPage());
     }
 }

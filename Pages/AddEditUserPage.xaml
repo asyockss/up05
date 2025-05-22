@@ -19,18 +19,27 @@
             <StackPanel Margin="10">
                 <GroupBox Header="Личные данные" Margin="0,0,0,10">
                     <StackPanel>
+                        <Label Content="Фамилия"></Label>
                         <TextBox materialDesign:HintAssist.Hint="Фамилия*" Text="{Binding CurrentUser.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}"/>
+                        <Label Content="Имя"></Label>
                         <TextBox materialDesign:HintAssist.Hint="Имя*" Text="{Binding CurrentUser.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Отчество"></Label>
                         <TextBox materialDesign:HintAssist.Hint="Отчество" Text="{Binding CurrentUser.MiddleName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Email"></Label>
                         <TextBox materialDesign:HintAssist.Hint="Email" Text="{Binding CurrentUser.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Телефон"></Label>
                         <TextBox materialDesign:HintAssist.Hint="Телефон" Text="{Binding CurrentUser.Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Адрес"></Label>
                         <TextBox materialDesign:HintAssist.Hint="Адрес" Text="{Binding CurrentUser.Address, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Учетные данные" Margin="0,0,0,10">
                     <StackPanel>
+                        <Label Content="Логин"></Label>
                         <TextBox materialDesign:HintAssist.Hint="Логин*" Text="{Binding CurrentUser.Login, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}"/>
+                        <Label Content="Пароль"></Label>
                         <PasswordBox x:Name="PasswordBox" materialDesign:HintAssist.Hint="Пароль*" Margin="0,10,0,0" Style="{StaticResource PasswordInputStyle}"/>
+                        <Label Content="Роль"></Label>
                         <ComboBox materialDesign:HintAssist.Hint="Роль*" ItemsSource="{Binding Roles}" SelectedItem="{Binding CurrentUser.Role}" Style="{StaticResource ComboBoxStyle}" Margin="0,10,0,0"/>
                     </StackPanel>
                 </GroupBox>

@@ -22,13 +22,13 @@
         </StackPanel>
 
         <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1">
-            <ItemsControl ItemsSource="{Binding InventoryList}">
-                <ItemsControl.ItemTemplate>
+            <ListBox ItemsSource="{Binding InventoryList}" SelectedItem="{Binding SelectedInventory}">
+                <ListBox.ItemTemplate>
                     <DataTemplate>
                         <local:InventoryCard DataContext="{Binding}"/>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </ScrollViewer>
     </Grid>
 </Page>

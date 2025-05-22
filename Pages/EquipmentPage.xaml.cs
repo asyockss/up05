@@ -77,5 +77,40 @@ namespace inventory.Pages
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        private void ImportFromExcel_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog { Filter = "Excel files (*.xls;*.xlsx)|*.xls;*.xlsx" };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var excelApp = new Microsoft.Office.Interop.Excel.Application();
+                    var workbook = excelApp.Workbooks.Open(openFileDialog.FileName);
+                    var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets[1];
+                    var range = worksheet.UsedRange;
+
+                    var equipmentContext = new EquipmentContext();
+                    for (int row = 2; row <= range.Rows.Count; row++) // Пропускаем заголовок
+                    {
+                        var equipment = new Equipment
+                        {
+                            Name = range.Cells[row, 2].Value?.ToString(),
+                            InventoryNumber = range.Cells[row, 3].Value?.ToString(),
+                            // Дополнительные поля можно заполнить по необходимости
+                        };
+                        equipmentContext.Save(equipment);
+                    }
+
+                    workbook.Close();
+                    excelApp.Quit();
+                    LoadEquipment();
+                    MessageBox.Show("Импорт успешно завершен.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при импорте: {ex.Message}");
+                }
+            }
+        }
     }
 }
