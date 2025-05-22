@@ -34,6 +34,15 @@ namespace inventory.Context.MySql
 
         public void Save(Inventory inventory, bool update = false)
         {
+            if (inventory.StartDate > inventory.EndDate)
+            {
+                throw new ArgumentException("Дата начала не может быть позже даты окончания");
+            }
+
+            if (string.IsNullOrEmpty(inventory.Name))
+            {
+                throw new ArgumentException("Название инвентаризации обязательно");
+            }
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
                 string query = update

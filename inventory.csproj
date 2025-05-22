@@ -190,6 +190,9 @@
     <Compile Include="Interfase\ISoftware.cs" />
     <Compile Include="Interfase\IStatus.cs" />
     <Compile Include="Interfase\IUser.cs" />
+    <Compile Include="InventoryCheckWindow.xaml.cs">
+      <DependentUpon>InventoryCheckWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\Developer.cs" />
     <Compile Include="Models\Direction.cs" />
     <Compile Include="Models\Equipment.cs" />
@@ -250,6 +253,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Elements\UserCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InventoryCheckWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
