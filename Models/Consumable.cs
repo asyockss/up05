@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using inventory.Models;
+using inventory.Models.inventory.Models;
 
 namespace inventory.Models
 {
@@ -61,6 +64,11 @@ namespace inventory.Models
             set { _consumableTypeId = value; OnPropertyChanged(nameof(ConsumableTypeId)); }
         }
         public ConsumableType ConsumableType { get; set; }
+        public List<ConsumableCharacteristicValue> Characteristics { get; set; } = new List<ConsumableCharacteristicValue>();
+        public List<ConsumableResponsibleHistory> ResponsibleHistory { get; set; } = new List<ConsumableResponsibleHistory>();
+        public List<EquipmentConsumable> EquipmentConsumables { get; set; } = new List<EquipmentConsumable>();
+        public User ResponsibleUser { get; set; }
+        public User TempResponsibleUser { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) =>

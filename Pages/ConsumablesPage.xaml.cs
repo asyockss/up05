@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using inventory.Context.MySql;
 using inventory.Models;
+using inventory.Models.inventory.Models;
 
 namespace inventory.Pages
 {

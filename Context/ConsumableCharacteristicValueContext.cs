@@ -14,15 +14,19 @@ namespace inventory.Context.MySql
             List<ConsumableCharacteristicValue> allValues = new List<ConsumableCharacteristicValue>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlDataReader dataValues = (MySqlDataReader)new DBConnection().Query("SELECT * FROM consumable_characteristic_values", connection);
-                while (dataValues.Read())
+                MySqlCommand command = new MySqlCommand("SELECT * FROM consumable_characteristic_values", connection);
+                using (MySqlDataReader dataValues = command.ExecuteReader())
                 {
-                    ConsumableCharacteristicValue newValue = new ConsumableCharacteristicValue();
-                    newValue.Id = dataValues.GetInt32(0);
-                    newValue.CharacteristicId = dataValues.GetInt32(1);
-                    newValue.ConsumableId = dataValues.GetInt32(2);
-                    newValue.CharacteristicValue = dataValues.GetString(3);
-                    allValues.Add(newValue);
+                    while (dataValues.Read())
+                    {
+                        allValues.Add(new ConsumableCharacteristicValue
+                        {
+                            Id = dataValues.GetInt32("id"),
+                            CharacteristicId = dataValues.GetInt32("characteristic_id"),
+                            ConsumableId = dataValues.GetInt32("consumable_id"),
+                            CharacteristicValue = dataValues.GetString("characteristic_value")
+                        });
+                    }
                 }
             }
             return allValues;
@@ -30,29 +34,17 @@ namespace inventory.Context.MySql
 
         public void Save(bool Update = false)
         {
-            if (Update)
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-                {
-                    new DBConnection().Query("UPDATE consumable_characteristic_values " +
-                        "SET " +
-                        $"characteristic_id = {this.CharacteristicId}, " +
-                        $"consumable_id  = {this.ConsumableId}, " +
-                        $"characteristic_value = '{this.CharacteristicValue}' " +
-                        $"WHERE id = {this.Id}", connection);
-                }
-            }
-            else
-            {
-                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-                {
-                    new DBConnection().Query("INSERT INTO consumable_characteristic_values " +
-                        "(characteristic_id, consumable_id, CharacteristicValue) " +
-                        "VALUES (" +
-                        $"{this.CharacteristicId}, " +
-                        $"{this.ConsumableId}, " +
-                        $"'{this.CharacteristicValue}')", connection);
-                }
+                string query = Update
+                    ? "UPDATE consumable_characteristic_values SET characteristic_id = @CharacteristicId, consumable_id = @ConsumableId, characteristic_value = @CharacteristicValue WHERE id = @Id"
+                    : "INSERT INTO consumable_characteristic_values (characteristic_id, consumable_id, characteristic_value) VALUES (@CharacteristicId, @ConsumableId, @CharacteristicValue)";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Id", this.Id);
+                command.Parameters.AddWithValue("@CharacteristicId", this.CharacteristicId);
+                command.Parameters.AddWithValue("@ConsumableId", this.ConsumableId);
+                command.Parameters.AddWithValue("@CharacteristicValue", this.CharacteristicValue);
+                command.ExecuteNonQuery();
             }
         }
 
@@ -60,7 +52,9 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM consumable_characteristic_values WHERE id = {this.Id}", connection);
+                MySqlCommand command = new MySqlCommand("DELETE FROM consumable_characteristic_values WHERE id = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                command.ExecuteNonQuery();
             }
         }
     }

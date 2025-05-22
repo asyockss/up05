@@ -90,13 +90,20 @@ namespace inventory.Pages
                     var range = worksheet.UsedRange;
 
                     var equipmentContext = new EquipmentContext();
-                    for (int row = 2; row <= range.Rows.Count; row++) 
+                    var inventoryContext = new InventoryContext();
+                    var defaultInventory = inventoryContext.AllInventorys().FirstOrDefault(); // Get a default inventory
+                    if (defaultInventory == null)
+                        throw new Exception("No inventory available for import.");
+
+                    for (int row = 2; row <= range.Rows.Count; row++)
                     {
                         var equipment = new Equipment
                         {
-                            Name = range.Cells[row, 2].Value?.ToString(),
-                            InventoryNumber = range.Cells[row, 3].Value?.ToString(),
-                            
+                            Name = range.Cells[row, 2].Value?.ToString() ?? "Unknown",
+                            InventoryNumber = range.Cells[row, 3].Value?.ToString() ?? Guid.NewGuid().ToString(),
+                            StatusId = 1, // Default status (adjust as needed)
+                            EquipmentTypeId = 1, // Default type (adjust as needed)
+                            InventoryId = defaultInventory.Id // Required field
                         };
                         equipmentContext.Save(equipment);
                     }

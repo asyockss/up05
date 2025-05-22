@@ -1,4 +1,5 @@
 ﻿using inventory.Models;
+using inventory.Models.inventory.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

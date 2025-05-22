@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using inventory.Context.MySql;
 using inventory.Models;
+using inventory.Models.inventory.Models;
 
 namespace inventory.Pages
 {

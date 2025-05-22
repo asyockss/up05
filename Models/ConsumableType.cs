@@ -2,26 +2,27 @@
 
 namespace inventory.Models
 {
-    public class ConsumableType : INotifyPropertyChanged
+    namespace inventory.Models
     {
-        private int _id;
-        private string _name;
-
-        public int Id
+        public class ConsumableType : INotifyPropertyChanged
         {
-            get => _id;
-            set { _id = value; OnPropertyChanged(nameof(Id)); }
-        }
-        public string Name
-        {
-            get => _name;
-            set { _name = value; OnPropertyChanged(nameof(Name)); }
-        }
+            private int _id;
+            private string _type;
 
-        public string Type { get; internal set; }
+            public int Id
+            {
+                get => _id;
+                set { _id = value; OnPropertyChanged(nameof(Id)); }
+            }
+            public string Type
+            {
+                get => _type;
+                set { _type = value; OnPropertyChanged(nameof(Type)); }
+            }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            public event PropertyChangedEventHandler PropertyChanged;
+            protected void OnPropertyChanged(string propertyName) =>
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

@@ -3,11 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:inventory.Context"
              mc:Ignorable="d" 
-             d:DesignHeight="140" d:DesignWidth="280">
+             d:DesignHeight="400" d:DesignWidth="300">
+    <UserControl.Resources>
+        <local:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+    </UserControl.Resources>
     <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="4" Background="White">
         <Grid Margin="10">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -15,15 +25,42 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
+            <!-- Name -->
             <TextBlock Grid.Row="0" Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+            <!-- Description -->
             <TextBlock Grid.Row="1" Text="{Binding Description}" Margin="0,4,0,0" Foreground="#666666" FontSize="13"/>
+            <!-- Consumable Type -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
                 <Path Data="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"
                       Width="16" Height="16" Fill="#666666" Stretch="Fill"/>
                 <TextBlock Text="{Binding ConsumableType.Type}" Margin="6,0,0,0" FontSize="13" TextTrimming="CharacterEllipsis"/>
             </StackPanel>
+            <!-- Quantity -->
             <TextBlock Grid.Row="3" Text="{Binding Quantity, StringFormat='Количество: {0}'}" Margin="0,8,0,0" FontSize="12" Foreground="#666666"/>
-            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <!-- Receipt Date -->
+            <TextBlock Grid.Row="4" Text="{Binding ReceiptDate, StringFormat='Дата поступления: {0:dd.MM.yyyy}'}" Margin="0,8,0,0" FontSize="12" Foreground="#666666"/>
+            <!-- Responsible User -->
+            <TextBlock Grid.Row="5" Text="{Binding ResponsibleUser.FullName, StringFormat='Ответственный: {0}', TargetNullValue='Не указан'}" Margin="0,8,0,0" FontSize="12" Foreground="#666666"/>
+            <!-- Temp Responsible User -->
+            <TextBlock Grid.Row="6" Text="{Binding TempResponsibleUser.FullName, StringFormat='Вр. ответственный: {0}', TargetNullValue='Не указан'}" Margin="0,8,0,0" FontSize="12" Foreground="#666666"/>
+            <!-- Image -->
+            <Image Grid.Row="7" Source="{Binding Image, Converter={StaticResource ByteArrayToImageConverter}}" Height="100" Margin="4,8,185,8" Stretch="Uniform" Grid.RowSpan="2"/>
+            
+            <!-- Responsible History -->
+            <ItemsControl Grid.Row="9" ItemsSource="{Binding ResponsibleHistory}" Margin="0,8,0,0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ChangeDate, StringFormat='Изменено: {0:dd.MM.yyyy}'}" FontSize="12" Foreground="#666666"/>
+                            <TextBlock Text=" (Пользователь: " FontSize="12" Foreground="#666666"/>
+                            <TextBlock Text="{Binding OldUser.Name, TargetNullValue='Не указан'}" FontSize="12" Foreground="#666666"/>
+                            <TextBlock Text=")" FontSize="12" Foreground="#666666"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <!-- Buttons -->
+            <StackPanel Grid.Row="11" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
                 <Button Click="EditButton_Click" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Редактировать">
                     <Path Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
                           Fill="#0060AC"/>
