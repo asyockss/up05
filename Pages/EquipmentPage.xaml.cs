@@ -90,13 +90,13 @@ namespace inventory.Pages
                     var range = worksheet.UsedRange;
 
                     var equipmentContext = new EquipmentContext();
-                    for (int row = 2; row <= range.Rows.Count; row++) // Пропускаем заголовок
+                    for (int row = 2; row <= range.Rows.Count; row++) 
                     {
                         var equipment = new Equipment
                         {
                             Name = range.Cells[row, 2].Value?.ToString(),
                             InventoryNumber = range.Cells[row, 3].Value?.ToString(),
-                            // Дополнительные поля можно заполнить по необходимости
+                            
                         };
                         equipmentContext.Save(equipment);
                     }
