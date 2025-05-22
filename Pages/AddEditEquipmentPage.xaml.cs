@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using inventory.Context.MySql;
 using inventory.Models;
+using System.Linq;
 
 namespace inventory.Pages
 {
@@ -25,6 +26,7 @@ namespace inventory.Pages
         public List<Status> Statuses { get; set; }
         public List<Room> Rooms { get; set; }
         public List<User> Users { get; set; }
+        public List<Inventory> Inventory { get; set; }
         private BitmapImage _imagePreview;
         public BitmapImage ImagePreview
         {
@@ -51,6 +53,7 @@ namespace inventory.Pages
             Statuses = new StatusContext().AllStatuses();
             Rooms = new RoomContext().AllRooms();
             Users = new UserContext().AllUsers();
+            Inventory = new InventoryContext().AllInventorys();
         }
 
         private void SelectImageButton_Click(object sender, RoutedEventArgs e)
@@ -65,13 +68,34 @@ namespace inventory.Pages
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(CurrentEquipment.Name) || string.IsNullOrEmpty(CurrentEquipment.InventoryNumber))
+            try
             {
-                MessageBox.Show("Заполните обязательные поля");
-                return;
+                if (string.IsNullOrWhiteSpace(CurrentEquipment.Name))
+                {
+                    MessageBox.Show("Название оборудования обязательно.");
+                    return;
+                }
+                if (CurrentEquipment.InventoryId == 0)
+                {
+                    MessageBox.Show("Пожалуйста, выберите инвентаризацию.");
+                    return;
+                }
+
+                var inventoryContext = new InventoryContext();
+                if (!inventoryContext.AllInventorys().Any(i => i.Id == CurrentEquipment.InventoryId))
+                {
+                    MessageBox.Show("Выбранная инвентаризация не существует.");
+                    return;
+                }
+
+                var equipmentContext = new EquipmentContext();
+                equipmentContext.Save(CurrentEquipment, CurrentEquipment.Id != 0);
+                NavigateBack();
             }
-            new EquipmentContext().Save(CurrentEquipment, CurrentEquipment.Id != 0);
-            NavigateBack();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении: {ex.Message}");
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e) => NavigateBack();

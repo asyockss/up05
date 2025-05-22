@@ -20,7 +20,7 @@
         </StackPanel>
 
         <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1">
-            <ItemsControl ItemsSource="{Binding ConsumableList}">
+            <ItemsControl ItemsSource="{Binding ConsumableList}" Width="300" HorizontalAlignment="Left">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <local:ConsumableCard DataContext="{Binding}"/>

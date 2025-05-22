@@ -10,7 +10,7 @@ namespace inventory.Interfase
     public interface IEquipmentResponsibleHistory
     {
         List<EquipmentResponsibleHistory> AllEquipmentResponsibleHistorys();
-        void Save(bool Update = false);
+        void Save(EquipmentResponsibleHistory history, bool update = false);
         void Delete(int id);
     }
 }

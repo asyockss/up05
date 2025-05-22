@@ -169,6 +169,9 @@
     <Compile Include="Elements\UserCard.xaml.cs">
       <DependentUpon>UserCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GenerateActWindow.xaml.cs">
+      <DependentUpon>GenerateActWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interfase\IConsumable.cs" />
     <Compile Include="Interfase\IConsumableCharacteristic.cs" />
     <Compile Include="Interfase\IConsumableCharacteristicValue.cs" />
@@ -253,6 +256,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Elements\UserCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GenerateActWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

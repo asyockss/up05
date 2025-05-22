@@ -20,10 +20,10 @@
             <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="10,0,0,0" Padding="5"/>
         </StackPanel>
 
-        <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1">
-            <ItemsControl ItemsSource="{Binding EquipmentList}">
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1" >
+            <ItemsControl ItemsSource="{Binding EquipmentList}" Width="300" HorizontalAlignment="Left">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate >
                         <local:EquipmentCard DataContext="{Binding}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

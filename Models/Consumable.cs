@@ -17,6 +17,7 @@ namespace inventory.Models
         private int? _responsibleId;
         private int? _tempResponsibleId;
         private int? _consumableTypeId;
+        public decimal? PricePerUnit { get; set; }
 
         public int Id
         {

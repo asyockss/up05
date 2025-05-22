@@ -16,8 +16,11 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
             <Button Content="Новая инвентаризация" Click="Add_Click" Style="{StaticResource ToolButtonStyle}"/>
             <Button Content="Провести проверку" Click="PerformCheck_Click" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Акт оборудования" Click="GenerateReport_Click" Style="{StaticResource ToolButtonStyle}"/>
-            <Button Content="Акт расходников" Click="GenerateComsumables_Click" Style="{StaticResource ToolButtonStyle}"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Акт оборудования(врем.)" Click="GenerateEquipmentTransferTemp_Click"  Style="{StaticResource ToolButtonStyle}"/>
+                <Button Content="Акт расходников" Click="GenerateConsumablesTransfer_Click"  Style="{StaticResource ToolButtonStyle}"/>
+                <Button Content="Акт оборудования(пост.)" Click="GenerateEquipmentTransferPermanent_Click"  Style="{StaticResource ToolButtonStyle}"/>
+            </StackPanel>
             <DatePicker SelectedDate="{Binding StartDateFilter}" Width="150" Margin="10,0,0,0"/>
             <DatePicker SelectedDate="{Binding EndDateFilter}" Width="150" Margin="5,0,0,0"/>
         </StackPanel>

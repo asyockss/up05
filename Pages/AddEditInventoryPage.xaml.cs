@@ -50,14 +50,12 @@ namespace inventory.Pages
                 return;
             }
 
-            // Убедитесь, что UserId установлен и существует в базе данных
             if (CurrentInventory.UserId == 0)
             {
                 MessageBox.Show("Выберите пользователя");
                 return;
             }
 
-            // Проверяем, существует ли пользователь с таким UserId
             var userExists = Users.Any(user => user.Id == CurrentInventory.UserId);
             if (!userExists)
             {
@@ -65,7 +63,6 @@ namespace inventory.Pages
                 return;
             }
 
-            // Сохраняем инвентаризацию
             inventoryContext.Save(CurrentInventory, CurrentInventory.Id != 0);
             NavigateBack();
         }

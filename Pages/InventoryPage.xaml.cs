@@ -8,10 +8,11 @@ using inventory.Context.MySql;
 using inventory.Models;
 using MySql.Data.MySqlClient;
 using inventory.Context.Common;
+using Microsoft.Office.Interop.Excel;
 
 namespace inventory.Pages
 {
-    public partial class InventoryPage : Page, INotifyPropertyChanged
+    public partial class InventoryPage : System.Windows.Controls.Page, INotifyPropertyChanged
     {
         private InventoryContext inventoryContext;
         private List<Inventory> _inventoryList;
@@ -53,7 +54,7 @@ namespace inventory.Pages
             if (!CurrentUser.IsAdmin)
             {
                 MessageBox.Show("Доступ запрещен. Требуются права администратора.");
-                var mainWindow = (MainWindow)Application.Current.MainWindow;
+                var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
                 mainWindow.NavigateToMainPage();
                 return;
             }
@@ -79,7 +80,7 @@ namespace inventory.Pages
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             mainWindow.NavigateToPage(new AddEditInventoryPage());
         }
 
@@ -160,107 +161,121 @@ namespace inventory.Pages
             }
         }
 
-        private void GenerateReport_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var excelApp = new Microsoft.Office.Interop.Excel.Application();
-                excelApp.Visible = false;
-                var workbook = excelApp.Workbooks.Add();
-                var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets[1];
+        //private void GenerateReport_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        var excelApp = new Microsoft.Office.Interop.Excel.Application();
+        //        excelApp.Visible = false;
+        //        var workbook = excelApp.Workbooks.Add();
+        //        var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets[1];
 
-                // Заголовок акта
-                worksheet.Cells[1, 1] = "АКТ приема-передачи оборудования";
-                worksheet.Cells[2, 1] = $"г. Пермь, {DateTime.Now:dd.MM.yyyy}";
-                worksheet.Cells[3, 1] = "КГАПОУ Пермский Авиационный техникум им. А.Д. Швецова передает:";
+        //        // Заголовок акта
+        //        worksheet.Cells[1, 1] = "АКТ приема-передачи оборудования";
+        //        worksheet.Cells[2, 1] = $"г. Пермь, {DateTime.Now:dd.MM.yyyy}";
+        //        worksheet.Cells[3, 1] = "КГАПОУ Пермский Авиационный техникум им. А.Д. Швецова передает:";
 
-                // Шапка таблицы
-                worksheet.Cells[5, 1] = "№";
-                worksheet.Cells[5, 2] = "Название";
-                worksheet.Cells[5, 3] = "Инв. номер";
-                worksheet.Cells[5, 4] = "Стоимость";
-                worksheet.Cells[5, 5] = "Ответственный";
+        //        // Шапка таблицы
+        //        worksheet.Cells[5, 1] = "№";
+        //        worksheet.Cells[5, 2] = "Название";
+        //        worksheet.Cells[5, 3] = "Инв. номер";
+        //        worksheet.Cells[5, 4] = "Стоимость";
+        //        worksheet.Cells[5, 5] = "Ответственный";
 
-                int row = 6;
-                var equipmentContext = new EquipmentContext();
-                var equipments = equipmentContext.AllEquipment();
-                foreach (var equip in equipments)
-                {
-                    worksheet.Cells[row, 1] = row - 5;
-                    worksheet.Cells[row, 2] = equip.Name;
-                    worksheet.Cells[row, 3] = equip.InventoryNumber;
-                    worksheet.Cells[row, 4] = equip.Cost?.ToString("F2") ?? "Не указана";
-                    worksheet.Cells[row, 5] = equip.Responsible?.FullName ?? "Не назначен";
-                    row++;
-                }
+        //        int row = 6;
+        //        var equipmentContext = new EquipmentContext();
+        //        var equipments = equipmentContext.AllEquipment();
+        //        foreach (var equip in equipments)
+        //        {
+        //            worksheet.Cells[row, 1] = row - 5;
+        //            worksheet.Cells[row, 2] = equip.Name;
+        //            worksheet.Cells[row, 3] = equip.InventoryId;
+        //            worksheet.Cells[row, 4] = equip.Cost?.ToString("F2") ?? "Не указана";
+        //            worksheet.Cells[row, 5] = equip.Responsible?.FullName ?? "Не назначен";
+        //            row++;
+        //        }
 
-                var saveFileDialog = new Microsoft.Win32.SaveFileDialog { Filter = "Excel files (*.xlsx)|*.xlsx" };
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    workbook.SaveAs(saveFileDialog.FileName);
-                    workbook.Close();
-                    excelApp.Quit();
-                    MessageBox.Show("Акт успешно сгенерирован.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при генерации акта: {ex.Message}");
-            }
-        }
+        //        var saveFileDialog = new Microsoft.Win32.SaveFileDialog { Filter = "Excel files (*.xlsx)|*.xlsx" };
+        //        if (saveFileDialog.ShowDialog() == true)
+        //        {
+        //            workbook.SaveAs(saveFileDialog.FileName);
+        //            workbook.Close();
+        //            excelApp.Quit();
+        //            MessageBox.Show("Акт успешно сгенерирован.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Ошибка при генерации акта: {ex.Message}");
+        //    }
+        //}
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        private void GenerateComsumables_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var excelApp = new Microsoft.Office.Interop.Excel.Application();
-                excelApp.Visible = false;
-                var workbook = excelApp.Workbooks.Add();
-                var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets[1];
+        //private void GenerateComsumables_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        var excelApp = new Microsoft.Office.Interop.Excel.Application();
+        //        excelApp.Visible = false;
+        //        var workbook = excelApp.Workbooks.Add();
+        //        var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets[1];
 
-                // Заголовок акта
-                worksheet.Cells[1, 1] = "АКТ приема-передачи оборудования";
-                worksheet.Cells[2, 1] = $"г. Пермь, {DateTime.Now:dd.MM.yyyy}";
-                worksheet.Cells[3, 1] = "КГАПОУ Пермский Авиационный техникум им. А.Д. Швецова передает:";
+        //        // Заголовок акта
+        //        worksheet.Cells[1, 1] = "АКТ приема-передачи оборудования";
+        //        worksheet.Cells[2, 1] = $"г. Пермь, {DateTime.Now:dd.MM.yyyy}";
+        //        worksheet.Cells[3, 1] = "КГАПОУ Пермский Авиационный техникум им. А.Д. Швецова передает:";
 
-                // Шапка таблицы
-                worksheet.Cells[5, 1] = "№";
-                worksheet.Cells[5, 2] = "Название";
-                worksheet.Cells[5, 3] = "Описание";
-                worksheet.Cells[5, 4] = "Дата поступления";
-                worksheet.Cells[5, 5] = "Ответственный";
-                worksheet.Cells[5, 5] = "Количество";
+        //        // Шапка таблицы
+        //        worksheet.Cells[5, 1] = "№";
+        //        worksheet.Cells[5, 2] = "Название";
+        //        worksheet.Cells[5, 3] = "Описание";
+        //        worksheet.Cells[5, 4] = "Дата поступления";
+        //        worksheet.Cells[5, 5] = "Ответственный";
+        //        worksheet.Cells[5, 5] = "Количество";
 
-                int row = 6;
-                var consumableContext = new ConsumableContext();
-                var consumables = consumableContext.AllConsumables();
-                foreach (var cons in consumables)
-                {
-                    worksheet.Cells[row, 1] = row - 5;
-                    worksheet.Cells[row, 2] = cons.Name;
-                    worksheet.Cells[row, 3] = cons.Description;
-                    worksheet.Cells[row, 4] = cons.ReceiptDate;
-                    worksheet.Cells[row, 5] = cons.ResponsibleId;
-                    worksheet.Cells[row, 5] = cons.Quantity;
-                    row++;
-                }
+        //        int row = 6;
+        //        var consumableContext = new ConsumableContext();
+        //        var consumables = consumableContext.AllConsumables();
+        //        foreach (var cons in consumables)
+        //        {
+        //            worksheet.Cells[row, 1] = row - 5;
+        //            worksheet.Cells[row, 2] = cons.Name;
+        //            worksheet.Cells[row, 3] = cons.Description;
+        //            worksheet.Cells[row, 4] = cons.ReceiptDate;
+        //            worksheet.Cells[row, 5] = cons.ResponsibleId;
+        //            worksheet.Cells[row, 5] = cons.Quantity;
+        //            row++;
+        //        }
 
-                var saveFileDialog = new Microsoft.Win32.SaveFileDialog { Filter = "Excel files (*.xlsx)|*.xlsx" };
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    workbook.SaveAs(saveFileDialog.FileName);
-                    workbook.Close();
-                    excelApp.Quit();
-                    MessageBox.Show("Акт успешно сгенерирован.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при генерации акта: {ex.Message}");
-            }
-        }
-    }
+        //        var saveFileDialog = new Microsoft.Win32.SaveFileDialog { Filter = "Excel files (*.xlsx)|*.xlsx" };
+        //        if (saveFileDialog.ShowDialog() == true)
+        //        {
+        //            workbook.SaveAs(saveFileDialog.FileName);
+        //            workbook.Close();
+        //            excelApp.Quit();
+        //            MessageBox.Show("Акт успешно сгенерирован.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Ошибка при генерации акта: {ex.Message}");
+        //    }
+        //}
+        private void GenerateEquipmentTransferTemp_Click(object sender, RoutedEventArgs e)
+{
+    new GenerateActWindow("Акт оборудования (врем.)").ShowDialog();
+}
+
+private void GenerateConsumablesTransfer_Click(object sender, RoutedEventArgs e)
+{
+    new GenerateActWindow("Акт расходников").ShowDialog();
+}
+
+private void GenerateEquipmentTransferPermanent_Click(object sender, RoutedEventArgs e)
+{
+    new GenerateActWindow("Акт оборудования (пост.)").ShowDialog();
+}
+}
 }

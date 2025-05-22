@@ -33,26 +33,25 @@ namespace inventory.Context.MySql
             return allHistories;
         }
 
-        public void Save(bool Update = false)
+        public void Save(EquipmentResponsibleHistory history, bool update = false)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                string query = Update
-                    ? "UPDATE equipment_responsible_history SET " +
-                      $"equipment_id = {this.EquipmentId}, " +
-                      $"old_user_id = {(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
-                      $"change_date = '{this.ChangeDate.ToString("yyyy-MM-dd")}', " +
-                      $"comment = '{this.Comment}' " +
-                      $"WHERE Id = {this.Id}"
-                    : "INSERT INTO equipment_responsible_history " +
-                      "(equipment_id, old_user_id , change_date, comment) " +
-                      "VALUES (" +
-                      $"{this.EquipmentId}, " +
-                      $"{(this.OldUserId.HasValue ? this.OldUserId.ToString() : "NULL")}, " +
-                      $"'{this.ChangeDate.ToString("yyyy-MM-dd")}', " +
-                      $"'{this.Comment}')";
+                string query = update
+                    ? "UPDATE equipment_responsible_history SET equipment_id = @EquipmentId, old_user_id = @OldUserId, change_date = @ChangeDate, comment = @Comment WHERE id = @Id"
+                    : "INSERT INTO equipment_responsible_history (equipment_id, old_user_id, change_date, comment) VALUES (@EquipmentId, @OldUserId, @ChangeDate, @Comment)";
 
-                new DBConnection().Query(query, connection);
+                MySqlCommand command = new MySqlCommand(query, connection);
+                if (update)
+                    command.Parameters.AddWithValue("@Id", history.Id);
+                command.Parameters.AddWithValue("@EquipmentId", history.EquipmentId);
+                command.Parameters.AddWithValue("@OldUserId", (object)history.OldUserId ?? DBNull.Value);
+                command.Parameters.AddWithValue("@ChangeDate", history.ChangeDate);
+                command.Parameters.AddWithValue("@Comment", history.Comment ?? (object)DBNull.Value);
+
+                command.ExecuteNonQuery();
+                if (!update)
+                    history.Id = (int)command.LastInsertedId;
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using inventory.Models;
 using System;
 using inventory.Context.Common;
+using inventory.Interfase;
 
 namespace inventory.Context.MySql
 {
@@ -54,7 +55,7 @@ namespace inventory.Context.MySql
                 command.Parameters.AddWithValue("@Name", inventory.Name);
                 command.Parameters.AddWithValue("@StartDate", inventory.StartDate.ToString("yyyy-MM-dd"));
                 command.Parameters.AddWithValue("@EndDate", inventory.EndDate.ToString("yyyy-MM-dd"));
-                command.Parameters.AddWithValue("@UserId", inventory.UserId);
+                command.Parameters.AddWithValue("@UserId", (object)inventory.UserId ?? DBNull.Value);
 
                 command.ExecuteNonQuery();
                 if (!update)

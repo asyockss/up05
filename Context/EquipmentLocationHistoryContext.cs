@@ -29,33 +29,25 @@ namespace inventory.Context.MySql
             return allHistories;
         }
 
-        public void Save(bool Update = false)
+        public void Save(EquipmentLocationHistory history, bool update = false)
         {
-            if (Update)
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-                {
-                    new DBConnection().Query("UPDATE equipment_location_history " +
-                        "SET " +
-                        $"equipment_id  = {this.EquipmentId}, " +
-                        $"room_id  = {(this.RoomId.HasValue ? this.RoomId.ToString() : "NULL")}, " +
-                        $"change_date = '{this.ChangeDate.ToString("yyyy-MM-dd")}', " +
-                        $"comment = '{this.Comment}' " +
-                        $"WHERE id = {this.Id}", connection);
-                }
-            }
-            else
-            {
-                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-                {
-                    new DBConnection().Query("INSERT INTO equipment_location_history " +
-                        "(equipment_id , room_id , change_date, comment) " +
-                        "VALUES (" +
-                        $"{this.EquipmentId}, " +
-                        $"{(this.RoomId.HasValue ? this.RoomId.ToString() : "NULL")}, " +
-                        $"'{this.ChangeDate.ToString("yyyy-MM-dd")}', " +
-                        $"'{this.Comment}')", connection);
-                }
+                string query = update
+                    ? "UPDATE equipment_location_history SET equipment_id = @EquipmentId, room_id = @RoomId, change_date = @ChangeDate, comment = @Comment WHERE id = @Id"
+                    : "INSERT INTO equipment_location_history (equipment_id, room_id, change_date, comment) VALUES (@EquipmentId, @RoomId, @ChangeDate, @Comment)";
+
+                MySqlCommand command = new MySqlCommand(query, connection);
+                if (update)
+                    command.Parameters.AddWithValue("@Id", history.Id);
+                command.Parameters.AddWithValue("@EquipmentId", history.EquipmentId);
+                command.Parameters.AddWithValue("@RoomId", (object)history.RoomId ?? DBNull.Value);
+                command.Parameters.AddWithValue("@ChangeDate", history.ChangeDate);
+                command.Parameters.AddWithValue("@Comment", history.Comment ?? (object)DBNull.Value);
+
+                command.ExecuteNonQuery();
+                if (!update)
+                    history.Id = (int)command.LastInsertedId;
             }
         }
 

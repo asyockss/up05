@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using inventory.Context.MySql;
@@ -40,13 +41,30 @@ namespace inventory.Pages
             var equipment = new EquipmentContext().AllEquipment();
             var types = new EquipmentTypeContext().AllEquipmentTypes().ToDictionary(t => t.Id, t => t);
             var statuses = new StatusContext().AllStatuses().ToDictionary(s => s.Id, s => s);
+            var rooms = new RoomContext().AllRooms().ToDictionary(r => r.Id, r => r);
+            var users = new UserContext().AllUsers().ToDictionary(u => u.Id, u => u);
+            var inventories = new InventoryContext().AllInventorys().ToDictionary(i => i.Id, i => i);
+            var models = new EquipmentModelContext().AllEquipmentModels().ToDictionary(m => m.Id, m => m);
+            var directions = new DirectionContext().AllDirections().ToDictionary(d => d.Id, d => d);
 
             foreach (var item in equipment)
             {
-                if (types.TryGetValue(item.EquipmentTypeId, out var equipmentType))
+                if (item.EquipmentTypeId.HasValue && types.TryGetValue(item.EquipmentTypeId.Value, out var equipmentType))
                     item.EquipmentType = equipmentType;
-                if (statuses.TryGetValue(item.StatusId, out var status))
+                if (item.StatusId.HasValue && statuses.TryGetValue(item.StatusId.Value, out var status))
                     item.Status = status;
+                if (item.RoomId.HasValue && rooms.TryGetValue(item.RoomId.Value, out var room))
+                    item.Room = room;
+                if (item.ResponsibleId.HasValue && users.TryGetValue(item.ResponsibleId.Value, out var responsible))
+                    item.Responsible = responsible;
+                if (item.TempResponsibleId.HasValue && users.TryGetValue(item.TempResponsibleId.Value, out var tempResponsible))
+                    item.TempResponsible = tempResponsible;
+                if (item.ModelId.HasValue && models.TryGetValue(item.ModelId.Value, out var model))
+                    item.Model = model;
+                if (item.DirectionId.HasValue && directions.TryGetValue(item.DirectionId.Value, out var direction))
+                    item.Direction = direction;
+                if (inventories.TryGetValue(item.InventoryId, out var inventory))
+                    item.Inventory = inventory;
             }
             EquipmentList = equipment;
         }
@@ -55,13 +73,13 @@ namespace inventory.Pages
         {
             if (string.IsNullOrEmpty(SearchText))
             {
-                LoadEquipment();
+                EquipmentList = new EquipmentContext().AllEquipment().OrderBy(e => e.Name).ToList();
             }
             else
             {
                 EquipmentList = EquipmentList
-                    .Where(e => e.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                e.InventoryNumber.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(e => e.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .OrderBy(e => e.Name)
                     .ToList();
             }
         }
@@ -90,26 +108,54 @@ namespace inventory.Pages
                     var range = worksheet.UsedRange;
 
                     var equipmentContext = new EquipmentContext();
-                    var inventoryContext = new InventoryContext();
-                    var defaultInventory = inventoryContext.AllInventorys().FirstOrDefault(); // Get a default inventory
-                    if (defaultInventory == null)
-                        throw new Exception("No inventory available for import.");
 
                     for (int row = 2; row <= range.Rows.Count; row++)
                     {
+                        string name = range.Cells[row, 1].Value?.ToString();
+                        byte[] photo = null; // You need to handle image import separately
+
+                        int rid, resid, trid, sid, mid, etid, did;
+                        decimal c;
+
+                        int? roomId = int.TryParse(range.Cells[row, 2].Value?.ToString(), out rid) ? rid : (int?)null;
+                        int? responsibleId = int.TryParse(range.Cells[row, 3].Value?.ToString(), out resid) ? resid : (int?)null;
+                        int? tempResponsibleId = int.TryParse(range.Cells[row, 4].Value?.ToString(), out trid) ? trid : (int?)null;
+                        decimal? cost = decimal.TryParse(range.Cells[row, 5].Value?.ToString(), out c) ? c : (decimal?)null;
+                        string comment = range.Cells[row, 6].Value?.ToString();
+                        int? statusId = int.TryParse(range.Cells[row, 7].Value?.ToString(), out sid) ? sid : (int?)null;
+                        int? modelId = int.TryParse(range.Cells[row, 8].Value?.ToString(), out mid) ? mid : (int?)null;
+                        int? equipmentTypeId = int.TryParse(range.Cells[row, 9].Value?.ToString(), out etid) ? etid : (int?)null;
+                        int? directionId = int.TryParse(range.Cells[row, 10].Value?.ToString(), out did) ? did : (int?)null;
+                        string inventoryId = range.Cells[row, 11].Value?.ToString();
+
                         var equipment = new Equipment
                         {
-                            Name = range.Cells[row, 2].Value?.ToString() ?? "Unknown",
-                            InventoryNumber = range.Cells[row, 3].Value?.ToString() ?? Guid.NewGuid().ToString(),
-                            StatusId = 1, // Default status (adjust as needed)
-                            EquipmentTypeId = 1, // Default type (adjust as needed)
-                            InventoryId = defaultInventory.Id // Required field
+                            Name = name,
+                            Photo = photo,
+                            RoomId = roomId,
+                            ResponsibleId = responsibleId,
+                            TempResponsibleId = tempResponsibleId,
+                            Cost = cost,
+                            Comment = comment,
+                            StatusId = statusId,
+                            ModelId = modelId,
+                            EquipmentTypeId = equipmentTypeId,
+                            DirectionId = directionId,
+                            InventoryId = int.Parse(inventoryId)
                         };
                         equipmentContext.Save(equipment);
                     }
 
+                    Marshal.ReleaseComObject(range);
+                    Marshal.ReleaseComObject(worksheet);
                     workbook.Close();
+                    Marshal.ReleaseComObject(workbook);
                     excelApp.Quit();
+                    Marshal.ReleaseComObject(excelApp);
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
                     LoadEquipment();
                     MessageBox.Show("Импорт успешно завершен.");
                 }
@@ -119,5 +165,6 @@ namespace inventory.Pages
                 }
             }
         }
+
     }
 }

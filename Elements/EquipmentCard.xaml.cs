@@ -28,8 +28,15 @@ namespace inventory.Elements
             if (DataContext is Equipment equipment &&
                 MessageBox.Show("Вы уверены, что хотите удалить это оборудование?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                new EquipmentContext().Delete(equipment.Id);
-                RefreshParentPage();
+                var context = new EquipmentContext();
+                if (context.Delete(equipment.Id))
+                {
+                    RefreshParentPage();
+                }
+                else
+                {
+                    MessageBox.Show("Невозможно удалить оборудование, так как оно связано с другими данными.");
+                }
             }
         }
 
