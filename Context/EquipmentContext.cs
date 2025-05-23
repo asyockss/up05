@@ -125,6 +125,7 @@ namespace inventory.Context.MySql
                 }
                 catch (MySqlException ex)
                 {
+                    Logging.LogError(ex, "Ошибки при сохранение данных об оборудовании");
                     if (ex.Number == 1451)
                     {
                         return false;

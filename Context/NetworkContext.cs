@@ -31,52 +31,55 @@ namespace inventory.Context.MySql
             return allNetworks;
         }
 
-public void Save(bool Update = false)
+        public void Save(Network network, bool isUpdate)
         {
-            // Валидация сетевых настроек
-            if (!IsValidIpAddress(this.IpAddress) ||
-            (this.SubnetMask != null && !IsValidIpAddress(this.SubnetMask)) ||
-            (this.Gateway != null && !IsValidIpAddress(this.Gateway)) ||
-            (this.DnsServers != null && !IsValidDnsServers(this.DnsServers)))
+            using (var connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                throw new ArgumentException("Некорректный формат сетевых настроек");
-            }
-
-            // Проверка уникальности IP-адреса
-            if (!Update && IsIpAddressInUse(this.IpAddress, this.EquipmentId))
-            {
-                throw new ArgumentException("IP-адрес уже используется другим оборудованием");
-            }
-
-            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-            {
-                string query = Update
-                ? "UPDATE network SET equipment_id = @EquipmentId, ip_address = @IpAddress, subnet_mask = @SubnetMask, gateway = @Gateway, dns_servers = @DnsServers WHERE id = @Id"
-                : "INSERT INTO network (equipment_id, ip_address, subnet_mask, gateway, dns_servers) VALUES (@EquipmentId, @IpAddress, @SubnetMask, @Gateway, @DnsServers)";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Id", this.Id);
-                command.Parameters.AddWithValue("@EquipmentId", this.EquipmentId);
-                command.Parameters.AddWithValue("@IpAddress", this.IpAddress);
-                command.Parameters.AddWithValue("@SubnetMask", this.SubnetMask ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@Gateway", this.Gateway ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@DnsServers", this.DnsServers ?? (object)DBNull.Value);
-
-                try
+                var cmd = new MySqlCommand("SELECT COUNT(*) FROM network WHERE IpAddress = @IpAddress", connection);
+                cmd.Parameters.AddWithValue("@IpAddress", network.IpAddress);
+                if (isUpdate)
                 {
-                    command.ExecuteNonQuery();
+                    cmd.CommandText += " AND Id != @Id";
+                    cmd.Parameters.AddWithValue("@Id", network.Id);
                 }
-                catch (Exception ex)
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                if (count > 0)
                 {
-                    Logging.LogError(ex, "Ошибка при сохранении сетевых настроек");
-                    throw;
+                    throw new Exception("IP-адрес уже используется.");
+                }
+                if (isUpdate)
+                {
+                    var updateCmd = new MySqlCommand("UPDATE network SET IpAddress = @IpAddress, SubnetMask = @SubnetMask, Gateway = @Gateway, DnsServers = @DnsServers, EquipmentId = @EquipmentId WHERE Id = @Id", connection);
+                    updateCmd.Parameters.AddWithValue("@IpAddress", network.IpAddress);
+                    updateCmd.Parameters.AddWithValue("@SubnetMask", network.SubnetMask);
+                    updateCmd.Parameters.AddWithValue("@Gateway", network.Gateway);
+                    updateCmd.Parameters.AddWithValue("@DnsServers", network.DnsServers);
+                    updateCmd.Parameters.AddWithValue("@EquipmentId", network.EquipmentId);
+                    updateCmd.Parameters.AddWithValue("@Id", network.Id);
+                    updateCmd.ExecuteNonQuery();
+                }
+                else
+                {
+                    var insertCmd = new MySqlCommand("INSERT INTO network (IpAddress, SubnetMask, Gateway, DnsServers, EquipmentId) VALUES (@IpAddress, @SubnetMask, @Gateway, @DnsServers, @EquipmentId)", connection);
+                    insertCmd.Parameters.AddWithValue("@IpAddress", network.IpAddress);
+                    insertCmd.Parameters.AddWithValue("@SubnetMask", network.SubnetMask);
+                    insertCmd.Parameters.AddWithValue("@Gateway", network.Gateway);
+                    insertCmd.Parameters.AddWithValue("@DnsServers", network.DnsServers);
+                    insertCmd.Parameters.AddWithValue("@EquipmentId", network.EquipmentId);
+                    insertCmd.ExecuteNonQuery();
                 }
             }
+        }
+
+        public void Save(bool update)
+        {
+            throw new NotImplementedException("This method is not supported. Use Save(Network network, bool isUpdate) instead.");
         }
 
         private bool IsValidIpAddress(string ip)
         {
             if (string.IsNullOrEmpty(ip)) return false;
-            string pattern = @"^(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})$";
+            string pattern = @"^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$";
             if (!Regex.IsMatch(ip, pattern)) return false;
             var parts = ip.Split('.');
             foreach (var part in parts)

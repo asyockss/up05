@@ -70,6 +70,12 @@ namespace inventory.Pages
         {
             try
             {
+                if (!CurrentUser.IsAdmin && CurrentEquipment.ResponsibleId != CurrentUser.Id && CurrentEquipment.Id != 0)
+                {
+                    MessageBox.Show("У вас нет прав на редактирование этого оборудования.");
+                    return;
+                }
+
                 if (string.IsNullOrWhiteSpace(CurrentEquipment.Name))
                 {
                     MessageBox.Show("Название оборудования обязательно.");
