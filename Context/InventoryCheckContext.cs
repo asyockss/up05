@@ -29,44 +29,61 @@ namespace inventory.Context.MySql
             }
             return allChecks;
         }
-
         public void Save(bool Update = false)
         {
-            if (Update)
+            // Проверка прав пользователя
+            //if (!IsUserAuthorized(this.UserId))
+            //{
+            //    throw new UnauthorizedAccessException("Пользователь не имеет прав для проведения инвентаризации");
+            //}
+
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
+                string query = Update
+                ? "UPDATE inventory_checks SET inventory_id = @InventoryId, equipment_id = @EquipmentId, users_id = @UserId, check_date = @CheckDate, comment = @Comment WHERE id = @Id"
+                : "INSERT INTO inventory_checks (inventory_id, equipment_id, users_id, check_date, comment) VALUES (@InventoryId, @EquipmentId, @UserId, @CheckDate, @Comment)";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Id", this.Id);
+                command.Parameters.AddWithValue("@InventoryId", this.InventoryId);
+                command.Parameters.AddWithValue("@EquipmentId", this.EquipmentId);
+                command.Parameters.AddWithValue("@UserId", this.UserId);
+                command.Parameters.AddWithValue("@CheckDate", this.CheckDate.ToString("yyyy-MM-dd"));
+                command.Parameters.AddWithValue("@Comment", this.Comment);
+
+                try
                 {
-                    new DBConnection().Query("UPDATE inventory_checks " +
-                        "SET " +
-                        $"inventory_id = {this.InventoryId}, " +
-                        $"equipment_id = {this.EquipmentId}, " +
-                        $"users_id = {this.UserId}, " +
-                        $"check_date = '{this.CheckDate.ToString("yyyy-MM-dd")}', " +
-                        $"comment = '{this.Comment}' " +
-                        $"WHERE id = {this.Id}", connection);
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    LogError(ex, "Ошибка при сохранении проверки инвентаризации");
+                    throw;
                 }
             }
-            else
+        }
+
+        private bool IsUserAuthorized(int userId)
+        {
+            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-                {
-                    new DBConnection().Query("INSERT INTO inventory_checks " +
-                        "(inventory_id, equipment_id, users_id, check_date, comment) " +
-                        "VALUES (" +
-                        $"{this.InventoryId}, " +
-                        $"{this.EquipmentId}, " +
-                        $"{this.UserId}, " +
-                        $"'{this.CheckDate.ToString("yyyy-MM-dd")}', " +
-                        $"'{this.Comment}')", connection);
-                }
+                MySqlCommand command = new MySqlCommand("SELECT role FROM users WHERE id = @UserId", connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+                object result = command.ExecuteScalar();
+                string role = result?.ToString();
+                return role == "admin";
             }
+        }
+
+        private void LogError(Exception ex, string message)
+        {
+            //Logging.LogError(new Exception("Тестовая ошибка"), "Тест логирования");
         }
 
         public void Delete(int id)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM inventory_checks WHERE id = {this.Id}", connection);
+                new DBConnection().Query($"DELETE FROM inventory_checks WHERE id = {id}", connection);
             }
         }
     }

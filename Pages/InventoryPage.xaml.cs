@@ -14,6 +14,7 @@ namespace inventory.Pages
 {
     public partial class InventoryPage : System.Windows.Controls.Page, INotifyPropertyChanged
     {
+
         private InventoryContext inventoryContext;
         private List<Inventory> _inventoryList;
         private DateTime? _startDateFilter;

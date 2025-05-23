@@ -1,9 +1,10 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using MySql.Data.MySqlClient;
 using inventory.Models;
 using inventory.Context.Common;
 using inventory.Models.inventory.Models;
+using inventory.Interfase;
 
 namespace inventory.Context.MySql
 {
@@ -17,22 +18,16 @@ namespace inventory.Context.MySql
                 try
                 {
                     string query = @"
-                SELECT c.*, t.type, 
-                       CONCAT(u1.last_name, ' ', u1.first_name, ' ', COALESCE(u1.middle_name, '')) AS responsible_name,
-                       CONCAT(u2.last_name, ' ', u2.first_name, ' ', COALESCE(u2.middle_name, '')) AS temp_responsible_name
-                FROM consumables c
-                LEFT JOIN type_consumables t ON c.type_consumables_id = t.id
-                LEFT JOIN users u1 ON c.responsible_id = u1.id
-                LEFT JOIN users u2 ON c.timeresponsible_id = u2.id";
+SELECT c.*, t.type,
+CONCAT(u1.last_name, ' ', u1.first_name, ' ', COALESCE(u1.middle_name, '')) AS responsible_name,
+CONCAT(u2.last_name, ' ', u2.first_name, ' ', COALESCE(u2.middle_name, '')) AS temp_responsible_name
+FROM consumables c
+LEFT JOIN type_consumables t ON c.type_consumables_id = t.id
+LEFT JOIN users u1 ON c.responsible_id = u1.id
+LEFT JOIN users u2 ON c.timeresponsible_id = u2.id";
                     MySqlCommand command = new MySqlCommand(query, connection);
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        // Debugging: Log column names to verify result set
-                        for (int i = 0; i < reader.FieldCount; i++)
-                        {
-                            Console.WriteLine($"Column {i}: {reader.GetName(i)}");
-                        }
-
                         while (reader.Read())
                         {
                             allConsumables.Add(new Consumable
@@ -64,15 +59,14 @@ namespace inventory.Context.MySql
                             });
                         }
                     }
-
-                    // Fetch characteristics, history, and equipment
-                    foreach (var consumable in allConsumables)
+                
+foreach (var consumable in allConsumables)
                     {
                         string charQuery = @"
-                    SELECT ccv.*, cc.characteristic_name
-                    FROM consumable_characteristic_values ccv
-                    JOIN consumable_characteristics cc ON ccv.characteristic_id = cc.id
-                    WHERE ccv.consumable_id = @ConsumableId";
+SELECT ccv.*, cc.characteristic_name
+FROM consumable_characteristic_values ccv
+JOIN consumable_characteristics cc ON ccv.characteristic_id = cc.id
+WHERE ccv.consumable_id = @ConsumableId";
                         MySqlCommand charCommand = new MySqlCommand(charQuery, connection);
                         charCommand.Parameters.AddWithValue("@ConsumableId", consumable.Id);
                         using (MySqlDataReader charReader = charCommand.ExecuteReader())
@@ -95,10 +89,10 @@ namespace inventory.Context.MySql
                         }
 
                         string historyQuery = @"
-                    SELECT crh.*, CONCAT(u.last_name, ' ', u.first_name, ' ', COALESCE(u.middle_name, '')) AS user_name
-                    FROM consumable_responsible_history crh
-                    LEFT JOIN users u ON crh.old_user_id = u.id
-                    WHERE crh.consumable_id = @ConsumableId";
+SELECT crh.*, CONCAT(u.last_name, ' ', u.first_name, ' ', COALESCE(u.middle_name, '')) AS user_name
+FROM consumable_responsible_history crh
+LEFT JOIN users u ON crh.old_user_id = u.id
+WHERE crh.consumable_id = @ConsumableId";
                         MySqlCommand historyCommand = new MySqlCommand(historyQuery, connection);
                         historyCommand.Parameters.AddWithValue("@ConsumableId", consumable.Id);
                         using (MySqlDataReader historyReader = historyCommand.ExecuteReader())
@@ -121,10 +115,10 @@ namespace inventory.Context.MySql
                         }
 
                         string equipmentQuery = @"
-                    SELECT ec.*, e.name AS equipment_name
-                    FROM equipment_consumables ec
-                    LEFT JOIN equipment e ON ec.equipment_id = e.id
-                    WHERE ec.consumable_id = @ConsumableId";
+SELECT ec.*, e.name AS equipment_name
+FROM equipment_consumables ec
+LEFT JOIN equipment e ON ec.equipment_id = e.id
+WHERE ec.consumable_id = @ConsumableId";
                         MySqlCommand equipmentCommand = new MySqlCommand(equipmentQuery, connection);
                         equipmentCommand.Parameters.AddWithValue("@ConsumableId", consumable.Id);
                         using (MySqlDataReader equipmentReader = equipmentCommand.ExecuteReader())
@@ -146,28 +140,59 @@ namespace inventory.Context.MySql
                         }
                     }
                 }
-                catch (MySqlException ex)
-                {
-                    // Log the error for debugging
-                    Console.WriteLine($"MySQL Error: {ex.Message}");
-                    throw;
-                }
                 catch (Exception ex)
                 {
-                    // Log the error for debugging
-                    Console.WriteLine($"General Error: {ex.Message}");
+                    Logging.LogError(ex, "Ошибка при получении списка расходников");
                     throw;
                 }
             }
             return allConsumables;
         }
+
         public void Save(Consumable consumable, bool update = false)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
+                if (update)
+                {
+                    MySqlCommand cmd = new MySqlCommand("SELECT responsible_id, timeresponsible_id FROM consumables WHERE id = @Id", connection);
+                    cmd.Parameters.AddWithValue("@Id", consumable.Id);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int? currentResponsibleId = reader.IsDBNull(0) ? (int?)null : reader.GetInt32(0);
+                            int? currentTempResponsibleId = reader.IsDBNull(1) ? (int?)null : reader.GetInt32(1);
+                            reader.Close();
+
+                            if (currentResponsibleId != consumable.ResponsibleId)
+                            {
+                                var historyContext = new ConsumableResponsibleHistoryContext
+                                {
+                                    ConsumableId = consumable.Id,
+                                    OldUserId = currentResponsibleId,
+                                    ChangeDate = DateTime.Now
+                                };
+                                historyContext.Save();
+                            }
+
+                            if (currentTempResponsibleId != consumable.TempResponsibleId)
+                            {
+                                var historyContext = new ConsumableResponsibleHistoryContext
+                                {
+                                    ConsumableId = consumable.Id,
+                                    OldUserId = currentTempResponsibleId,
+                                    ChangeDate = DateTime.Now
+                                };
+                                historyContext.Save();
+                            }
+                        }
+                    }
+                }
+
                 string query = update
-                    ? "UPDATE consumables SET name = @Name, description = @Description, receipt_date = @ReceiptDate, image = @Image, quantity = @Quantity, responsible_id  = @ResponsibleId, timeresponsible_id  = @TempResponsibleId, type_consumables_id  = @ConsumableTypeId WHERE id = @Id"
-                    : "INSERT INTO consumables (name, description, receipt_date, image, quantity, responsible_id , timeresponsible_id , type_consumables_id ) VALUES (@Name, @Description, @ReceiptDate, @Image, @Quantity, @ResponsibleId, @TempResponsibleId, @ConsumableTypeId)";
+                ? "UPDATE consumables SET name = @Name, description = @Description, receipt_date = @ReceiptDate, image = @Image, quantity = @Quantity, responsible_id = @ResponsibleId, timeresponsible_id = @TempResponsibleId, type_consumables_id = @ConsumableTypeId WHERE id = @Id"
+                : "INSERT INTO consumables (name, description, receipt_date, image, quantity, responsible_id, timeresponsible_id, type_consumables_id) VALUES (@Name, @Description, @ReceiptDate, @Image, @Quantity, @ResponsibleId, @TempResponsibleId, @ConsumableTypeId)";
 
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Id", consumable.Id);
@@ -180,10 +205,18 @@ namespace inventory.Context.MySql
                 command.Parameters.AddWithValue("@TempResponsibleId", consumable.TempResponsibleId ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("@ConsumableTypeId", consumable.ConsumableTypeId ?? (object)DBNull.Value);
 
-                command.ExecuteNonQuery();
-                if (!update)
+                try
                 {
-                    consumable.Id = (int)command.LastInsertedId;
+                    command.ExecuteNonQuery();
+                    if (!update)
+                    {
+                        consumable.Id = (int)command.LastInsertedId;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logging.LogError(ex, "Ошибка при сохранении расходника");
+                    throw;
                 }
             }
         }
@@ -194,7 +227,15 @@ namespace inventory.Context.MySql
             {
                 MySqlCommand command = new MySqlCommand("DELETE FROM consumables WHERE id = @Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
-                command.ExecuteNonQuery();
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    Logging.LogError(ex, "Ошибка при удалении расходника");
+                    throw;
+                }
             }
         }
     }

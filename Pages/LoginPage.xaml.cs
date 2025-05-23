@@ -17,7 +17,6 @@ namespace inventory.Pages
             InitializeComponent();
             _dbConnection = new DBConnection();
         }
-
         public void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string login = LoginTextBox.Text;
