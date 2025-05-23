@@ -9,23 +9,36 @@ namespace inventory.Context.MySql
 {
     public class InventoryContext
     {
-        public List<Inventory> AllInventorys()
+        public List<Inventory> AllInventories()
         {
             List<Inventory> allInventories = new List<Inventory>();
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                MySqlCommand command = new MySqlCommand("SELECT * FROM inventories", connection);
+                string query = @"
+                    SELECT i.*, 
+                           CONCAT(u.last_name, ' ', u.first_name, ' ', COALESCE(u.middle_name, '')) AS user_name
+                    FROM inventories i
+                    LEFT JOIN users u ON i.users_id = u.id";
+                MySqlCommand command = new MySqlCommand(query, connection);
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         allInventories.Add(new Inventory
                         {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            StartDate = reader.GetDateTime(2),
-                            EndDate = reader.GetDateTime(3),
-                            UserId = reader.GetInt32(4)
+                            Id = reader.GetInt32("id"),
+                            Name = reader.GetString("name"),
+                            StartDate = reader.GetDateTime("start_date"),
+                            EndDate = reader.GetDateTime("end_date"),
+                            UserId = reader.GetInt32("users_id"),
+                            User = reader.IsDBNull(reader.GetOrdinal("user_name")) ? null : new User
+                            {
+                                Id = reader.GetInt32("users_id"),
+                                LastName = reader.GetString("user_name").Split(' ')[0],
+                                FirstName = reader.GetString("user_name").Split(' ')[1],
+                                MiddleName = reader.GetString("user_name").Contains(" ") && reader.GetString("user_name").Split(' ').Length > 2 ? reader.GetString("user_name").Split(' ')[2] : null
+                            },
+                            Checks = new HashSet<InventoryCheck>()
                         });
                     }
                 }

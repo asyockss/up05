@@ -20,7 +20,7 @@
         </StackPanel>
 
         <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1">
-            <ItemsControl ItemsSource="{Binding RoomList}">
+            <ItemsControl Width="300" HorizontalAlignment="Left" ItemsSource="{Binding RoomList}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <local:RoomCard DataContext="{Binding}"/>

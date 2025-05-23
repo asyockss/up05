@@ -24,6 +24,7 @@ namespace inventory.Elements
         {
             InitializeComponent();
         }
+
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is Inventory inventory)
@@ -36,12 +37,20 @@ namespace inventory.Elements
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is Inventory inventory &&
-                MessageBox.Show("Вы уверены, что хотите удалить это оборудование?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                MessageBox.Show("Вы уверены, что хотите удалить эту инвентаризацию?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                new InventoryContext().Delete(inventory.Id);
-                RefreshParentPage();
+                try
+                {
+                    new InventoryContext().Delete(inventory.Id);
+                    RefreshParentPage();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка удаления: {ex.Message}");
+                }
             }
         }
+
         private void RefreshParentPage()
         {
             DependencyObject parent = VisualTreeHelper.GetParent(this);
@@ -49,6 +58,5 @@ namespace inventory.Elements
                 parent = VisualTreeHelper.GetParent(parent);
             if (parent is InventoryPage page) page.LoadInventories();
         }
-
     }
 }

@@ -11,62 +11,55 @@ namespace inventory.Pages
 {
     public partial class AddEditInventoryPage : Page, INotifyPropertyChanged
     {
-        private InventoryContext inventoryContext;
-        private UserContext userContext;
-
-        public Inventory CurrentInventory { get; set; }
+        private Inventory _currentInventory;
+        public Inventory CurrentInventory
+        {
+            get => _currentInventory;
+            set { _currentInventory = value; OnPropertyChanged(nameof(CurrentInventory)); }
+        }
         public new string Title => CurrentInventory.Id == 0 ? "Добавить инвентаризацию" : "Редактировать инвентаризацию";
         public List<User> Users { get; set; }
-        public DateTime MinDate { get; } = DateTime.Now;
-        public DateTime MaxDate { get; } = DateTime.Now.AddYears(1);
         public bool IsMenuVisible => true;
 
         public AddEditInventoryPage(Inventory inventory = null)
         {
             InitializeComponent();
-            CurrentInventory = inventory ?? new Inventory();
-            inventoryContext = new InventoryContext();
-            userContext = new UserContext();
+            CurrentInventory = inventory ?? new Inventory
+            {
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today
+            };
             LoadData();
             DataContext = this;
         }
 
         private void LoadData()
         {
-            Users = userContext.AllUsers().Cast<User>().ToList();
+            Users = new UserContext().AllUsers();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(CurrentInventory.Name) || CurrentInventory.StartDate == default || CurrentInventory.EndDate == default)
+            if (string.IsNullOrEmpty(CurrentInventory.Name))
             {
-                MessageBox.Show("Заполните обязательные поля");
+                MessageBox.Show("Заполните обязательное поле: Название");
                 return;
             }
-
-            if (CurrentInventory.StartDate > CurrentInventory.EndDate)
+            if (CurrentInventory.StartDate == default || CurrentInventory.EndDate == default)
             {
-                MessageBox.Show("Дата начала не может быть позже даты окончания");
+                MessageBox.Show("Заполните обязательные поля: Дата начала, Дата окончания");
                 return;
             }
-
-            if (CurrentInventory.UserId == 0)
+            try
             {
-                MessageBox.Show("Выберите пользователя");
-                return;
+                new InventoryContext().Save(CurrentInventory, CurrentInventory.Id != 0);
+                NavigateBack();
             }
-
-            var userExists = Users.Any(user => user.Id == CurrentInventory.UserId);
-            if (!userExists)
+            catch (Exception ex)
             {
-                MessageBox.Show("Выбранный пользователь не существует в базе данных");
-                return;
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}");
             }
-
-            inventoryContext.Save(CurrentInventory, CurrentInventory.Id != 0);
-            NavigateBack();
         }
-
 
         private void CancelButton_Click(object sender, RoutedEventArgs e) => NavigateBack();
 
@@ -77,6 +70,7 @@ namespace inventory.Pages
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

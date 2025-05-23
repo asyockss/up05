@@ -43,7 +43,7 @@ namespace inventory.Pages
             var statuses = new StatusContext().AllStatuses().ToDictionary(s => s.Id, s => s);
             var rooms = new RoomContext().AllRooms().ToDictionary(r => r.Id, r => r);
             var users = new UserContext().AllUsers().ToDictionary(u => u.Id, u => u);
-            var inventories = new InventoryContext().AllInventorys().ToDictionary(i => i.Id, i => i);
+            var inventories = new InventoryContext().AllInventories().ToDictionary(i => i.Id, i => i);
             var models = new EquipmentModelContext().AllEquipmentModels().ToDictionary(m => m.Id, m => m);
             var directions = new DirectionContext().AllDirections().ToDictionary(d => d.Id, d => d);
 

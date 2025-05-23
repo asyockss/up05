@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using inventory.Context.MySql;
@@ -9,11 +10,9 @@ namespace inventory.Elements
 {
     public partial class RoomCard : UserControl
     {
-        private RoomContext roomContext;
         public RoomCard()
         {
             InitializeComponent();
-            roomContext = new RoomContext();
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
@@ -30,8 +29,15 @@ namespace inventory.Elements
             if (DataContext is Room room &&
                 MessageBox.Show("Вы уверены, что хотите удалить эту аудиторию?", "Подтверждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                roomContext.Delete(room.Id);
-                RefreshParentPage();
+                try
+                {
+                    new RoomContext().Delete(room.Id);
+                    RefreshParentPage();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка удаления: {ex.Message}");
+                }
             }
         }
 

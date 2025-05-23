@@ -35,12 +35,19 @@ namespace inventory.Pages
             DataContext = this;
             roomContext = new RoomContext();
             LoadRooms();
-            
         }
 
         public void LoadRooms()
         {
-            RoomList = roomContext.AllRooms().Cast<Room>().ToList();
+            try
+            {
+                RoomList = roomContext.AllRooms();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки аудиторий: {ex.Message}");
+                RoomList = new List<Room>();
+            }
         }
 
         private void FilterRooms()
@@ -51,11 +58,18 @@ namespace inventory.Pages
             }
             else
             {
-                RoomList = roomContext.AllRooms()
-                    .Cast<Room>()
-                    .Where(r => r.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                               r.ShortName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
+                try
+                {
+                    RoomList = roomContext.AllRooms()
+                        .Where(r => r.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    r.ShortName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                        .ToList();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка фильтрации аудиторий: {ex.Message}");
+                    RoomList = new List<Room>();
+                }
             }
         }
 

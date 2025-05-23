@@ -11,10 +11,12 @@ namespace inventory.Pages
 {
     public partial class AddEditRoomPage : Page, INotifyPropertyChanged
     {
-        private RoomContext roomContext;
-        private UserContext userContext; 
-
-        public Room CurrentRoom { get; set; }
+        private Room _currentRoom;
+        public Room CurrentRoom
+        {
+            get => _currentRoom;
+            set { _currentRoom = value; OnPropertyChanged(nameof(CurrentRoom)); }
+        }
         public new string Title => CurrentRoom.Id == 0 ? "Добавить аудиторию" : "Редактировать аудиторию";
         public List<User> Users { get; set; }
         public bool IsMenuVisible => true;
@@ -23,26 +25,31 @@ namespace inventory.Pages
         {
             InitializeComponent();
             CurrentRoom = room ?? new Room();
-            roomContext = new RoomContext();
-            userContext = new UserContext();
             LoadData();
             DataContext = this;
         }
 
         private void LoadData()
         {
-            Users = userContext.AllUsers().Cast<User>().ToList();
+            Users = new UserContext().AllUsers();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(CurrentRoom.Name) || string.IsNullOrEmpty(CurrentRoom.ShortName))
             {
-                MessageBox.Show("Заполните обязательные поля");
+                MessageBox.Show("Заполните обязательные поля: Название, Краткое название");
                 return;
             }
-            roomContext.Save(CurrentRoom, CurrentRoom.Id != 0);
-            NavigateBack();
+            try
+            {
+                new RoomContext().Save(CurrentRoom, CurrentRoom.Id != 0);
+                NavigateBack();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}");
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e) => NavigateBack();
@@ -54,6 +61,7 @@ namespace inventory.Pages
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

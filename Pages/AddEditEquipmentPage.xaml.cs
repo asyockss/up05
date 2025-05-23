@@ -53,7 +53,7 @@ namespace inventory.Pages
             Statuses = new StatusContext().AllStatuses();
             Rooms = new RoomContext().AllRooms();
             Users = new UserContext().AllUsers();
-            Inventory = new InventoryContext().AllInventorys();
+            Inventory = new InventoryContext().AllInventories();
         }
 
         private void SelectImageButton_Click(object sender, RoutedEventArgs e)
@@ -82,7 +82,7 @@ namespace inventory.Pages
                 }
 
                 var inventoryContext = new InventoryContext();
-                if (!inventoryContext.AllInventorys().Any(i => i.Id == CurrentEquipment.InventoryId))
+                if (!inventoryContext.AllInventories().Any(i => i.Id == CurrentEquipment.InventoryId))
                 {
                     MessageBox.Show("Выбранная инвентаризация не существует.");
                     return;
