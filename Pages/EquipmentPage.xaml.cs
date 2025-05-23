@@ -91,7 +91,6 @@ namespace inventory.Pages
         }
 
         private void Refresh_Click(object sender, RoutedEventArgs e) => LoadEquipment();
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

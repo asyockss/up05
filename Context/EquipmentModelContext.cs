@@ -21,7 +21,7 @@ namespace inventory.Context.MySql
                     {
                         allModels.Add(new EquipmentModel
                         {
-                            Id = reader.GetInt32(0), 
+                            Id = reader.GetInt32(0),
                             Name = reader.GetString(1)
                         });
                     }

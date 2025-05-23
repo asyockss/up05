@@ -40,7 +40,7 @@ namespace inventory.Context.MySql
             return allEquipmentConsumables;
         }
 
-public void Save(EquipmentConsumable equipmentConsumable, bool update = false)
+        public void Save(EquipmentConsumable equipmentConsumable, bool update = false)
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
