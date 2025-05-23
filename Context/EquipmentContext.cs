@@ -67,7 +67,6 @@ namespace inventory.Context.MySql
                                 };
                                 new EquipmentResponsibleHistoryContext().Save(history);
                             }
-
                             if (currentRoomId != equipment.RoomId)
                             {
                                 var locationHistory = new EquipmentLocationHistory

@@ -105,7 +105,6 @@ namespace inventory.Pages
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e) => NavigateBack();
-
         private void NavigateBack()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
