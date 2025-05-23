@@ -1,0 +1,53 @@
+﻿<Page x:Class="inventory.Pages.AddEditSoftwarePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+      Title="{Binding Title}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="10">
+                <GroupBox Header="Информация о ПО" Margin="0,0,0,10">
+                    <StackPanel>
+                        <Label Content="Название"></Label>
+                        <TextBox materialDesign:HintAssist.Hint="Название*" Text="{Binding CurrentSoftware.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}"/>
+                        <Label Content="Версия"></Label>
+                        <TextBox materialDesign:HintAssist.Hint="Версия*" Text="{Binding CurrentSoftware.Version, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputFieldStyle}" Margin="0,10,0,0"/>
+                        <Label Content="Разработчик"></Label>
+                        <ComboBox
+    materialDesign:HintAssist.Hint="Разработчик"
+    ItemsSource="{Binding Developer}"
+    DisplayMemberPath="Name"
+    SelectedValuePath="Id"
+    SelectedValue="{Binding CurrentSoftware.DeveloperId}"
+    Style="{StaticResource ComboBoxStyle}"
+    Margin="0,10,0,0"/>
+                        <Label Content="Оборудование"></Label>
+                        <ComboBox
+    materialDesign:HintAssist.Hint="Оборудование"
+    ItemsSource="{Binding Equipment}"
+    DisplayMemberPath="Name"
+    SelectedValuePath="Id"
+    SelectedValue="{Binding CurrentSoftware.EquipmentId}"
+    Style="{StaticResource ComboBoxStyle}"
+    Margin="0,10,0,0"/> </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Сохранить" Click="SaveButton_Click" Style="{StaticResource ActionButtonStyle}" Width="120"/>
+            <Button Content="Отмена" Click="CancelButton_Click" Style="{StaticResource ActionButtonStyle}" Width="120" Margin="10,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Page>

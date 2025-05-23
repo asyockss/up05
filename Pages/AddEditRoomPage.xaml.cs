@@ -15,7 +15,10 @@ namespace inventory.Pages
         public Room CurrentRoom
         {
             get => _currentRoom;
-            set { _currentRoom = value; OnPropertyChanged(nameof(CurrentRoom)); }
+            set { 
+                _currentRoom = value; 
+                OnPropertyChanged(nameof(CurrentRoom)); 
+            }
         }
         public new string Title => CurrentRoom.Id == 0 ? "Добавить аудиторию" : "Редактировать аудиторию";
         public List<User> Users { get; set; }

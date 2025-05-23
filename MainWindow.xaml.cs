@@ -28,6 +28,7 @@ namespace inventory
         private void AddInventory_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditInventoryPage());
         private void ShowUsers_Click(object sender, RoutedEventArgs e) => NavigateToPage(new UsersPage());
         private void AddUser_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditUserPage());
-        private void ShowNetworkSettings_Click(object sender, RoutedEventArgs e) => NavigateToPage(new NetworkSettingsPage());
+        private void ShowSoftware_Click(object sender, RoutedEventArgs e) => NavigateToPage(new SoftwarePage());
+        private void AddSoftware_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditSoftwarePage());
     }
 }

@@ -149,7 +149,6 @@
     <Compile Include="Context\EquipmentTypeContext.cs" />
     <Compile Include="Context\InventoryCheckContext.cs" />
     <Compile Include="Context\InventoryContext.cs" />
-    <Compile Include="Context\NetworkContext.cs" />
     <Compile Include="Context\RoomContext.cs" />
     <Compile Include="Context\SoftwareContext.cs" />
     <Compile Include="Context\StatusContext.cs" />
@@ -166,6 +165,9 @@
     </Compile>
     <Compile Include="Elements\RoomCard.xaml.cs">
       <DependentUpon>RoomCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\SoftwareCard.xaml.cs">
+      <DependentUpon>SoftwareCard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Elements\UserCard.xaml.cs">
       <DependentUpon>UserCard.xaml</DependentUpon>
@@ -189,7 +191,6 @@
     <Compile Include="Interfase\IEquipmentType.cs" />
     <Compile Include="Interfase\IInventory.cs" />
     <Compile Include="Interfase\IInventoryCheck.cs" />
-    <Compile Include="Interfase\INetwork.cs" />
     <Compile Include="Interfase\IRoom.cs" />
     <Compile Include="Interfase\ISoftware.cs" />
     <Compile Include="Interfase\IStatus.cs" />
@@ -219,6 +220,9 @@
     <Compile Include="Pages\AddEditRoomPage.xaml.cs">
       <DependentUpon>AddEditRoomPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AddEditSoftwarePage.xaml.cs">
+      <DependentUpon>AddEditSoftwarePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AddEditUserPage.xaml.cs">
       <DependentUpon>AddEditUserPage.xaml</DependentUpon>
     </Compile>
@@ -231,11 +235,11 @@
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\NetworkSettingsPage.xaml.cs">
-      <DependentUpon>NetworkSettingsPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\RoomsPage.xaml.cs">
       <DependentUpon>RoomsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SoftwarePage.xaml.cs">
+      <DependentUpon>SoftwarePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\UsersPage.xaml.cs">
       <DependentUpon>UsersPage.xaml</DependentUpon>
@@ -253,6 +257,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Elements\RoomCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Elements\SoftwareCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -296,6 +304,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\AddEditSoftwarePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\AddEditUserPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -320,11 +332,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\NetworkSettingsPage.xaml">
+    <Page Include="Pages\RoomsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\RoomsPage.xaml">
+    <Page Include="Pages\SoftwarePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -342,7 +354,6 @@
     <Compile Include="Models\EquipmentConsumable.cs" />
     <Compile Include="Models\EquipmentLocationHistory.cs" />
     <Compile Include="Models\EquipmentResponsibleHistory.cs" />
-    <Compile Include="Models\Network.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Pages\EquipmentPage.xaml.cs">
       <DependentUpon>EquipmentPage.xaml</DependentUpon>

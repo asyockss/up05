@@ -47,9 +47,8 @@ namespace inventory.Context.MySql
                                 FirstName = reader.GetString("timeresponsible_name").Split(' ')[1],
                                 MiddleName = reader.GetString("timeresponsible_name").Contains(" ") && reader.GetString("timeresponsible_name").Split(' ').Length > 2 ? reader.GetString("timeresponsible_name").Split(' ')[2] : null
                             },
-                            Equipment = new List<Equipment> { /* Placeholder for count */ }
+                            Equipment = new List<Equipment> { }
                         });
-                        // Set Equipment.Count using the equipment_count from the query
                         allRooms[allRooms.Count - 1].Equipment = new List<Equipment>(new Equipment[reader.GetInt32("equipment_count")]);
                     }
                 }
@@ -89,7 +88,7 @@ namespace inventory.Context.MySql
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw new Exception($"Failed to save room: {ex.Message}", ex);
+                    throw new Exception($"Ошибка сохранения аудитории: {ex.Message}", ex);
                 }
             }
         }
@@ -116,7 +115,7 @@ namespace inventory.Context.MySql
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw new Exception($"Failed to delete room: {ex.Message}", ex);
+                    throw new Exception($"Ошибка сохранения аудитории: {ex.Message}", ex);
                 }
             }
         }

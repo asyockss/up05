@@ -1,28 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace inventory.Models
 {
-    public class Software
+    public class Software : INotifyPropertyChanged
     {
-        public int Id { get; set; }
+        private int _id;
+        private string _name;
+        private string _version;
+        private int? _developerId;
+        private int? _equipmentId;
+        private Developer _developer;
+        private Equipment _equipment;
 
-        [Required(ErrorMessage = "Название программы обязательно")]
-        public string Name { get; set; }
+        public int Id
+        {
+            get => _id;
+            set { _id = value; OnPropertyChanged(nameof(Id)); }
+        }
 
-        public string Version { get; set; }
+        public string Name
+        {
+            get => _name;
+            set { _name = value; OnPropertyChanged(nameof(Name)); }
+        }
 
-        [ForeignKey("Developer")]
-        public int? DeveloperId { get; set; }
-        public virtual Developer Developer { get; set; }
+        public string Version
+        {
+            get => _version;
+            set { _version = value; OnPropertyChanged(nameof(Version)); }
+        }
 
-        [ForeignKey("Equipment")]
-        public int? EquipmentId { get; set; }
-        public virtual Equipment Equipment { get; set; }
+        public int? DeveloperId
+        {
+            get => _developerId;
+            set { _developerId = value; OnPropertyChanged(nameof(DeveloperId)); }
+        }
+
+        public int? EquipmentId
+        {
+            get => _equipmentId;
+            set { _equipmentId = value; OnPropertyChanged(nameof(EquipmentId)); }
+        }
+
+        public Developer Developer
+        {
+            get => _developer;
+            set { _developer = value; OnPropertyChanged(nameof(Developer)); }
+        }
+
+        public Equipment Equipment
+        {
+            get => _equipment;
+            set { _equipment = value; OnPropertyChanged(nameof(Equipment)); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
