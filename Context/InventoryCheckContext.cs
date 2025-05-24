@@ -31,11 +31,6 @@ namespace inventory.Context.MySql
         }
         public void Save(bool Update = false)
         {
-            // Проверка прав пользователя
-            //if (!IsUserAuthorized(this.UserId))
-            //{
-            //    throw new UnauthorizedAccessException("Пользователь не имеет прав для проведения инвентаризации");
-            //}
 
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
@@ -62,17 +57,7 @@ namespace inventory.Context.MySql
             }
         }
 
-        private bool IsUserAuthorized(int userId)
-        {
-            using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
-            {
-                MySqlCommand command = new MySqlCommand("SELECT role FROM users WHERE id = @UserId", connection);
-                command.Parameters.AddWithValue("@UserId", userId);
-                object result = command.ExecuteScalar();
-                string role = result?.ToString();
-                return role == "admin";
-            }
-        }
+
 
         private void LogError(Exception ex, string message)
         {
@@ -83,7 +68,9 @@ namespace inventory.Context.MySql
         {
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
-                new DBConnection().Query($"DELETE FROM inventory_checks WHERE id = {id}", connection);
+                MySqlCommand command = new MySqlCommand("DELETE FROM inventory_checks WHERE id = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                command.ExecuteNonQuery();
             }
         }
     }

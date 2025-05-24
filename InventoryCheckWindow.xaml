@@ -9,7 +9,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Выберите оборудование для проверки" FontSize="16" Margin="10"/>
-        <ListBox Grid.Row="1" ItemsSource="{Binding EquipmentList}">
+        <ListBox Grid.Row="1" ItemsSource="{Binding CheckItems}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">

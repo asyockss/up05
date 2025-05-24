@@ -42,9 +42,13 @@ namespace inventory.Pages
                         {
                             CurrentUser.Id = dataReader.GetInt32(0);
                             CurrentUser.Login = dataReader.GetString(1);
-                            CurrentUser.Role = dataReader.GetString(2);
-                            CurrentUser.FullName = dataReader.GetString(3);
+                            CurrentUser.Role = dataReader.GetString(3);
+                            string lastName = dataReader.GetString(5);
+                            string firstName = dataReader.GetString(6);
+                            string middleName = dataReader.IsDBNull(7) ? "" : dataReader.GetString(7);
+                            CurrentUser.FullName = $"{lastName} {firstName} {middleName}".Trim();
 
+                            Console.WriteLine($"Login successful: Id={CurrentUser.Id}, Role={CurrentUser.Role}");
                             var mainWindow = (MainWindow)Application.Current.MainWindow;
                             mainWindow.NavigateToMainPage();
                         }

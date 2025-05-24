@@ -25,9 +25,33 @@ namespace inventory
         private void ShowRooms_Click(object sender, RoutedEventArgs e) => NavigateToPage(new RoomsPage());
         private void AddRoom_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditRoomPage());
         private void ShowInventory_Click(object sender, RoutedEventArgs e) => NavigateToPage(new InventoryPage());
-        private void AddInventory_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditInventoryPage());
-        private void ShowUsers_Click(object sender, RoutedEventArgs e) => NavigateToPage(new UsersPage());
-        private void AddUser_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditUserPage());
+        private void AddInventory_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Только администраторы могут управлять инвентаризациями");
+                return;
+            }
+            NavigateToPage(new AddEditInventoryPage());
+        }
+        private void ShowUsers_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Только администраторы могут управлять пользователями");
+                return;
+            }
+            NavigateToPage(new UsersPage());
+        }
+        private void AddUser_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Только администраторы могут управлять пользователями");
+                return;
+            }
+            NavigateToPage(new UsersPage());
+        }
         private void ShowSoftware_Click(object sender, RoutedEventArgs e) => NavigateToPage(new SoftwarePage());
         private void AddSoftware_Click(object sender, RoutedEventArgs e) => NavigateToPage(new AddEditSoftwarePage());
     }

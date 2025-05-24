@@ -52,13 +52,6 @@ namespace inventory.Pages
         public InventoryPage()
         {
             InitializeComponent();
-            if (!CurrentUser.IsAdmin)
-            {
-                MessageBox.Show("Доступ запрещен. Требуются права администратора.");
-                var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
-                mainWindow.NavigateToMainPage();
-                return;
-            }
             DataContext = this;
             inventoryContext = new InventoryContext();
             LoadInventories();
@@ -81,8 +74,17 @@ namespace inventory.Pages
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
-            mainWindow.NavigateToPage(new AddEditInventoryPage());
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("У вас нет прав на добавление инвентаризацией.");
+                return;
+            }
+            else
+            {
+                var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+                mainWindow.NavigateToPage(new AddEditInventoryPage());
+            }
+            
         }
 
         private void PerformCheck_Click(object sender, RoutedEventArgs e)

@@ -16,15 +16,7 @@ namespace inventory.Pages
         private void NavigateToEquipment_Click(object sender, RoutedEventArgs e) => NavigateTo(new EquipmentPage());
         private void NavigateToConsumables_Click(object sender, RoutedEventArgs e) => NavigateTo(new ConsumablesPage());
         private void NavigateToRooms_Click(object sender, RoutedEventArgs e) => NavigateTo(new RoomsPage());
-        private void NavigateToInventory_Click(object sender, RoutedEventArgs e)
-        {
-            if (!CurrentUser.IsAdmin)
-            {
-                MessageBox.Show("Только администраторы могут запускать инвентаризацию");
-                return;
-            }
-            NavigateTo(new InventoryPage());
-        }
+        private void NavigateToInventory_Click(object sender, RoutedEventArgs e) => NavigateTo(new InventoryPage());
         private void NavigateToUsers_Click(object sender, RoutedEventArgs e)
         {
             if (!CurrentUser.IsAdmin)

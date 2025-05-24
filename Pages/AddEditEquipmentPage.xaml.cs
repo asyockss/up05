@@ -44,7 +44,6 @@ namespace inventory.Pages
             if (CurrentEquipment.Photo != null)
                 ImagePreview = ByteArrayToImage(CurrentEquipment.Photo);
         }
-
         private void LoadData()
         {
             EquipmentTypes = new EquipmentTypeContext().AllEquipmentTypes();
@@ -54,8 +53,9 @@ namespace inventory.Pages
             Rooms = new RoomContext().AllRooms();
             Users = new UserContext().AllUsers();
             Inventory = new InventoryContext().AllInventories();
-        }
 
+            Console.WriteLine($"Loaded: EquipmentTypes={EquipmentTypes.Count}, EquipmentModels={EquipmentModels.Count}, Directions={Directions.Count}, Statuses={Statuses.Count}, Rooms={Rooms.Count}, Users={Users.Count}, Inventories={Inventory.Count}");
+        }
         private void SelectImageButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog { Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*" };
@@ -70,7 +70,7 @@ namespace inventory.Pages
         {
             try
             {
-                if (!CurrentUser.IsAdmin && CurrentEquipment.ResponsibleId != CurrentUser.Id && CurrentEquipment.Id != 0)
+                if (!CurrentUser.IsAdmin && CurrentEquipment.ResponsibleId != CurrentUser.Id && CurrentEquipment.TempResponsibleId != CurrentUser.Id)
                 {
                     MessageBox.Show("У вас нет прав на редактирование этого оборудования.");
                     return;
@@ -94,16 +94,17 @@ namespace inventory.Pages
                     return;
                 }
 
+                Console.WriteLine($"Saving equipment: Id={CurrentEquipment.Id}, Name={CurrentEquipment.Name}, InventoryId={CurrentEquipment.InventoryId}");
                 var equipmentContext = new EquipmentContext();
                 equipmentContext.Save(CurrentEquipment, CurrentEquipment.Id != 0);
                 NavigateBack();
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Save error: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 MessageBox.Show($"Ошибка при сохранении: {ex.Message}");
             }
         }
-
         private void CancelButton_Click(object sender, RoutedEventArgs e) => NavigateBack();
         private void NavigateBack()
         {
