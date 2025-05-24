@@ -17,6 +17,7 @@ namespace inventory.Pages
             InitializeComponent();
             _dbConnection = new DBConnection();
         }
+
         public void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string login = LoginTextBox.Text;
@@ -47,8 +48,8 @@ namespace inventory.Pages
                             string firstName = dataReader.GetString(6);
                             string middleName = dataReader.IsDBNull(7) ? "" : dataReader.GetString(7);
                             CurrentUser.FullName = $"{lastName} {firstName} {middleName}".Trim();
-
-                            Console.WriteLine($"Login successful: Id={CurrentUser.Id}, Role={CurrentUser.Role}");
+                            Application.Current.Properties["CurrentUserLogin"] = CurrentUser.Login;
+                            System.Diagnostics.Debug.WriteLine($"Login successful: Id={CurrentUser.Id}, Role={CurrentUser.Role}, CurrentUserLogin={Application.Current.Properties["CurrentUserLogin"]}");
                             var mainWindow = (MainWindow)Application.Current.MainWindow;
                             mainWindow.NavigateToMainPage();
                         }
@@ -71,13 +72,12 @@ namespace inventory.Pages
             ErrorMessage.Visibility = Visibility.Visible;
         }
     }
-
-    public static class CurrentUser
-    {
-        public static int Id { get; set; }
-        public static string Login { get; set; }
-        public static string Role { get; set; }
-        public static string FullName { get; set; }
-        public static bool IsAdmin => Role?.ToLower() == "admin";
-    }
 }
+//public static class CurrentUser
+//{
+//    public static int Id { get; set; }
+//    public static string Login { get; set; }
+//    public static string Role { get; set; }
+//    public static string FullName { get; set; }
+//    public static bool IsAdmin => Role?.ToLower() == "admin";
+//}

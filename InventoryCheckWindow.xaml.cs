@@ -80,11 +80,11 @@ namespace inventory
                 MessageBox.Show($"Ошибка сохранения проверки: {ex.Message}");
             }
         }
-        public class InventoryCheckItem
-        {
-            public Equipment Equipment { get; set; }
-            public bool IsSelected { get; set; }
-            public string CheckComment { get; set; }
-        }
+    }
+    public class InventoryCheckItem
+    {
+        public Equipment Equipment { get; set; }
+        public bool IsSelected { get; set; }
+        public string CheckComment { get; set; }
     }
 }

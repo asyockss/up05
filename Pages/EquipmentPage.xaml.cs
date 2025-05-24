@@ -33,40 +33,112 @@ namespace inventory.Pages
         {
             InitializeComponent();
             DataContext = this;
+            InitializeCurrentUser();
             LoadEquipment();
+        }
+
+        private void InitializeCurrentUser()
+        {
+            if (string.IsNullOrEmpty(CurrentUser.Role) || CurrentUser.Id == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("InitializeCurrentUser: CurrentUser is not initialized.");
+                try
+                {
+                    var userContext = new UserContext();
+                    string currentLogin = Application.Current.Properties["CurrentUserLogin"]?.ToString();
+                    if (!string.IsNullOrEmpty(currentLogin))
+                    {
+                        var user = userContext.AllUsers().FirstOrDefault(u => u.Login == currentLogin);
+                        if (user != null)
+                        {
+                            CurrentUser.Id = user.Id;
+                            CurrentUser.Role = user.Role;
+                            CurrentUser.Login = user.Login;
+                            CurrentUser.FullName = user.FullName;
+                            System.Diagnostics.Debug.WriteLine($"InitializeCurrentUser: Loaded user - Id={user.Id}, Role={user.Role}, Login={user.Login}");
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"InitializeCurrentUser: No user found for login '{currentLogin}'.");
+                            MessageBox.Show("Ошибка: Пользователь не найден. Пожалуйста, войдите снова.");
+                            NavigateToLogin();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("InitializeCurrentUser: No CurrentUserLogin found.");
+                        MessageBox.Show("Ошибка: Требуется вход в систему.");
+                        NavigateToLogin();
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"InitializeCurrentUser: Error loading user - {ex.Message}");
+                    MessageBox.Show("Ошибка при загрузке данных пользователя. Пожалуйста, войдите снова.");
+                    NavigateToLogin();
+                    return;
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"InitializeCurrentUser: CurrentUser already initialized - Id={CurrentUser.Id}, Role={CurrentUser.Role}");
+            }
+        }
+
+        private void NavigateToLogin()
+        {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.NavigateToPage(new LoginPage());
         }
 
         public void LoadEquipment()
         {
-            var equipment = new EquipmentContext().AllEquipment();
-            var types = new EquipmentTypeContext().AllEquipmentTypes().ToDictionary(t => t.Id, t => t);
-            var statuses = new StatusContext().AllStatuses().ToDictionary(s => s.Id, s => s);
-            var rooms = new RoomContext().AllRooms().ToDictionary(r => r.Id, r => r);
-            var users = new UserContext().AllUsers().ToDictionary(u => u.Id, u => u);
-            var inventories = new InventoryContext().AllInventories().ToDictionary(i => i.Id, i => i);
-            var models = new EquipmentModelContext().AllEquipmentModels().ToDictionary(m => m.Id, m => m);
-            var directions = new DirectionContext().AllDirections().ToDictionary(d => d.Id, d => d);
-
-            foreach (var item in equipment)
+            System.Diagnostics.Debug.WriteLine($"LoadEquipment: CurrentUser - Id={CurrentUser.Id}, Role={CurrentUser.Role}, IsAdmin={CurrentUser.IsAdmin}");
+            try
             {
-                if (item.EquipmentTypeId.HasValue && types.TryGetValue(item.EquipmentTypeId.Value, out var equipmentType))
-                    item.EquipmentType = equipmentType;
-                if (item.StatusId.HasValue && statuses.TryGetValue(item.StatusId.Value, out var status))
-                    item.Status = status;
-                if (item.RoomId.HasValue && rooms.TryGetValue(item.RoomId.Value, out var room))
-                    item.Room = room;
-                if (item.ResponsibleId.HasValue && users.TryGetValue(item.ResponsibleId.Value, out var responsible))
-                    item.Responsible = responsible;
-                if (item.TempResponsibleId.HasValue && users.TryGetValue(item.TempResponsibleId.Value, out var tempResponsible))
-                    item.TempResponsible = tempResponsible;
-                if (item.ModelId.HasValue && models.TryGetValue(item.ModelId.Value, out var model))
-                    item.Model = model;
-                if (item.DirectionId.HasValue && directions.TryGetValue(item.DirectionId.Value, out var direction))
-                    item.Direction = direction;
-                if (inventories.TryGetValue(item.InventoryId, out var inventory))
-                    item.Inventory = inventory;
+                var equipment = new EquipmentContext().AllEquipment();
+                var types = new EquipmentTypeContext().AllEquipmentTypes().ToDictionary(t => t.Id, t => t);
+                var statuses = new StatusContext().AllStatuses().ToDictionary(s => s.Id, s => s);
+                var rooms = new RoomContext().AllRooms().ToDictionary(r => r.Id, r => r);
+                var users = new UserContext().AllUsers().ToDictionary(u => u.Id, u => u);
+                var inventories = new InventoryContext().AllInventories().ToDictionary(i => i.Id, i => i);
+                var models = new EquipmentModelContext().AllEquipmentModels().ToDictionary(m => m.Id, m => m);
+                var directions = new DirectionContext().AllDirections().ToDictionary(d => d.Id, d => d);
+
+                foreach (var item in equipment)
+                {
+                    if (item.EquipmentTypeId.HasValue && types.TryGetValue(item.EquipmentTypeId.Value, out var equipmentType))
+                        item.EquipmentType = equipmentType;
+                    if (item.StatusId.HasValue && statuses.TryGetValue(item.StatusId.Value, out var status))
+                        item.Status = status;
+                    if (item.RoomId.HasValue && rooms.TryGetValue(item.RoomId.Value, out var room))
+                        item.Room = room;
+                    if (item.ResponsibleId.HasValue && users.TryGetValue(item.ResponsibleId.Value, out var responsible))
+                        item.Responsible = responsible;
+                    if (item.TempResponsibleId.HasValue && users.TryGetValue(item.TempResponsibleId.Value, out var tempResponsible))
+                        item.TempResponsible = tempResponsible;
+                    if (item.ModelId.HasValue && models.TryGetValue(item.ModelId.Value, out var model))
+                        item.Model = model;
+                    if (item.DirectionId.HasValue && directions.TryGetValue(item.DirectionId.Value, out var direction))
+                        item.Direction = direction;
+                    if (inventories.TryGetValue(item.InventoryId, out var inventory))
+                        item.Inventory = inventory;
+                }
+                EquipmentList = equipment;
+                System.Diagnostics.Debug.WriteLine($"LoadEquipment: Loaded {equipment.Count} equipment items.");
+                foreach (var item in equipment)
+                {
+                    System.Diagnostics.Debug.WriteLine($"LoadEquipment: Equipment {item.Name}: ResponsibleId={item.ResponsibleId}");
+                }
             }
-            EquipmentList = equipment;
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"LoadEquipment: Error loading equipment - {ex.Message}");
+                MessageBox.Show($"Ошибка при загрузке оборудования: {ex.Message}");
+                EquipmentList = new List<Equipment>(); // Set empty list to prevent UI issues
+            }
         }
 
         private void FilterEquipment()
@@ -91,9 +163,7 @@ namespace inventory.Pages
         }
 
         private void Refresh_Click(object sender, RoutedEventArgs e) => LoadEquipment();
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
         private void ImportFromExcel_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog { Filter = "Excel files (*.xls;*.xlsx)|*.xls;*.xlsx" };
@@ -111,7 +181,7 @@ namespace inventory.Pages
                     for (int row = 2; row <= range.Rows.Count; row++)
                     {
                         string name = range.Cells[row, 1].Value?.ToString();
-                        byte[] photo = null; // You need to handle image import separately
+                        byte[] photo = null;
 
                         int rid, resid, trid, sid, mid, etid, did;
                         decimal c;
@@ -165,5 +235,8 @@ namespace inventory.Pages
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

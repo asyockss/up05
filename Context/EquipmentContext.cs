@@ -48,8 +48,14 @@ namespace inventory.Context.MySql
             return allEquipment;
         }
 
-public void Save(Equipment equipment, bool update = false)
+        public void Save(Equipment equipment, bool update = false)
         {
+            // Check if the current user is admin or the responsible user
+            if (!CurrentUser.IsAdmin && equipment.ResponsibleId != CurrentUser.Id)
+            {
+                throw new UnauthorizedAccessException("Только администраторы или назначенный ответственный могут изменять оборудование.");
+            }
+
             using (MySqlConnection connection = (MySqlConnection)new DBConnection().OpenConnection("MySql"))
             {
                 MySqlTransaction transaction = connection.BeginTransaction();
@@ -98,8 +104,8 @@ public void Save(Equipment equipment, bool update = false)
                     }
 
                     string query = update
-                    ? "UPDATE equipment SET name = @Name, photo = @Photo, room_id = @RoomId, responsible_id = @ResponsibleId, timeresponsible_id = @TempResponsibleId, cost = @Cost, commentar = @Comment, status_id = @StatusId, model_id = @ModelId, equipment_type_id = @EquipmentTypeId, direction_id = @DirectionId, inventory_id = @InventoryId WHERE id = @Id"
-                    : "INSERT INTO equipment (name, photo, room_id, responsible_id, timeresponsible_id, cost, commentar, status_id, model_id, equipment_type_id, direction_id, inventory_id) VALUES (@Name, @Photo, @RoomId, @ResponsibleId, @TempResponsibleId, @Cost, @Comment, @StatusId, @ModelId, @EquipmentTypeId, @DirectionId, @InventoryId)";
+                        ? "UPDATE equipment SET name = @Name, photo = @Photo, room_id = @RoomId, responsible_id = @ResponsibleId, timeresponsible_id = @TempResponsibleId, cost = @Cost, commentar = @Comment, status_id = @StatusId, model_id = @ModelId, equipment_type_id = @EquipmentTypeId, direction_id = @DirectionId, inventory_id = @InventoryId WHERE id = @Id"
+                        : "INSERT INTO equipment (name, photo, room_id, responsible_id, timeresponsible_id, cost, commentar, status_id, model_id, equipment_type_id, direction_id, inventory_id) VALUES (@Name, @Photo, @RoomId, @ResponsibleId, @TempResponsibleId, @Cost, @Comment, @StatusId, @ModelId, @EquipmentTypeId, @DirectionId, @InventoryId)";
 
                     MySqlCommand command = new MySqlCommand(query, connection, transaction);
                     command.Parameters.AddWithValue("@Id", equipment.Id);

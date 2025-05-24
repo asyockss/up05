@@ -12,7 +12,12 @@ namespace inventory
             InitializeComponent();
             NavigateToLoginPage();
         }
-
+        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine($"Unhandled Exception: {e.Exception.Message}\nStackTrace: {e.Exception.StackTrace}");
+            MessageBox.Show($"Произошла ошибка: {e.Exception.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            e.Handled = true;
+        }
         public void NavigateToLoginPage() => MainFrame.Navigate(new LoginPage());
         public void NavigateToMainPage() => MainFrame.Navigate(new MainPage());
         public void NavigateToPage(Page page) => MainFrame.Navigate(page);
