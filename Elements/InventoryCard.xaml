@@ -23,7 +23,6 @@
                       Width="16" Height="17" Fill="#666666" Stretch="Fill"/>
                 <TextBlock Text="{Binding User.FullName, TargetNullValue='Не указан'}" Margin="6,0,0,0" FontSize="13" TextTrimming="CharacterEllipsis"/>
             </StackPanel>
-            <TextBlock Grid.Row="4" Text="{Binding Checks.Count, StringFormat='Проверок: {0}'}" Margin="0,8,0,0" FontSize="12" Foreground="#666666"/>
             <StackPanel Grid.Row="12" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
                 <Button Click="EditButton_Click" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Редактировать">
                     <Path Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"

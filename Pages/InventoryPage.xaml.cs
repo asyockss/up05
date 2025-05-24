@@ -94,17 +94,19 @@ namespace inventory.Pages
                 MessageBox.Show("Выберите инвентаризацию для проверки");
                 return;
             }
+
+            // Проверка CurrentUser
+            if (CurrentUser.Id == 0 || string.IsNullOrEmpty(CurrentUser.Role))
+            {
+                MessageBox.Show("Ошибка: Пользователь не инициализирован.");
+                return;
+            }
+
             var checkWindow = new InventoryCheckWindow(SelectedInventory);
             if (checkWindow.ShowDialog() == true)
             {
                 LoadInventories();
             }
-            if (InventoryList == null || InventoryList.Count == 0)
-            {
-                MessageBox.Show("Нет доступных инвентаризаций для проверки.");
-                return;
-            }
-            PerformInventoryCheck();
         }
 
         private void PerformInventoryCheck()

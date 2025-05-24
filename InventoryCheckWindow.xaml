@@ -9,13 +9,14 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Выберите оборудование для проверки" FontSize="16" Margin="10"/>
-        <ListBox Grid.Row="1" ItemsSource="{Binding CheckItems}">
+        <TextBlock Grid.Row="1" Text="Нет доступного оборудования для проверки" Visibility="{Binding CheckItems.Count}" Margin="10"/>
+        <ListBox Grid.Row="1" ItemsSource="{Binding CheckItems}" Visibility="{Binding CheckItems.Count}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding IsSelected}"/>
-                        <TextBlock Text="{Binding Name}" Margin="5,0"/>
-                        <TextBox Text="{Binding Comment}" Width="200" Margin="5,0"/>
+                        <TextBlock Text="{Binding Equipment.Name}" Margin="5,0"/>
+                        <TextBox Text="{Binding CheckComment}" Width="200" Margin="5,0"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

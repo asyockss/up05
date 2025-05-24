@@ -22,6 +22,9 @@ namespace inventory
                 .Where(e => e.InventoryId == SelectedInventory.Id)
                 .ToList();
 
+            // Диагностика
+            Console.WriteLine($"Найдено оборудования: {equipmentList.Count} для InventoryId: {SelectedInventory.Id}");
+
             if (CurrentUser.IsAdmin)
             {
                 CheckItems = equipmentList.Select(e => new InventoryCheckItem { Equipment = e }).ToList();
@@ -32,6 +35,13 @@ namespace inventory
                     .Where(e => e.ResponsibleId == CurrentUser.Id || e.TempResponsibleId == CurrentUser.Id)
                     .Select(e => new InventoryCheckItem { Equipment = e })
                     .ToList();
+            }
+
+            // Диагностика
+            Console.WriteLine($"CheckItems после фильтрации: {CheckItems.Count}, IsAdmin: {CurrentUser.IsAdmin}, CurrentUser.Id: {CurrentUser.Id}");
+            if (!CheckItems.Any())
+            {
+                MessageBox.Show("Нет оборудования, доступного для проверки.");
             }
 
             DataContext = this;
@@ -71,7 +81,9 @@ namespace inventory
                     context.CheckDate = check.CheckDate;
                     context.Comment = check.Comment;
                     context.Save();
+                    Console.WriteLine($"Сохранена проверка для оборудования: {item.Equipment.Name}");
                 }
+                MessageBox.Show("Проверка успешно сохранена.");
                 DialogResult = true;
                 Close();
             }
@@ -81,10 +93,5 @@ namespace inventory
             }
         }
     }
-    public class InventoryCheckItem
-    {
-        public Equipment Equipment { get; set; }
-        public bool IsSelected { get; set; }
-        public string CheckComment { get; set; }
-    }
+
 }

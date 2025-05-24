@@ -195,6 +195,7 @@
     <Compile Include="Interfase\ISoftware.cs" />
     <Compile Include="Interfase\IStatus.cs" />
     <Compile Include="Interfase\IUser.cs" />
+    <Compile Include="InventoryCheckItem.cs" />
     <Compile Include="InventoryCheckWindow.xaml.cs">
       <DependentUpon>InventoryCheckWindow.xaml</DependentUpon>
     </Compile>
